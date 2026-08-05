@@ -34,17 +34,33 @@ ergonomics, and scriptability. Not a general-purpose FEA clone.
 
 ## 3. Key product decisions
 
-1. **Input = a strict subset of the Abaqus/ccx `.inp` dialect.**
-   PrePoMax works as the pre-processor from day one; users keep their workflow.
-   Unsupported keywords fail loudly with a clear message — never silently ignored
-   (a known ccx footgun). A native Python API is the second, first-class input path.
-2. **Output = `.frd` (PrePoMax/CGX post-processing) + `.vtu` (ParaView) + tabular
+1. **Geometry front-end = ANSYS SpaceClaim / Discovery** (the user's tool of choice,
+   already scripted in-house). Pipeline:
+   - SpaceClaim: geometry prep (defeaturing, face splits for load/BC regions,
+     named selections for faces and bodies).
+   - A **solidx-supplied SpaceClaim/Discovery IronPython export script**: one click
+     writes `model.step` **plus a sidecar JSON** describing each named selection via
+     per-face geometric fingerprints (centroid, area, bounding box, normal sample).
+   - solidx importer: reads STEP (Gmsh/OpenCascade), re-identifies faces by
+     fingerprint matching within tolerance, recreates named groups. Unmatched or
+     ambiguous faces fail loudly with coordinates for quick lookup in SpaceClaim.
+   - Meshing in-pipeline via Gmsh (C3D10 workhorse for CAD geometry); per-part
+     meshing + mortar ties for assemblies.
+   - Model definition (materials, contact, steps, loads) in the **Python API**,
+     referencing named selections — the scripted-workflow analogue of a GUI tree.
+2. **`.inp` compatibility retained as secondary input.** A strict subset of the
+   Abaqus/ccx dialect: keeps PrePoMax usable as an optional pre-processor, enables
+   ccx cross-check models, eases migration of existing decks. Unsupported keywords
+   fail loudly — never silently ignored (a known ccx footgun).
+3. **Output = `.frd` (PrePoMax/CGX post-processing) + `.vtu` (ParaView) + tabular
    `.dat`-style results + direct Python access.**
-3. **Own GUI is a late, optional phase.** First a results viewer (VTK-based), much
+4. **Own GUI is a late, optional phase.** First a results viewer (VTK-based), much
    later interactive model setup. GUI work never blocks solver phases.
-4. **Clean-room implementation.** Algorithms from the open literature (Simo & Hughes;
+5. **Clean-room implementation.** Algorithms from the open literature (Simo & Hughes;
    Wriggers; Laursen; Belytschko/Liu/Moran; Crisfield). No code copied from ccx
    (GPL) or other codebases. License: MIT (internal use anyway; keeps options open).
+   The SpaceClaim export script uses only the public SpaceClaim/Discovery scripting
+   API on the user's own license.
 
 ## 4. Numerical scope
 
@@ -78,10 +94,12 @@ ergonomics, and scriptability. Not a general-purpose FEA clone.
   return mapping in the tangent plane; stick/slip consistent tangent.
 - **C3 — finite-sliding surface-to-surface** with segment-based (mortar-style)
   integration; contact smoothing.
-- **C4 — ergonomics & robustness**: automatic contact-pair detection by proximity,
-  automatic contact stabilization (viscous damping ramped out before completion — the
-  cure for unconstrained-part rigid-body motion in bolted assemblies), interference
-  fit / `ADJUST`, clearance control.
+- **C4 — ergonomics & robustness**: automatic contact-pair detection by proximity
+  (promoted in priority: with a scripted front-end there is no GUI face-picking, so
+  auto-detection with a reviewable pair report is the primary workflow), automatic
+  contact stabilization (viscous damping ramped out before completion — the cure for
+  unconstrained-part rigid-body motion in bolted assemblies), interference fit /
+  `ADJUST`, clearance control.
 - **Bolt pretension**: true pre-tension section (cut surface + controlled relative
   displacement via constraint equations), force- or length-controlled, lockable across
   steps. First-class feature, not an afterthought.
@@ -196,6 +214,7 @@ references second:
 |---|---|---|---|
 | P0 | Repo skeleton, CI, mesh/model core, `.inp` reader v0 | patch test passes | days |
 | P1 | Linear static: C3D10/C3D8I, Pardiso, parallel assembly, `.frd`/`.vtu` out | PrePoMax round-trip works; benchmarks 1–3 (elastic) pass | 2–4 weeks |
+| P1.5 | Geometry bridge: SpaceClaim export script, STEP+sidecar importer, fingerprint matcher, Gmsh meshing driver | a SpaceClaim-prepped part runs end-to-end from named selections to results | +1–2 weeks |
 | P2 | NLGEOM + J2 plasticity + adaptive Newton | benchmarks 3–5 pass | +4–6 weeks |
 | P3 | Contact C1→C2 + pretension + stabilization | Hertz, friction, bolted-flange benchmarks pass; first real connection cross-checked vs. ccx | **the long pole: +2–4 months** |
 | P4 | Contact C3–C4 (finite sliding, auto-pairs) | field problems run without hand-tuning | +1–2 months |
@@ -231,3 +250,8 @@ resource is validation discipline, not code production.
 5. **Calibration data needed**: 2–3 representative meshes from recent Póka3d carrier
    models (element counts, DOF, part/interface counts) to validate the §5 tier
    targets and size the submodeling workflow against reality.
+6. **SpaceClaim/Discovery specifics**: exact version (scripting API differs across
+   releases); whether the license also includes ANSYS Mechanical/Workbench — if so,
+   a meshed `.cdb` import path becomes a cheap alternative bridge worth adding;
+   whether Parasolid export is licensed (better than STEP for geometry fidelity,
+   though STEP + fingerprints remains the baseline).
