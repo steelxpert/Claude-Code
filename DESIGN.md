@@ -28,6 +28,9 @@ ergonomics, and scriptability. Not a general-purpose FEA clone.
 - Shell, beam, membrane, truss elements — permanently out of scope.
 - Explicit dynamics, crash, metal forming, large-sliding self-contact.
 - Coupled thermal, multiphysics.
+- CFD and fluid–structure interaction (FSI) — permanently out of scope. This project
+  is unrelated to any CFD codebase; fluid actions (wind, fresh-concrete pressure)
+  enter only as ordinary applied loads.
 - Distributed-memory MPI clusters. Design point is a 16–64-core workstation,
   optionally one CUDA GPU.
 - A full interactive pre-processor (see §3: PrePoMax fills this role).
