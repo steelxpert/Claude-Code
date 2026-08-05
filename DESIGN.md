@@ -6,9 +6,11 @@ Working name: **solidx** (trivially renameable). Status: draft for review.
 
 A reliable, fast, implicit finite-element engine for **solid (continuum) elements only**,
 aimed at structural steel detail analysis: bolted connections, base plates, bearing
-details, pins, formwork/carrier details. Full contact nonlinearity (normal + Coulomb
-friction + bolt pretension), metal plasticity, large displacements, parallel on a single
-workstation (CPU first, GPU later).
+details, pins, formwork/carrier details — up to and including **entire tunnel-formwork
+carrier assemblies (Póka3d-class tunneling projects), where meshes can reach tens of
+millions of DOFs**. Full contact nonlinearity (normal + Coulomb friction + bolt
+pretension), metal plasticity, large displacements, parallel on a single workstation
+(CPU first, GPU later).
 
 It complements — not replaces — the existing toolchain:
 
@@ -98,19 +100,62 @@ ergonomics, and scriptability. Not a general-purpose FEA clone.
   contact-dominated connection problems; revisit if demanded).
 
 ### 4.7 Linear algebra & parallelism
-- Default: **MKL Pardiso** sparse direct (LDLT/LLT), in-core with out-of-core option.
+
+Two solver pillars, chosen automatically by problem size (overridable):
+
+- **Direct — MKL Pardiso** (LDLT/LLT), in-core with out-of-core option. Default for
+  nonlinear contact work up to ~3–5 M DOF (factorization memory for 3D solids runs
+  roughly 20–40 GB per 1 M DOF — the practical workstation wall).
+- **Iterative — CG + AMG** (amgcl / hypre BoomerAMG): the *core* path for huge models,
+  not an afterthought. Near-linear memory (~2–4 GB per 1 M DOF) and time scaling puts
+  20–50 M DOF elastic models in workstation range. This is a load-bearing reason for
+  the augmented-Lagrangian contact decision: AL/penalty keeps the system positive
+  definite, so CG remains applicable where Lagrange-multiplier saddle points would not.
+  Plasticity and closed contact degrade AMG convergence — mitigations: block-Jacobi
+  smoothing, elastic-operator preconditioning, and falling back to direct on submodels.
 - Parallel assembly: OpenMP with graph coloring (no atomics on the hot path),
   NUMA-aware first touch.
-- Optional iterative path for huge, elastic-dominated models: CG + AMG (amgcl).
-- **GPU (later phase)**: NVIDIA cuDSS direct solver and/or mixed-precision
-  factorization + iterative refinement; assembly stays on CPU initially.
+- **GPU (later phase)**: AMG on GPU (AmgX-class) for huge elastic solves; cuDSS /
+  mixed-precision factorization + iterative refinement for direct; assembly stays on
+  CPU initially.
+
+### 4.8 Huge-model strategy (Póka3d-class assemblies)
+
+- **Submodeling as a first-class workflow** (the industrial answer to "huge"):
+  run the global assembly elastically (iterative solver, tens of M DOF), then drive
+  detailed nonlinear contact submodels of the joints from interpolated global
+  displacements (`*SUBMODEL`-style, node-based). Automatic cut-boundary detection,
+  displacement interpolation with tolerance diagnostics, multiple submodels per global
+  run. This decouples "huge" from "nonlinear" — each stays in its comfort zone.
+- **Memory-lean by design**: 32-bit local indices where safe, per-element-block
+  storage, no global dense scratch; peak-RAM report after every run.
+- **I/O at scale**: binary `.frd` output, compressed `.vtu`; streaming writers
+  (never hold two copies of a result field). Native compact results container
+  (HDF5-based) for submodel interpolation and Python post-processing.
+- **Post-processing reality**: PrePoMax's GUI degrades above ~5–10 M elements —
+  document ParaView as the huge-model post-processor; PrePoMax remains the
+  pre/post tool for component-scale work and submodels.
+- **Meshing at scale**: Gmsh handles component meshes well; huge assemblies are
+  meshed per-part and merged with tie constraints (mortar ties, §4.5) — also the
+  natural pattern for formwork assemblies with bolted/pinned interfaces.
+- Future option (explicitly deferred): static condensation / superelements for
+  repeated identical carrier modules.
 
 ## 5. Performance targets (acceptance-test grade, not marketing)
 
-- 1 M-DOF bolted connection, 2 steps / ~20 increments / ~60 factorizations:
-  **< 30 min wall-clock on a 16-core desktop**, assembly < 10 % of runtime.
-- 5 M DOF feasible in-core on 128 GB or via OOC.
-- GPU phase: ≥ 2–3× end-to-end on factorization-bound runs (RTX-class card).
+Three size tiers, matching the workflows in §4.8:
+
+- **T1 — nonlinear contact component** (bolted connection / joint submodel,
+  ~1 M DOF, 2 steps / ~20 increments / ~60 factorizations): **< 30 min wall-clock
+  on a 16-core desktop**, assembly < 10 % of runtime; direct solver.
+- **T2 — nonlinear assembly** (~3–5 M DOF, AL contact): feasible on 128–256 GB via
+  in-core or OOC direct; overnight-run acceptable, crash-free mandatory.
+- **T3 — huge elastic global model** (20 M DOF, tunnel-formwork carrier assembly):
+  CG+AMG setup + solve **< 15 min per load case on a 32-core / 256 GB workstation**;
+  full submodel round-trip (global run → joint submodel with contact) in one working
+  session.
+- GPU phase: ≥ 2–3× end-to-end on factorization-bound runs (RTX-class card);
+  T3-class solves on a 24 GB GPU up to ~5–8 M DOF, CPU beyond.
 - Determinism: same input + same thread count → bit-identical results.
 
 ## 6. Software architecture
@@ -154,8 +199,12 @@ references second:
 | P2 | NLGEOM + J2 plasticity + adaptive Newton | benchmarks 3–5 pass | +4–6 weeks |
 | P3 | Contact C1→C2 + pretension + stabilization | Hertz, friction, bolted-flange benchmarks pass; first real connection cross-checked vs. ccx | **the long pole: +2–4 months** |
 | P4 | Contact C3–C4 (finite sliding, auto-pairs) | field problems run without hand-tuning | +1–2 months |
-| P5 | Performance: OOC, tuning, GPU (cuDSS) | §5 targets met | +1–2 months |
-| P6 | GUI: VTK results viewer → model setup later | viewer replaces CGX for daily use | optional |
+| P5 | Scale: CG+AMG core path, submodeling v1, binary/streaming I/O, OOC | T3 target met; global→submodel round-trip on a real carrier model | +1–2 months |
+| P6 | GPU: AMG on GPU, cuDSS option, mixed precision | §5 GPU targets met | +1–2 months |
+| P7 | GUI: VTK results viewer → model setup later | viewer replaces CGX for daily use | optional |
+
+Note: submodeling v1 needs only P1+P2 (elastic global + nonlinear local) — it can be
+pulled forward ahead of P3/P4 completion if a live Póka3d project needs it.
 
 Honest calendar: **~6 months of steady sessions to "trusted alongside ccx with
 cross-checks"; ~12 months to standalone confidence** for signed work. The limiting
@@ -175,7 +224,10 @@ resource is validation discipline, not code production.
 
 ## 10. Open questions
 
-1. GPU commitment: CUDA-only (cuDSS) acceptable, or vendor-neutral needed?
+1. GPU commitment: CUDA-only (cuDSS/AmgX) acceptable, or vendor-neutral needed?
 2. Kinematic hardening priority (cyclic checks) — P2 or later?
 3. Exact `.inp` keyword coverage list for v1 (drive from a real PrePoMax export).
 4. Final name and dedicated repository home.
+5. **Calibration data needed**: 2–3 representative meshes from recent Póka3d carrier
+   models (element counts, DOF, part/interface counts) to validate the §5 tier
+   targets and size the submodeling workflow against reality.
