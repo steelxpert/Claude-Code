@@ -207,6 +207,13 @@ references second:
    published results.
 10. A growing "nasty zoo": initial gaps + rigid-body motion, near-degenerate contact
     pairs, chatter provocations — every field-discovered failure becomes a test.
+11. **UPM course-archive benchmarks** (user's ANSYS master's course, Google Drive):
+    homework/exam problems with worked solutions in plasticity, geometric
+    nonlinearity, and buckling — independently solved reference cases the user
+    personally verified. Harvest into the CI suite during P2–P3. Chapter notes also
+    serve as the ANSYS-terminology reference for naming solidx options and defaults.
+    (Note: the course has no contact chapter — contact validation relies on
+    items 6–9 and the literature.)
 
 ## 8. Phases & exit criteria
 
