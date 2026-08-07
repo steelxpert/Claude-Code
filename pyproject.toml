@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ccxio"
+version = "0.1.0"
+description = "CalculiX .inp mesh reader and .frd result writer (PrePoMax/cgx compatible)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "STEELXPERT Kft." }]
+keywords = ["calculix", "ccx", "prepomax", "cgx", "inp", "frd", "fea"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+ccxio = "ccxio.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["ccxio*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
