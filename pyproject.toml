@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ccxio"
-version = "0.1.0"
-description = "CalculiX .inp mesh reader and .frd result writer (PrePoMax/cgx compatible)"
+version = "0.2.0"
+description = "CalculiX .inp/.frd I/O and imperfection seeding (PrePoMax/cgx compatible)"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }

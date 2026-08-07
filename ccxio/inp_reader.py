@@ -219,13 +219,14 @@ def _read_element_block(
     n = len(lines)
     while i < n and not lines[i].startswith("*"):
         data, i = _read_logical_line(lines, i)
+        card.data.append(data)
         toks = [t for t in (x.strip() for x in data.split(",")) if t]
         # A known type may span extra lines even without trailing commas.
         while expect is not None and len(toks) < 1 + expect and i < n \
                 and not lines[i].startswith("*"):
             more, i = _read_logical_line(lines, i)
+            card.data.append(more)
             toks += [t for t in (x.strip() for x in more.split(",")) if t]
-        card.data.append(data)
         try:
             eid = int(toks[0])
             conn = tuple(int(t) for t in toks[1:])
