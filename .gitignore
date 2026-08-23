@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+spaceclaim-harness/config.json
+spaceclaim-harness/jobs/
