@@ -1,0 +1,10 @@
+{
+  "remove_fillets_below_r_mm": 5.0,
+  "fill_holes_below_d_mm": 8.0,
+  "delete_components_matching": ["bolt", "nut", "washer", "screw",
+                                 "din912", "din933", "iso4762", "iso7089",
+                                 "m6x", "m8x", "m10x", "m12x"],
+  "keep_components_matching": [],
+  "volume_tolerance_pct": 2.0,
+  "max_feature_failure_pct": 10.0
+}

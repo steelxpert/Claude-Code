@@ -66,3 +66,22 @@ The API class library reference is the local .chm:
 height vs face width, volume inside the root/tip envelope, tooth count.
 A PNG is only a sanity glance. When a check fails, fix the geometry
 math or the API call — never widen a tolerance to pass.
+
+## Defeature family (bulk FEA cleanup)
+
+`sc_scripts/defeature.py` + `harness/defeature_batch.py` +
+`harness/verify_defeature.py`; full guide in
+`spaceclaim-harness/DEFEATURE.md`. Key facts:
+
+- Three measured states: before / structure (post component-deletion) /
+  after. Conservation checks reference **structure**, never before.
+- Every deleted component is logged with its volume;
+  `fastener_accounting` fails if volume disappears unlogged.
+- `Fill.Execute` on a feature's faces removes-and-heals; wrap per-face
+  in try/except and count failures - never let one stubborn fillet kill
+  a batch.
+- Recording session for this family: open STEP, delete a component,
+  Prepare > Remove Rounds, Fill, save-as. If the macro records a
+  power-selection (rounds by radius / holes by size), use it instead of
+  the fallback face-geometry walk - much faster on assemblies.
+- Batch = many files per session; use timeout_s ~1800 for assemblies.

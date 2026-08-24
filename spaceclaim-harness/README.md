@@ -56,9 +56,17 @@ the root/tip envelope...). The outer agent fixes the script or params
 and reruns; non-obvious fixes get appended to the skill's gotcha list —
 that is the "learning" mechanism, durable across sessions.
 
+## Defeaturing (production use case)
+
+Bulk FEA cleanup of vendor assemblies - delete fasteners, remove
+fillets, fill small holes - with conservation verification and an audit
+manifest. See **DEFEATURE.md**; dry-run:
+`python3 harness/defeature_batch.py --mock --recipe recipe.example.json --in demo_in --out demo_out`
+
 ## Status
 
 - Verified here (Linux, mock): gear math, verifier, defect detection,
   loop driver, all CPython syntax.
-- Template, needs first-run repair on the Windows box: the
-  `VERIFY`-tagged SpaceClaim API calls in `sc_scripts/spur_gear.py`.
+- Templates, need first-run repair on the Windows box: the
+  `VERIFY`-tagged API calls in `sc_scripts/spur_gear.py` and
+  `sc_scripts/defeature.py`.
