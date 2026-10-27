@@ -131,7 +131,7 @@ def f4():
     x0, y = 1.0, 0.4
     ax.add_patch(Rectangle((x0, y), 0.35, 1.9, fc="#f3d6d2", ec=BEARER, lw=1.5)); ax.text(x0 + 0.17, y + 2.0, "rim track,\nbolted to the rig", ha="center", fontsize=7, color=BEARER, va="bottom")
     beam(ax, x0 + 0.35, x0 + 2.6, y + 0.6, 0.6, STEEL, "joist stub, 3h long")
-    ax.add_patch(Rectangle((x0 + 0.35, y + 0.6), 0.12, 0.6, fc=LOAD, ec="none")); ax.text(x0 + 0.5, y + 1.28, "clip angle, tab or swaged end,\nwith production screws", fontsize=7, color=LOAD, va="bottom")
+    ax.add_patch(Rectangle((x0 + 0.35, y + 0.6), 0.12, 0.6, fc=LOAD, ec="none")); ax.text(x0 + 0.5, y + 1.28, "clip angle, tab or\nswaged end, with\nproduction screws", fontsize=7, color=LOAD, va="bottom")
     arrow(ax, x0 + 2.45, y + 2.1, y + 1.25); ax.text(x0 + 2.45, y + 2.2, "V (vertical shear)", color=LOAD, fontsize=7.5, va="bottom", ha="center")
     ax.plot([x0 + 2.45, x0 + 2.45], [y + 0.6, y - 0.1], color=GREY, lw=0.8, ls=":"); ax.text(x0 + 2.5, y - 0.05, "free end guided\nlaterally only", fontsize=6.5, color=GREY, va="top")
     gauge(ax, x0 + 0.6, y + 0.58, "slip δ")
