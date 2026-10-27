@@ -2,3 +2,7 @@ __pycache__/
 *.egg-info/
 out/
 .pytest_cache/
+
+# built deliverables (signed docx/pdf are not versioned here)
+docs/*.docx
+docs/*.pdf
