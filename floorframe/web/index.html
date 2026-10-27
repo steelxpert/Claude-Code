@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>floorframe · rough</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;display:grid;grid-template-columns:320px 1fr;height:100vh}
+aside{padding:16px;border-right:1px solid #ddd;overflow:auto;background:#fafafa}
+main{padding:16px;overflow:auto}
+label{display:block;font-size:12px;color:#444;margin-top:8px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:4px}
+button{margin-top:12px;padding:8px 14px;background:#0b3d91;color:#fff;border:0;border-radius:4px;cursor:pointer}
+table{border-collapse:collapse;font-size:13px;margin-top:12px}td,th{border:1px solid #ddd;padding:3px 8px;text-align:left}
+.flag{font-size:13px;padding:4px 8px;margin:4px 0;border-radius:3px}.info{background:#e8f0fe}.warn{background:#fff3cd}.error{background:#f8d7da}
+h1{font-size:16px;margin:0 0 8px}small{color:#777}
+</style></head><body>
+<aside>
+<h1>floorframe <small>rough 0.0.1</small></h1>
+<label>Project name<input id="name" value="demo house"></label>
+<label>Floor outline, mm (x,y per line; counter-clockwise)<textarea id="poly" rows="7">0,0
+12000,0
+12000,6000
+7000,6000
+7000,9000
+0,9000</textarea></label>
+<label>Permanent load g [kN/m²]<input id="g" type="number" step="0.1" value="1.5"></label>
+<label>Imposed load q [kN/m²]<input id="q" type="number" step="0.1" value="2.0"></label>
+<label>Joist direction<select id="dir"><option value="">auto (shorter span)</option><option value="x">x</option><option value="y">y</option></select></label>
+<label>Pile type<select id="pile"><option value="">cheapest adequate</option></select></label>
+<label>Pile cost [kg steel equivalent]<input id="pc" type="number" value="60"></label>
+<label>Point loads (x,y,P kN,label per line)<textarea id="pl" rows="2">9000,3000,4.0,stove</textarea></label>
+<button onclick="run()">Generate layout</button>
+<label style="margin-top:16px">…or upload a DXF (closed polyline on layer FLOOR)<input id="dxf" type="file" accept=".dxf"></label>
+<button onclick="runDxf()">Layout from DXF</button>
+</aside>
+<main>
+<div id="flags"></div>
+<div id="svg"></div>
+<div id="bom"></div>
+</main>
+<script>
+fetch('/api/catalog').then(r=>r.json()).then(c=>{const s=document.getElementById('pile');c.piles.forEach(p=>{const o=document.createElement('option');o.value=p.name;o.textContent=`${p.name} (R_cd ${p.R_cd} kN)`;s.appendChild(o)})});
+function lines(id){return document.getElementById(id).value.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>l.split(',').map(s=>s.trim()))}
+async function run(){
+  const body={name:document.getElementById('name').value,
+    regions:[{name:'floor',polygon:lines('poly').map(p=>[+p[0],+p[1]]),loads:{g:+g.value,q:+q.value},joist_direction:document.getElementById('dir').value||null}],
+    point_loads:lines('pl').map(p=>({x:+p[0],y:+p[1],P:+p[2],label:p[3]||''})),
+    pile_name:document.getElementById('pile').value||null,pile_cost_kg_eq:+document.getElementById('pc').value};
+  show(await fetch('/api/layout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}));
+}
+async function runDxf(){
+  const f=document.getElementById('dxf').files[0];if(!f){alert('choose a DXF');return}
+  const fd=new FormData();fd.append('file',f);fd.append('g',g.value);fd.append('q',q.value);
+  show(await fetch('/api/layout/dxf',{method:'POST',body:fd}));
+}
+async function show(r){
+  const d=await r.json();
+  if(!r.ok){document.getElementById('flags').innerHTML=`<div class="flag error">${d.detail}</div>`;return}
+  document.getElementById('flags').innerHTML=d.layout.flags.map(f=>`<div class="flag ${f.level}">${f.text}</div>`).join('');
+  document.getElementById('svg').innerHTML=d.svg;
+  let h='<table><tr><th>Item</th><th>Section</th><th>Count</th><th>Length [m]</th><th>Mass [kg]</th></tr>';
+  d.bom.steel.forEach(i=>h+=`<tr><td>${i.item}</td><td>${i.section}</td><td>${i.count}</td><td>${i.length_m}</td><td>${i.mass_kg}</td></tr>`);
+  h+=`<tr><th colspan="4">Steel total</th><th>${d.bom.steel_total_kg}</th></tr></table>`;
+  h+='<table><tr><th>Pile</th><th>Count</th><th>max N_Ed [kN]</th></tr>';
+  d.bom.piles.forEach(p=>h+=`<tr><td>${p.pile}</td><td>${p.count}</td><td>${p.N_ed_max_kN}</td></tr>`);
+  h+=`</table><p>Deck area: ${d.bom.deck_m2} m²</p>`;
+  document.getElementById('bom').innerHTML=h;
+}
+</script></body></html>

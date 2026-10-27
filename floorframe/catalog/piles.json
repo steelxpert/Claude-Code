@@ -1,0 +1,8 @@
+{
+  "_note": "STUB geotechnical catalogue. Values to be supplied by the geotechnical partner per soil class and pile type. Design values in kN.",
+  "piles": [
+    {"name": "SP76-1500", "shaft_mm": 76, "helix_mm": 250, "length_mm": 1500, "R_cd": 25.0, "R_td": 10.0, "min_spacing_mm": 750},
+    {"name": "SP76-2000", "shaft_mm": 76, "helix_mm": 250, "length_mm": 2000, "R_cd": 35.0, "R_td": 14.0, "min_spacing_mm": 750},
+    {"name": "SP89-2500", "shaft_mm": 89, "helix_mm": 300, "length_mm": 2500, "R_cd": 50.0, "R_td": 20.0, "min_spacing_mm": 900}
+  ]
+}

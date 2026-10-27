@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "floorframe"
+version = "0.0.1"
+description = "Cold-formed steel floor framing on screw piles: layout engine and proposal tool (rough version)"
+requires-python = ">=3.11"
+dependencies = ["shapely>=2.0", "ezdxf>=1.1", "fastapi>=0.110", "uvicorn>=0.27", "python-multipart>=0.0.9"]
+
+[project.optional-dependencies]
+dev = ["pytest", "httpx"]
+
+[tool.setuptools.packages.find]
+include = ["floorframe*"]
+
+[tool.setuptools.package-data]
+floorframe = ["catalog/*.json", "web/*.html"]

@@ -1,0 +1,23 @@
+{
+  "_note": "Lipped C joist family. Dimensions in mm, fy in MPa. PLACEHOLDER family until FlexInSheet's roll-former profile set is fixed.",
+  "steel": {"grade": "S350GD+Z", "fy": 350, "E": 210000, "gamma_M0": 1.0, "gamma_M1": 1.0, "density_kg_m3": 7850},
+  "sections": [
+    {"name": "C150-1.2", "h": 150, "b": 50, "c": 15, "t": 1.2},
+    {"name": "C150-1.5", "h": 150, "b": 50, "c": 15, "t": 1.5},
+    {"name": "C200-1.5", "h": 200, "b": 50, "c": 15, "t": 1.5},
+    {"name": "C200-2.0", "h": 200, "b": 50, "c": 15, "t": 2.0},
+    {"name": "C250-2.0", "h": 250, "b": 60, "c": 18, "t": 2.0},
+    {"name": "C250-2.5", "h": 250, "b": 60, "c": 18, "t": 2.5},
+    {"name": "C300-2.5", "h": 300, "b": 60, "c": 18, "t": 2.5}
+  ],
+  "spacings_mm": [400, 600],
+  "load_classes": {
+    "_note": "Total characteristic g+q in kN/m2 (EN 1991-1-1 cat. A with HU NA q=2.0 plus partitions and finishes). gamma_G=1.35, gamma_Q=1.5 applied with g/q split given.",
+    "L25": {"g": 0.5, "q": 2.0},
+    "L35": {"g": 1.5, "q": 2.0},
+    "L45": {"g": 1.7, "q": 2.8},
+    "L55": {"g": 2.5, "q": 3.0}
+  },
+  "serviceability": {"deflection_total_ratio": 350, "deflection_total_max_mm": 15, "deflection_live_ratio": 450},
+  "placeholder_effective_factors": {"_note": "Flat reductions standing in for EN 1993-1-3 effective section until GMNIA tables exist.", "I_eff": 0.85, "W_eff": 0.70}
+}
