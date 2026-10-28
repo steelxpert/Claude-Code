@@ -1,6 +1,6 @@
 import math
 
-from shapely.geometry import Point, Polygon
+from shapely.geometry import LineString, Point, Polygon
 
 from floorframe.engine.bom import bill_of_materials
 from floorframe.engine.layout import generate_layout
@@ -71,3 +71,32 @@ def test_bom_totals():
     assert bom["steel_total_kg"] > 0
     assert sum(p["count"] for p in bom["piles"]) == len(lay.piles)
     assert math.isclose(sum(i["mass_kg"] for i in bom["steel"]), bom["steel_total_kg"], abs_tol=0.5)
+
+
+USHAPE = [(0, 0), (16000, 0), (16000, 11000), (11000, 11000), (11000, 5000), (5000, 5000), (5000, 11000), (0, 11000)]
+
+
+def _on_segment(pt, p1, p2, tol=1.0):
+    return LineString([p1, p2]).distance(Point(pt)) <= tol
+
+
+def test_ushape_every_joist_end_is_supported():
+    lay = generate_layout(_plan(USHAPE))
+    m = lay.meta["regions"]["r"]
+    assert m["joist_direction"] == "y"
+    assert m["bay_mm"] <= m["joist_span_limit_mm"]
+    # a bearer runs along the re-entrant courtyard base
+    assert any(abs(b.p1[1] - 5000) < 1 and min(b.p1[0], b.p2[0]) <= 5000 and max(b.p1[0], b.p2[0]) >= 11000
+               for b in lay.bearers)
+    # every bearer is on piles: piles at both ends, gaps within the pile spacing
+    for b in lay.bearers:
+        on = sorted(math.hypot(p.x - b.p1[0], p.y - b.p1[1]) for p in lay.piles if _on_segment((p.x, p.y), b.p1, b.p2))
+        L = math.hypot(b.p2[0] - b.p1[0], b.p2[1] - b.p1[1])
+        assert on and on[0] < 1 and abs(on[-1] - L) < 1
+        assert all(c - a <= m["pile_spacing_mm"] + 1 for a, c in zip(on, on[1:]))
+    # every joist end lies on a bearer (directly, or under the rim it ends at)
+    joists = [j for j in lay.joists if j.kind == "joist"]
+    for j in joists:
+        assert abs(j.p2[1] - j.p1[1]) <= m["joist_span_limit_mm"] + 1
+        for end in (j.p1, j.p2):
+            assert any(_on_segment(end, b.p1, b.p2) for b in lay.bearers), end

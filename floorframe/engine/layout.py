@@ -1,7 +1,9 @@
 """Layout generator: joists, rim, bearers (sills) and screw piles for each region.
 
 Rough version: a bearer/joist grid on the region's bounding box, clipped to the region
-polygon. The choice of joist section, spacing, number of bearer lines, bearer section
+polygon. Every region edge that runs across the joists is a support line and gets a bearer
+(on piles); intermediate bearers are spaced evenly between consecutive support lines so
+that no joist span exceeds the table span. The choice of joist section, spacing, number of bearer lines, bearer section
 and pile type is a brute-force minimum of (steel mass + piles * pile_cost_kg_eq) over
 the catalogue, with every candidate checked against the span tables.
 """
@@ -22,7 +24,7 @@ EDGE_EPS = 1.0  # mm: lines on the bbox boundary are nudged inward before clippi
 class _Candidate:
     joist: catalog.Section
     spacing: int
-    n_bays: int
+    line_coords: list[float]
     bay_mm: float
     joist_span_limit_mm: float
     bearer: catalog.Section
@@ -54,6 +56,54 @@ def _line_parallel(axis: str, coord: float, bbox) -> LineString:
     return LineString([(c, miny - 10), (c, maxy + 10)])
 
 
+def _support_coords(poly: Polygon, along: str) -> list[float]:
+    """Coordinates (on the joist axis) of every polygon edge that runs across the joists."""
+    i = 0 if along == "x" else 1
+    ring = list(poly.exterior.coords)
+    coords = sorted({round(p1[i], 3) for p1, p2 in zip(ring[:-1], ring[1:]) if abs(p1[i] - p2[i]) < 1e-6})
+    return [c for k, c in enumerate(coords) if k == 0 or c - coords[k - 1] > 1]
+
+
+def _bearer_lines(supports: list[float], lim: float) -> list[float]:
+    """Support lines plus evenly spaced intermediate lines so that no bay exceeds `lim`."""
+    out = [supports[0]]
+    for a, b in zip(supports, supports[1:]):
+        n = max(1, math.ceil((b - a) / lim - 1e-9))
+        out += [a + (b - a) * k / n for k in range(1, n + 1)]
+    return out
+
+
+def _tribs(lines: list[float]) -> list[float]:
+    gaps = [b - a for a, b in zip(lines, lines[1:])]
+    return [((gaps[i - 1] if i > 0 else 0.0) + (gaps[i] if i < len(gaps) else 0.0)) / 2 for i in range(len(lines))]
+
+
+def _bearer_intervals(w_axis: str, c: float, poly: Polygon) -> list[tuple[float, float]]:
+    """Extent of the bearer line at `c` within the closed polygon, as merged intervals on the other axis.
+
+    The line is probed just either side of `c`, so lines on the boundary (outer or re-entrant
+    edges) pick up the floor on whichever side(s) it lies.
+    """
+    i = 0 if w_axis == "x" else 1
+    minx, miny, maxx, maxy = poly.bounds
+    spans = []
+    for d in (-EDGE_EPS, EDGE_EPS):
+        cc = c + d
+        line = (LineString([(minx - 10, cc), (maxx + 10, cc)]) if w_axis == "x"
+                else LineString([(cc, miny - 10), (cc, maxy + 10)]))
+        for part in _clip(line, poly):
+            v = [pt[i] for pt in part.coords]
+            spans.append((min(v), max(v)))
+    spans.sort()
+    merged: list[list[float]] = []
+    for lo, hi in spans:
+        if merged and lo <= merged[-1][1] + 1:
+            merged[-1][1] = max(merged[-1][1], hi)
+        else:
+            merged.append([lo, hi])
+    return [(lo, hi) for lo, hi in merged]
+
+
 def _pile_spacing(bearer: catalog.Section, trib_mm: float, lc: str, loads, pile: dict) -> float:
     span = catalog.bearer_span(bearer, trib_mm, lc).span_mm
     w_d = (1.35 * loads.g + 1.5 * loads.q) * trib_mm / 1000  # kN/m on the bearer line
@@ -61,33 +111,32 @@ def _pile_spacing(bearer: catalog.Section, trib_mm: float, lc: str, loads, pile:
     return max(min(span, s_cap), 1.0)
 
 
-def _enumerate(region: Region, span_mm: float, width_mm: float, spacings: list[int], pile_cost: float, pile_name: str | None):
+def _enumerate(region: Region, supports: list[float], width_mm: float, spacings: list[int], pile_cost: float, pile_name: str | None):
     lc = catalog.load_class_for(region.loads.g, region.loads.q)
     piles = [p for p in catalog.piles() if pile_name is None or p["name"] == pile_name]
+    span_mm = supports[-1] - supports[0]
     best: _Candidate | None = None
     for s in spacings:
         n_joists = math.floor(width_mm / s) + 1 + 1  # + closing edge joist
         for js in catalog.sections():
             lim = catalog.joist_span(js, s, lc).span_mm
-            n_bays = max(1, math.ceil(span_mm / lim))
-            bay = span_mm / n_bays
+            lines = _bearer_lines(supports, lim)
+            bay = max(b - a for a, b in zip(lines, lines[1:]))
+            trib_max = max(_tribs(lines))
             joist_kg = n_joists * span_mm / 1000 * js.mass_kg_m
             rim_kg = 2 * (span_mm + width_mm) / 1000 * js.mass_kg_m
-            n_lines = n_bays + 1
-            trib_inner, trib_edge = bay, bay / 2
+            n_lines = len(lines)
             for bs in catalog.sections():
                 bearer_kg = n_lines * width_mm / 1000 * 2 * bs.mass_kg_m
                 for p in piles:
-                    sp_edge = _pile_spacing(bs, trib_edge, lc, region.loads, p)
-                    sp_inner = _pile_spacing(bs, trib_inner, lc, region.loads, p)
-                    sp = min(sp_edge, sp_inner)
+                    sp = _pile_spacing(bs, trib_max, lc, region.loads, p)
                     if sp < p["min_spacing_mm"]:
                         continue
                     n_piles = n_lines * (math.ceil(width_mm / sp) + 1)
                     steel = joist_kg + rim_kg + bearer_kg
                     cost = steel + n_piles * pile_cost
                     if best is None or cost < best.cost:
-                        best = _Candidate(js, s, n_bays, bay, lim, bs, p, sp, cost, steel, n_piles)
+                        best = _Candidate(js, s, lines, bay, lim, bs, p, sp, cost, steel, n_piles)
     if best is None:
         raise ValueError(f"region {region.name}: no catalogue combination satisfies pile minimum spacing")
     return best, lc
@@ -101,15 +150,15 @@ def _layout_region(region: Region, plan: Plan, out: Layout) -> None:
     bbox = (minx, miny, maxx, maxy)
     ext_x, ext_y = maxx - minx, maxy - miny
     along = region.joist_direction or ("x" if ext_x <= ext_y else "y")  # joists span the shorter side
-    span_mm = ext_x if along == "x" else ext_y
     width_mm = ext_y if along == "x" else ext_x
     spacings = plan.allowed_spacings or catalog.spacings()
 
-    best, lc = _enumerate(region, span_mm, width_mm, spacings, plan.pile_cost_kg_eq, plan.pile_name)
+    supports = _support_coords(poly, along)
+    best, lc = _enumerate(region, supports, width_mm, spacings, plan.pile_cost_kg_eq, plan.pile_name)
 
-    # bearer lines: perpendicular to joists, at bay boundaries along the joist axis
-    j0 = minx if along == "x" else miny
-    line_coords = [j0 + i * best.bay_mm for i in range(best.n_bays + 1)]
+    # bearer lines: perpendicular to joists, on every cross edge plus intermediate lines between them
+    line_coords = best.line_coords
+    n_bays = len(line_coords) - 1
     w_axis = "y" if along == "x" else "x"
 
     # joists
@@ -119,7 +168,7 @@ def _layout_region(region: Region, plan: Plan, out: Layout) -> None:
     if w_end - positions[-1] > 50:
         positions.append(w_end)
     for pos in positions:
-        for i in range(best.n_bays):
+        for i in range(n_bays):
             a, b = line_coords[i], line_coords[i + 1]
             # joists are parallel to `along`; boundary joists are nudged inward for clipping only
             for part in _clip(_line_parallel(along, pos, bbox), poly):
@@ -144,16 +193,14 @@ def _layout_region(region: Region, plan: Plan, out: Layout) -> None:
 
     # bearers and piles
     w_d_unit = (1.35 * region.loads.g + 1.5 * region.loads.q) / 1000  # kN per mm2 *1000 -> kN/(m*mm)
-    for i, c in enumerate(line_coords):
-        trib = best.bay_mm if 0 < i < best.n_bays else best.bay_mm / 2
-        for part in _clip(_line_parallel(w_axis, c, bbox), poly):  # bearers run perpendicular to the joists
-            (x1, y1), (x2, y2) = part.coords[0], part.coords[-1]
+    for c, trib in zip(line_coords, _tribs(line_coords)):
+        for lo, hi in _bearer_intervals(w_axis, c, poly):  # bearers run perpendicular to the joists
             if along == "x":
                 x1 = x2 = c
-                y1, y2 = part.coords[0][1], part.coords[-1][1]
+                y1, y2 = lo, hi
             else:
                 y1 = y2 = c
-                x1, x2 = part.coords[0][0], part.coords[-1][0]
+                x1, x2 = lo, hi
             out.bearers.append(Bearer(best.bearer.name, (x1, y1), (x2, y2), trib))
             L = math.hypot(x2 - x1, y2 - y1)
             n = math.ceil(L / best.pile_spacing_mm) + 1
@@ -167,13 +214,13 @@ def _layout_region(region: Region, plan: Plan, out: Layout) -> None:
     util = best.bay_mm / best.joist_span_limit_mm
     out.meta["regions"][region.name] = {
         "load_class": lc, "joist_direction": along, "joist_section": best.joist.name,
-        "spacing_mm": best.spacing, "n_bays": best.n_bays, "bay_mm": round(best.bay_mm),
+        "spacing_mm": best.spacing, "n_bays": n_bays, "bay_mm": round(best.bay_mm),
         "joist_span_limit_mm": round(best.joist_span_limit_mm), "joist_utilisation": round(util, 2),
         "bearer_section": f"2x{best.bearer.name}", "pile": best.pile["name"],
         "pile_spacing_mm": round(best.pile_spacing_mm), "steel_kg": round(best.steel_kg), "piles": best.n_piles,
         "table_source": catalog.joist_span(best.joist, best.spacing, lc).source,
     }
-    out.flags.append(Flag("info", f"{region.name}: {best.joist.name} @ {best.spacing} mm, {best.n_bays} bay(s) of {best.bay_mm:.0f} mm "
+    out.flags.append(Flag("info", f"{region.name}: {best.joist.name} @ {best.spacing} mm, {n_bays} bay(s) of up to {best.bay_mm:.0f} mm "
                                   f"(util. {util:.2f}), bearers 2x{best.bearer.name}, piles {best.pile['name']} @ {best.pile_spacing_mm:.0f} mm"))
 
 
