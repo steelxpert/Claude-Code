@@ -226,19 +226,19 @@ def fig_system(out):
     m.tag("A", (-90, 60, 12), (-45, 25)); m.tag("B", (700, 3060, zj + 30), (-35, 35)); m.tag("C", (1300, 0, zj + 100), (0, 45))
     m.tag("D", (625, 0, zb + 60), (-15, -45))
     fig, (ax,) = frame("1. ábra: A födémrendszer felépítése (sarokrészlet)", [
-        (None, "Tételek (alulról felfelé)"),
-        (1, "Csavarcölöp SP89-2500 (Ø89 mm szár,\nØ300 mm szárny), talajban"),
-        (2, "Cölöpfej-lemez hosszlyukakkal, ±25 mm"),
-        (3, "Főtartó: 1. változat, dobozolt 2×C300-2,5\n(2. változat: HEA 140, lásd 3. ábra)"),
-        (4, "Födémgerenda C200-1,5, 600 mm-enként,\na főtartók tetején felfekve"),
-        (5, "Peremprofil (U-sín) a gerendavégeken"),
-        (6, "OSB födémlap a gerendák tetején\n(csak egy része ábrázolva)"),
+        (None, "Elemek (alulról felfelé)"),
+        (1, "Csavarcölöp SP89-2500\n(szárátmérő Ø89 mm, csavarlevél Ø300 mm)"),
+        (2, "Cölöpfejlemez ±25 mm-es hosszlyukakkal"),
+        (3, "Főtartó; 1. változat: 2×C300-2,5 zárt\nszelvénypár, 2. változat: HEA 140 (3. ábra)"),
+        (4, "C200-1,5 födémgerenda 600 mm-es\ntengelytávolsággal, a főtartókra felfekszik"),
+        (5, "U-szelvényű peremprofil a gerendavégeken"),
+        (6, "OSB födémlap a gerendák felső övén\n(részlegesen ábrázolva)"),
         (None, "Csomópontok"),
         ("A", "Főtartó–cölöpfej (3. ábra)"),
-        ("B", "Gerenda–belső főtartó (4. ábra)"),
-        ("C", "Gerenda–peremprofil (5. ábra)"),
-        ("D", "Főtartó-toldás negyedpontban (6. ábra)"),
-    ], note="Indikatív részlet, nem kiviteli rajz. Takart élek nélkül.")
+        ("B", "Födémgerenda–közbenső főtartó (4. ábra)"),
+        ("C", "Födémgerenda–peremprofil (5. ábra)"),
+        ("D", "Főtartótoldás a negyedpontban (6. ábra)"),
+    ], note="Indikatív részlet, nem kiviteli rajz. A takart élek nincsenek ábrázolva.")
     m.draw(ax, ISO, hidden=False, lw=0.6)
     save(fig, out, "D01_rendszer.png")
 
@@ -275,17 +275,17 @@ def pile_head(concept):
 def fig_pile_head(out):
     fig, axes = frame("3. ábra: Főtartó–cölöpfej csomópont (A)", [
         (None, "Közös elemek"),
-        (1, "Csavarcölöp-szár Ø89 mm"),
-        (2, "Cölöpfej-lemez ≥150 mm a főtartó irányában,\nhosszlyukak ±25 mm [ind. 200×260×12]"),
-        (3, "Főtartó, legalább két cölöpön átfutó"),
+        (1, "Csavarcölöp, szárátmérő Ø89 mm"),
+        (2, "Cölöpfejlemez, a főtartó irányában ≥150 mm,\n±25 mm-es hosszlyukakkal [ind. 200×260×12]"),
+        (3, "Főtartó, legalább két cölöpön átmenő"),
         (None, "1. változat: hidegen hajlított"),
-        (4, "Teherátadó merevítő mindkét gerincen:\nrövid C-szelvény a dobozon belül (takart)"),
-        (5, "Csavarok a lemezbe; önfúró csavarok\na szögacélon át a gerincbe"),
-        (6, "Rögzítő szögacél 80×80×6 [ind.], mindkét oldalon"),
+        (4, "Teherátadó merevítő mindkét gerinclemeznél:\nrövid C-szelvény a zárt szelvényen belül (takart)"),
+        (5, "Csavarok a fejlemezbe; önfúró csavarok\na szögacélon át a gerinclemezbe"),
+        (6, "Rögzítő szögacél mindkét oldalon [ind. L80×80×6]"),
         (None, "2. változat: melegen hengerelt"),
-        (7, "4 csavar az alsó övön át, hosszlyukban"),
-        (None, "Vizsgálat: T5 (nyomás, kiemelés, nyírás,\nkülpontosság); merevítő: T2b"),
-    ], n_axes=2, subtitles=["1. változat: dobozolt 2×C300-2,5", "2. változat: HEA 140, tűzihorganyzott"])
+        (7, "4 db csavar az alsó övön át, hosszlyukban"),
+        (None, "Kísérleti vizsgálat: T5 (nyomás, kiemelés,\nnyírás, külpontosság); merevítő: T2b"),
+    ], n_axes=2, subtitles=["1. változat: 2×C300-2,5 zárt szelvénypár", "2. változat: HEA 140, tűzihorganyzott"])
     pile_head(1).draw(axes[0], ISO); pile_head(2).draw(axes[1], ISO)
     save(fig, out, "D03_colopfej.png")
 
@@ -314,13 +314,13 @@ def joist_bearer(concept):
 
 def fig_joist_bearer(out):
     fig, axes = frame("4. ábra: Gerenda–főtartó csomópont (B)", [
-        (None, "Tételek"),
-        (1, "Főtartó (1.: 2×C300-2,5 dobozolt;\n2.: HEA 140)"),
-        (2, "Födémgerenda C200-1,5, a főtartó\ntetején felfekve, folytatólagosan"),
-        (3, "Kapcsolószögacél a gerenda alsó övén,\na C nyitott oldalán [ind. 40×64×4]"),
-        (4, "Kötőelemek: csavar a gerinclemezbe;\n1.: önfúró csavar az öveken át,\n2.: csavar a HEA felső övén át"),
-        (None, "Vizsgálat: T4 (gerendabekötések);\na csúszás a födém merevségébe\nés rezgésébe számít"),
-    ], n_axes=2, subtitles=["1. változat: dobozolt 2×C300-2,5", "2. változat: HEA 140"])
+        (None, "Elemek"),
+        (1, "Főtartó (1.: 2×C300-2,5 zárt szelvénypár;\n2.: HEA 140)"),
+        (2, "C200-1,5 födémgerenda, a főtartóra\nfelfekszik, azon folytatólagosan átmegy"),
+        (3, "Kapcsolószögacél a gerenda alsó övén,\na C-szelvény nyitott oldalán [ind. 40×64×4]"),
+        (4, "Kötőelemek: önfúró csavar a gerinclemezbe;\n1.: önfúró csavar mindkét övön át,\n2.: csavar a HEA felső övén át"),
+        (None, "Kísérleti vizsgálat: T4 (gerendabekötések);\na kapcsolat elcsúszása befolyásolja\na födém merevségét és rezgését"),
+    ], n_axes=2, subtitles=["1. változat: 2×C300-2,5 zárt szelvénypár", "2. változat: HEA 140"])
     joist_bearer(1).draw(axes[0], ISO); joist_bearer(2).draw(axes[1], ISO)
     save(fig, out, "D04_gerenda_fotarto.png")
 
@@ -343,14 +343,14 @@ def fig_joist_rim(out):
     m.tag(1, (500, 120, -150), (40, -15)); m.tag(2, (-350, 30, 206), (-35, 30)); m.tag(3, (300 + 25, 650, 201.5), (30, 25))
     m.tag(4, (325, 25, 210), (25, 40)); m.tag(5, (-200 - 40, 30, 120), (-45, -20)); m.tag(6, (300 + 25, 5.5, 160), (45, 25))
     fig, (ax,) = frame("5. ábra: Gerenda–peremprofil csomópont (C)", [
-        (None, "Tételek (nézet a födém belseje felől)"),
-        (1, "Szélső főtartó a cölöpvonalon"),
-        (2, "Peremprofil U-sín [ind. U206-1,5] a főtartón"),
-        (3, "Födémgerenda C200-1,5, vége a sínben"),
-        (4, "Önfúró csavar a sín övén át a gerenda övébe"),
-        (5, "Gerinc-/teherátadó merevítő a gerendavégen\n(szükség szerint, AISI S240-15, B2.5)"),
-        (6, "Kapcsolószögacél [ind. 45×70×4]: csavarozva\na gerenda és a peremprofil gerincéhez"),
-        (None, "Vizsgált változatok (T4): szögacél,\nkihajtott fül, kivágott (beillesztett) vég"),
+        (None, "Elemek (nézet a födém belseje felől)"),
+        (1, "Szélső főtartó a cölöpsoron"),
+        (2, "U-szelvényű peremprofil a főtartón\n[ind. U206-1,5]"),
+        (3, "C200-1,5 födémgerenda, vége\na peremprofilba illeszkedik"),
+        (4, "Önfúró csavar a peremprofil övén át\na gerenda övébe"),
+        (5, "Gerinchorpadás elleni merevítő a gerendavégen\n(szükség szerint, AISI S240-15, B2.5)"),
+        (6, "Kapcsolószögacél [ind. 45×70×4], csavarozva\na gerenda és a peremprofil gerinclemezéhez"),
+        (None, "Vizsgált kialakítások (T4): szögacél,\nkihajtott fül, bemetszett gerendavég"),
     ])
     m.draw(ax, (1.0, 1.4, 1.9))
     save(fig, out, "D05_gerenda_perem.png")
@@ -387,12 +387,12 @@ def splice(concept):
 
 def fig_splice(out):
     fig, axes = frame("6. ábra: Főtartó folytatólagossága és toldása (D)", [
-        (None, "Szabályok (FLINS-CFS-006)"),
-        (1, "Cölöp; a következő 2,0–3,0 m-re\n(az ábrán példa: 2,5 m, toldás 625 mm-re)"),
-        (2, "A főtartó legalább két cölöpön\nfolytatólagosan fut át"),
-        (3, "Toldás a negyedpontban (L/4 a cölöptől),\nahol a nyomaték kicsi"),
-        (None, "1.: két oldali hevederlemez, önfúró\ncsavarokkal [ind.]; 2.: csavarozott gerinc-\nés övheveder [ind.]"),
-    ], n_axes=2, subtitles=["1. változat: dobozolt 2×C300-2,5", "2. változat: HEA 140"])
+        (None, "Kialakítási szabályok (FLINS-CFS-006)"),
+        (1, "Cölöp; cölöptávolság 2,0–3,0 m\n(az ábrán 2,5 m, a toldás 625 mm-re)"),
+        (2, "A főtartó legalább két cölöpön\nát folytatólagos"),
+        (3, "Toldás a negyedpontban (L/4-re a cölöptől),\nahol a hajlítónyomaték kicsi"),
+        (None, "1.: kétoldali hevederlemez önfúró\ncsavarokkal [ind.]; 2.: csavarozott\ngerinc- és övheveder [ind.]"),
+    ], n_axes=2, subtitles=["1. változat: 2×C300-2,5 zárt szelvénypár", "2. változat: HEA 140"])
     splice(1).draw(axes[0], (0.9, -1.4, 0.8)); splice(2).draw(axes[1], (0.9, -1.4, 0.8))
     save(fig, out, "D06_toldas.png")
 
@@ -429,14 +429,14 @@ def section(ax, layers, width=600, wool="full"):
 def fig_fire(out):
     fig = plt.figure(figsize=(W, H), dpi=DPI)
     fig.patch.set_facecolor("#FFFFFF")
-    fig.text(0.03, 0.94, "9. ábra: Tűzvédelmi rétegrendek (alulról ható tűz)", fontsize=19, fontweight="bold", color=NAVY)
-    fig.text(0.03, 0.025, "Előtervezési ökölszabály (SCI P402, 2.2.2), nem osztályozás. A minősítés osztályozott gyártói rendszerből "
-             "vagy MSZ EN 1365-2 vizsgálatból jön (FLINS-CFS-004).", fontsize=9, color=MUTED, style="italic")
-    deck = ("Nútféderes födémlap 18 mm\n(OSB / forgácslap)", 18, "#E9D9B8", "////")
-    joists = ("C200-1,5 gerendák; ásványgyapot\nNEM a tűz felőli övön [ind.]", 200, None, None)
-    b1 = ("Tűzgátló gipszkarton 12,5 mm", 12.5, "#F3D9D0", "...")
-    b2 = ("2. réteg tűzgátló gipszkarton 12,5 mm,\neltolt illesztésekkel", 12.5, "#F3D9D0", "xxx")
-    for k, (layers, sub) in enumerate([([deck, joists, b1], "REI 30 (pl. családi ház, ellenőrizendő)"),
+    fig.text(0.03, 0.94, "9. ábra: Tűzvédelmi rétegrendek alulról érő tűzhatásra", fontsize=19, fontweight="bold", color=NAVY)
+    fig.text(0.03, 0.025, "Előtervezési ökölszabály (SCI P402, 2.2.2), nem osztályba sorolás. A minősítés osztályba sorolt gyártói "
+             "rendszerből vagy MSZ EN 1365-2 szerinti vizsgálatból származik (FLINS-CFS-004).", fontsize=9, color=MUTED, style="italic")
+    deck = ("Nútféderes födémlap, 18 mm\n(OSB vagy forgácslap)", 18, "#E9D9B8", "////")
+    joists = ("C200-1,5 gerendák; az ásványgyapot nem\na tűz felőli (alsó) övre fekszik [ind.]", 200, None, None)
+    b1 = ("Tűzgátló gipszkarton, 12,5 mm", 12.5, "#F3D9D0", "...")
+    b2 = ("2. réteg tűzgátló gipszkarton, 12,5 mm,\neltolt illesztésekkel", 12.5, "#F3D9D0", "xxx")
+    for k, (layers, sub) in enumerate([([deck, joists, b1], "REI 30 (pl. családi ház; ellenőrizendő)"),
                                        ([deck, joists, b2, b1], "REI 60 (lakáselválasztó födém)")]):
         ax = fig.add_axes([0.03 + k * 0.49, 0.30, 0.46, 0.56]); ax.set_aspect("equal"); ax.axis("off")
         fig.text(0.03 + k * 0.49 + 0.23, 0.875, sub, ha="center", fontsize=12.5, fontweight="bold", color=INK)
@@ -444,11 +444,11 @@ def fig_fire(out):
         for xf in (80, 230, 380, 530):          # fire exposure from below
             ax.annotate("", (xf, -12), (xf, -150), arrowprops=dict(arrowstyle="-|>", color="#C0392B", lw=2))
         ax.text(300, -215, "tűzhatás", ha="center", fontsize=10, color="#C0392B", fontweight="bold")
-    notes = ("A tűzállóságot a burkolat és rögzítése adja, nem az acél: védetlen gerenda R 15-re sem elég (350 °C pár perc alatt).\n"
-             "• A burkolat leválásakor ér véget a tűzállóság: lemeztípus, rétegszám, csavarkiosztás, eltolt illesztések döntenek.\n"
-             "• A gerenda alsó övére fektetett szigetelés bent tartja a hőt és rövidítheti a tűzállóságot (Queensland-vizsgálatok).\n"
-             "• A főtartónak és a cölöpfejnek ugyanazt a minősítést kell tudnia; a nyitott kúszótérben a csupasz acél védetlen.\n"
-             "• Felső födémnél felülről ható tűzre: OSB + nem éghető réteg (gipszrost / száraz esztrich), ha előírt.")
+    notes = ("A tűzállóságot a burkolat és annak rögzítése adja, nem az acélszerkezet: védelem nélkül a födém R 15-re sem alkalmas\n(a gerenda néhány perc alatt eléri a 350 °C-ot).\n"
+             "• A tűzállóság a burkolat leválásával ér véget; a lemeztípus, a rétegszám, a csavarkiosztás és az eltolt illesztés a meghatározó.\n"
+             "• Az alsó övre fektetett hőszigetelés visszatartja a hőt, és csökkentheti a tűzállóságot (queenslandi kísérletek).\n"
+             "• A főtartónak és a cölöpfejnek ugyanazt a tűzállóságot kell biztosítania; nyitott kúszótérben a csupasz acél védelem nélküli.\n"
+             "• Emeleti födémnél, felülről érő tűzhatásra: OSB és nem éghető réteg (gipszrost lemez vagy száraz esztrich), ha előírás.")
     fig.text(0.04, 0.09, notes, fontsize=10, color=INK, linespacing=1.45)
     save(fig, out, "D09_tuzvedelem.png")
 
@@ -456,20 +456,20 @@ def fig_fire(out):
 def fig_buildup(out):
     fig = plt.figure(figsize=(W, H), dpi=DPI)
     fig.patch.set_facecolor("#FFFFFF")
-    fig.text(0.03, 0.94, "7. ábra: Födém-rétegrendek (metszet a gerendákra merőlegesen)", fontsize=19, fontweight="bold", color=NAVY)
-    fig.text(0.03, 0.025, "Indikatív rétegrendek; [ind.] = feltételezett vastagság. Az elválasztó födém értékei az SCI P320–P322 "
-             "várható értékei, nem FlexInSheet-mérések.", fontsize=9, color=MUTED, style="italic")
+    fig.text(0.03, 0.94, "7. ábra: Födémrétegrendek (metszet a gerendákra merőlegesen)", fontsize=19, fontweight="bold", color=NAVY)
+    fig.text(0.03, 0.025, "Indikatív rétegrendek; [ind.] = feltételezett vastagság. Az elválasztó födém rétegrendje az SCI P320–P322 "
+             "alapján felvett, a FlexInSheet-födémen nem mért kialakítás.", fontsize=9, color=MUTED, style="italic")
     single = [("Padlóburkolat (nem része a rendszernek)", 10, "white", ""),
               ("OSB födémlap [ind. 22 mm]", 22, "#E9D9B8", "////"),
-              ("C200-1,5 gerendák 600 mm-enként,\nközte ásványgyapot [ind. 100 mm]", 200, None, None),
-              ("Gipszkarton álmennyezet, 1 réteg [ind. 12,5 mm]", 12.5, "#EEEEEE", "...")]
-    separ = [("Nehéz felső réteg: gipszrost / száraz\nesztrich [ind. 25 mm]", 25, "#DDD6C8", "xx"),
-             ("Rugalmas réteg [ind. 10 mm]", 10, "#D6E4F0", "---"),
+              ("C200-1,5 gerendák, 600 mm-es tengely-\ntávolság; közöttük ásványgyapot\n[ind. 100 mm]", 200, None, None),
+              ("Gipszkarton álmennyezet, egy réteg [ind. 12,5 mm]", 12.5, "#EEEEEE", "...")]
+    separ = [("Nehéz felső réteg: gipszrost lemez vagy\nszáraz esztrich [ind. 25 mm]", 25, "#DDD6C8", "xx"),
+             ("Rugalmas alátétréteg [ind. 10 mm]", 10, "#D6E4F0", "---"),
              ("OSB födémlap [ind. 22 mm]", 22, "#E9D9B8", "////"),
-             ("C200-1,5 gerendák, közte\n100 mm ásványgyapot", 200, None, None),
-             ("Rugalmas sín [ind. 25 mm]", 25, "white", ""),
-             ("2×15 mm hangszigetelő gipszkarton", 30, "#EEEEEE", "...")]
-    for k, (layers, sub) in enumerate([(single, "Családi ház (száraz rétegrend)"), (separ, "Elválasztó födém (többlakásos)")]):
+             ("C200-1,5 gerendák, közöttük\n100 mm ásványgyapot", 200, None, None),
+             ("Rugalmas akusztikai sín [ind. 25 mm]", 25, "white", ""),
+             ("2 × 15 mm hanggátló gipszkarton", 30, "#EEEEEE", "...")]
+    for k, (layers, sub) in enumerate([(single, "Családi ház (száraz rétegrend)"), (separ, "Lakáselválasztó födém (többlakásos épület)")]):
         ax = fig.add_axes([0.03 + k * 0.49, 0.08, 0.46, 0.78]); ax.set_aspect("equal"); ax.axis("off")
         fig.text(0.03 + k * 0.49 + 0.23, 0.875, sub, ha="center", fontsize=12.5, fontweight="bold", color=INK)
         width = 600
@@ -492,17 +492,17 @@ def fig_buildup(out):
         ax.annotate("", (-40, 0), (-40, total), arrowprops=dict(arrowstyle="<->", lw=0.8, color=MUTED))
         ax.text(-55, total / 2, f"≈ {total:g} mm".replace(".", ","), rotation=90, ha="right", va="center", fontsize=10, color=MUTED)
         ax.set_xlim(-130, width + 900); ax.set_ylim(-220, total + 220)
-    fig.text(0.52, 0.09, "Célértékek: R'w + C ≥ 51 dB, L'n,w ≤ 55 dB (MSZ 15601-1, ellenőrizendő).\n"
-             "Tűz: osztályozott rendszer (30 perc) vagy egy MSZ EN 1365-2\nkemencevizsgálat (60 perc).", fontsize=10, color=INK)
+    fig.text(0.52, 0.09, "Akusztikai követelmény: R'w + C ≥ 51 dB, L'n,w ≤ 55 dB\n(MSZ 15601-1, ellenőrizendő).\n"
+             "Tűzvédelem: osztályba sorolt rendszer (30 perc) vagy\nMSZ EN 1365-2 szerinti kemencevizsgálat (60 perc).", fontsize=10, color=INK)
     save(fig, out, "D07_retegrendek.png")
 
 
 def fig_profiles(out):
     fig = plt.figure(figsize=(W, H), dpi=DPI)
     fig.patch.set_facecolor("#F6F5F1")
-    fig.text(0.03, 0.94, "2. ábra: Szelvények (keresztmetszetek, 1:5 egységes léptékben)", fontsize=19, fontweight="bold", color=NAVY)
-    fig.text(0.03, 0.025, "Hidegen hajlított szelvények: S350GD+Z, a fejlesztői katalógus ideiglenes családja (a hengerlő profilkészlete szerint véglegesül). "
-             "A peremprofil mérete indikatív.", fontsize=9, color=MUTED, style="italic")
+    fig.text(0.03, 0.94, "2. ábra: Szelvények keresztmetszete (egységes léptékben)", fontsize=19, fontweight="bold", color=NAVY)
+    fig.text(0.03, 0.025, "Hidegen hajlított szelvények: S350GD+Z; a fejlesztői katalógus ideiglenes szelvénycsaládja, a hengerlő profilkészlete "
+             "alapján véglegesítendő. A peremprofil mérete indikatív.", fontsize=9, color=MUTED, style="italic")
     ax = fig.add_axes([0.02, 0.08, 0.96, 0.8]); ax.set_aspect("equal"); ax.axis("off")
 
     def draw_rects(rects, ox, oy, color):
@@ -523,11 +523,11 @@ def fig_profiles(out):
 
     items = [
         (0, real_c(*C200), "C200-1,5\nfödémgerenda", 200, 50, COL["cfs"]),
-        (230, real_c(300, 60, 18, 2.5), "C300-2,5\nlegmélyebb szelvény", 300, 60, COL["cfs"]),
+        (230, real_c(300, 60, 18, 2.5), "C300-2,5\nlegnagyobb magasság", 300, 60, COL["cfs"]),
         (500, real_c(300, 60, 18, 2.5) + [(u0 + 120, u1 + 120, v0, v1) for u0, u1, v0, v1 in real_c(300, 60, 18, 2.5, True)],
-         "2×C300-2,5 dobozolt\nfőtartó, 1. változat", 300, 120, COL["cfs"]),
-        (790, [(u0 + 70, u1 + 70, v0, v1) for u0, u1, v0, v1 in i_rects(*HEA140)], "HEA 140, tűzihorg.\nfőtartó, 2. változat", 133, 140, COL["hot"]),
-        (1060, [(u0 + 50, u1 + 50, v0, v1) for u0, u1, v0, v1 in rhs_rects(150, 100, 5)], "RHS 150×100×5\nkis magasságnál", 150, 100, COL["hot"]),
+         "2×C300-2,5 zárt\nszelvénypár, 1. változat", 300, 120, COL["cfs"]),
+        (790, [(u0 + 70, u1 + 70, v0, v1) for u0, u1, v0, v1 in i_rects(*HEA140)], "HEA 140, tűzihorg.,\n2. változat", 133, 140, COL["hot"]),
+        (1060, [(u0 + 50, u1 + 50, v0, v1) for u0, u1, v0, v1 in rhs_rects(150, 100, 5)], "RHS 150×100×5\nkorlátozott magasságnál", 150, 100, COL["hot"]),
         (1290, [(0, 1.5, 0, 206), (0, 60, 0, 1.5), (0, 60, 204.5, 206)],
          "U206-1,5 peremprofil\n[ind.]", 206, 60, COL["cfs2"]),
     ]
@@ -548,8 +548,8 @@ def fig_plan(out, dxf):
     lay = generate_layout(plan)
     fig = plt.figure(figsize=(W, H), dpi=DPI)
     fig.patch.set_facecolor("#F6F5F1")
-    fig.text(0.03, 0.94, "8. ábra: Kiosztási alaprajz a csomópontok helyével (U alakú mintaház)", fontsize=19, fontweight="bold", color=NAVY)
-    fig.text(0.03, 0.025, "A tervezőeszköz kimenete, ideiglenes fesztávtáblákkal (nem GMNIA-/Eurocode-ellenőrzött). A toldás helye példa.",
+    fig.text(0.03, 0.94, "8. ábra: Kiosztási alaprajz a csomópontok jelölésével (U alakú mintaház)", fontsize=19, fontweight="bold", color=NAVY)
+    fig.text(0.03, 0.025, "A tervezőprogram eredménye ideiglenes fesztávtáblázatokkal (GMNIA-számítással és Eurocode szerint még nem ellenőrzött). A toldás helye példa.",
              fontsize=9, color=MUTED, style="italic")
     ax = fig.add_axes([0.02, 0.07, 0.64, 0.84]); ax.set_aspect("equal"); ax.axis("off")
     for r in plan.regions:
@@ -570,20 +570,23 @@ def fig_plan(out, dxf):
                 bbox=dict(boxstyle="circle,pad=0.3", fc=ORANGE, ec="white"))
     allx = [v[0] for r in plan.regions for v in r.polygon]; ally = [v[1] for r in plan.regions for v in r.polygon]
     ax.set_xlim(min(allx) - 900, max(allx) + 900); ax.set_ylim(min(ally) - 900, max(ally) + 900)
+    import re
     info = lay.flags[0].text.split(": ", 1)[-1] if lay.flags else ""
-    info = info.replace(" (util", "\n(util").replace(", bearers", ",\nbearers").replace(", piles", ",\npiles")
+    mt = re.match(r"(\S+) @ (\d+) mm, (\d+) bay\(s\) of (\d+) mm \(util\. ([\d.]+)\), bearers (\S+), piles (\S+) @ (\d+) mm", info)
+    hu = lambda v: v.replace(".", ",")
+    info_hu = (f"Födémgerenda: {hu(mt[1])}, {mt[2]} mm-enként\n{mt[3]} mező × {mt[4]} mm (kihasználtság {hu(mt[5])})\n"
+               f"Főtartó: {hu(mt[6]).replace('x', '×')}\nCölöp: {mt[7]}, {mt[8]} mm-enként") if mt else info
     legend(fig, [
         (None, "Jelmagyarázat"),
-        (1, "Födémgerendák (kék), 600 mm-enként"),
+        (1, "Födémgerendák (kék), 600 mm-es\ntengelytávolsággal"),
         (2, "Főtartók (piros) a cölöpsorokon"),
         (3, "Csavarcölöpök (zöld)"),
         (None, "Csomópontok"),
         ("A", "Főtartó–cölöpfej (3. ábra)"),
-        ("B", "Gerenda–főtartó (4. ábra)"),
-        ("C", "Gerenda–peremprofil (5. ábra)"),
-        ("D", "Toldás negyedpontban (6. ábra)"),
-        (None, "Eszköz-eredmény:\n" + info.replace(".", ",").replace(" @ ", " / ").replace("bay(s) of", "mező ×").replace("util,", "kihaszn.")
-         .replace("bearers", "főtartó").replace("piles", "cölöp")),
+        ("B", "Födémgerenda–főtartó (4. ábra)"),
+        ("C", "Födémgerenda–peremprofil (5. ábra)"),
+        ("D", "Főtartótoldás a negyedpontban (6. ábra)"),
+        (None, "A program eredménye:\n" + info_hu),
     ])
     save(fig, out, "D08_alaprajz.png")
 
