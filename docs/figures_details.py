@@ -229,7 +229,7 @@ def fig_system(out):
         (None, "Elemek (alulról felfelé)"),
         (1, "Csavarcölöp SP89-2500\n(szárátmérő Ø89 mm, csavarlevél Ø300 mm)"),
         (2, "Cölöpfejlemez ±25 mm-es hosszlyukakkal"),
-        (3, "Főtartó; 1. változat: 2×C300-2,5 zárt\nszelvénypár, 2. változat: HEA 140 (3. ábra)"),
+        (3, "Főtartó; 1. változat: 2×C300-2,5 doboz-\nszelvény, 2. változat: HEA 140 (3. ábra)"),
         (4, "C200-1,5 födémgerenda 600 mm-es\ntengelytávolsággal, a főtartókra felfekszik"),
         (5, "U-szelvényű peremprofil a gerendavégeken"),
         (6, "OSB födémlap a gerendák felső övén\n(részlegesen ábrázolva)"),
@@ -278,14 +278,14 @@ def fig_pile_head(out):
         (1, "Csavarcölöp, szárátmérő Ø89 mm"),
         (2, "Cölöpfejlemez, a főtartó irányában ≥150 mm,\n±25 mm-es hosszlyukakkal [ind. 200×260×12]"),
         (3, "Főtartó, legalább két cölöpön átmenő"),
-        (None, "1. változat: hidegen hajlított"),
-        (4, "Teherátadó merevítő mindkét gerinclemeznél:\nrövid C-szelvény a zárt szelvényen belül (takart)"),
+        (None, "1. változat: hidegen alakított"),
+        (4, "Teherátadó merevítő mindkét gerinclemeznél:\nrövid C-szelvény a dobozszelvényen belül (takart)"),
         (5, "Csavarok a fejlemezbe; önfúró csavarok\na szögacélon át a gerinclemezbe"),
         (6, "Rögzítő szögacél mindkét oldalon [ind. L80×80×6]"),
         (None, "2. változat: melegen hengerelt"),
         (7, "4 db csavar az alsó övön át, hosszlyukban"),
         (None, "Kísérleti vizsgálat: T5 (nyomás, kiemelés,\nnyírás, külpontosság); merevítő: T2b"),
-    ], n_axes=2, subtitles=["1. változat: 2×C300-2,5 zárt szelvénypár", "2. változat: HEA 140, tűzihorganyzott"])
+    ], n_axes=2, subtitles=["1. változat: 2×C300-2,5 dobozszelvény", "2. változat: HEA 140, tűzihorganyzott"])
     pile_head(1).draw(axes[0], ISO); pile_head(2).draw(axes[1], ISO)
     save(fig, out, "D03_colopfej.png")
 
@@ -315,12 +315,12 @@ def joist_bearer(concept):
 def fig_joist_bearer(out):
     fig, axes = frame("4. ábra: Gerenda–főtartó csomópont (B)", [
         (None, "Elemek"),
-        (1, "Főtartó (1.: 2×C300-2,5 zárt szelvénypár;\n2.: HEA 140)"),
+        (1, "Főtartó (1.: 2×C300-2,5 dobozszelvény;\n2.: HEA 140)"),
         (2, "C200-1,5 födémgerenda, a főtartóra\nfelfekszik, azon folytatólagosan átmegy"),
         (3, "Kapcsolószögacél a gerenda alsó övén,\na C-szelvény nyitott oldalán [ind. 40×64×4]"),
         (4, "Kötőelemek: önfúró csavar a gerinclemezbe;\n1.: önfúró csavar mindkét övön át,\n2.: csavar a HEA felső övén át"),
         (None, "Kísérleti vizsgálat: T4 (gerendabekötések);\na kapcsolat elcsúszása befolyásolja\na födém merevségét és rezgését"),
-    ], n_axes=2, subtitles=["1. változat: 2×C300-2,5 zárt szelvénypár", "2. változat: HEA 140"])
+    ], n_axes=2, subtitles=["1. változat: 2×C300-2,5 dobozszelvény", "2. változat: HEA 140"])
     joist_bearer(1).draw(axes[0], ISO); joist_bearer(2).draw(axes[1], ISO)
     save(fig, out, "D04_gerenda_fotarto.png")
 
@@ -348,7 +348,7 @@ def fig_joist_rim(out):
         (2, "U-szelvényű peremprofil a főtartón\n[ind. U206-1,5]"),
         (3, "C200-1,5 födémgerenda, vége\na peremprofilba illeszkedik"),
         (4, "Önfúró csavar a peremprofil övén át\na gerenda övébe"),
-        (5, "Gerinchorpadás elleni merevítő a gerendavégen\n(szükség szerint, AISI S240-15, B2.5)"),
+        (5, "Beroppanás elleni merevítő a gerendavégen\n(szükség szerint, AISI S240-15, B2.5)"),
         (6, "Kapcsolószögacél [ind. 45×70×4], csavarozva\na gerenda és a peremprofil gerinclemezéhez"),
         (None, "Vizsgált kialakítások (T4): szögacél,\nkihajtott fül, bemetszett gerendavég"),
     ])
@@ -392,7 +392,7 @@ def fig_splice(out):
         (2, "A főtartó legalább két cölöpön\nát folytatólagos"),
         (3, "Toldás a negyedpontban (L/4-re a cölöptől),\nahol a hajlítónyomaték kicsi"),
         (None, "1.: kétoldali hevederlemez önfúró\ncsavarokkal [ind.]; 2.: csavarozott\ngerinc- és övheveder [ind.]"),
-    ], n_axes=2, subtitles=["1. változat: 2×C300-2,5 zárt szelvénypár", "2. változat: HEA 140"])
+    ], n_axes=2, subtitles=["1. változat: 2×C300-2,5 dobozszelvény", "2. változat: HEA 140"])
     splice(1).draw(axes[0], (0.9, -1.4, 0.8)); splice(2).draw(axes[1], (0.9, -1.4, 0.8))
     save(fig, out, "D06_toldas.png")
 
@@ -501,7 +501,7 @@ def fig_profiles(out):
     fig = plt.figure(figsize=(W, H), dpi=DPI)
     fig.patch.set_facecolor("#F6F5F1")
     fig.text(0.03, 0.94, "2. ábra: Szelvények keresztmetszete (egységes léptékben)", fontsize=19, fontweight="bold", color=NAVY)
-    fig.text(0.03, 0.025, "Hidegen hajlított szelvények: S350GD+Z; a fejlesztői katalógus ideiglenes szelvénycsaládja, a hengerlő profilkészlete "
+    fig.text(0.03, 0.025, "Hidegen alakított szelvények: S350GD+Z; a fejlesztői katalógus ideiglenes szelvénycsaládja, a hengerlő profilkészlete "
              "alapján véglegesítendő. A peremprofil mérete indikatív.", fontsize=9, color=MUTED, style="italic")
     ax = fig.add_axes([0.02, 0.08, 0.96, 0.8]); ax.set_aspect("equal"); ax.axis("off")
 
@@ -525,7 +525,7 @@ def fig_profiles(out):
         (0, real_c(*C200), "C200-1,5\nfödémgerenda", 200, 50, COL["cfs"]),
         (230, real_c(300, 60, 18, 2.5), "C300-2,5\nlegnagyobb magasság", 300, 60, COL["cfs"]),
         (500, real_c(300, 60, 18, 2.5) + [(u0 + 120, u1 + 120, v0, v1) for u0, u1, v0, v1 in real_c(300, 60, 18, 2.5, True)],
-         "2×C300-2,5 zárt\nszelvénypár, 1. változat", 300, 120, COL["cfs"]),
+         "2×C300-2,5 doboz-\nszelvény, 1. változat", 300, 120, COL["cfs"]),
         (790, [(u0 + 70, u1 + 70, v0, v1) for u0, u1, v0, v1 in i_rects(*HEA140)], "HEA 140, tűzihorg.,\n2. változat", 133, 140, COL["hot"]),
         (1060, [(u0 + 50, u1 + 50, v0, v1) for u0, u1, v0, v1 in rhs_rects(150, 100, 5)], "RHS 150×100×5\nkorlátozott magasságnál", 150, 100, COL["hot"]),
         (1290, [(0, 1.5, 0, 206), (0, 60, 0, 1.5), (0, 60, 204.5, 206)],
