@@ -8,7 +8,69 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch, Circle, FancyBboxPatch
 
-OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "figs"); OUT.mkdir(parents=True, exist_ok=True)
+sys.path.insert(0, str(Path(__file__).parent)); import figlang
+
+HU = {
+    # F1
+    "T0\nmaterial and geometry": "T0\nanyag és geometria",
+    "T1 joist bending\nT2 web crippling": "T1 hajlítás\nT2 beroppanás",
+    "GMNIA validation,\nmodel factor γFE": "GMNIA-validálás,\nγFE modelltényező",
+    "span tables\n(FE extrapolation)": "fesztávtáblázatok\n(végeselemes)",
+    "T6\nfloor prototype": "T6\nfödémprototípus",
+    "T3 bearers, T4 joints,\nT5 pile-head joint": "T3 főtartók,\nT4 kapcsolatok,\nT5 cölöpfej",
+    "test-based resistances\n(EN 1990 D, AISI K2)": "kísérleti ellenállások\n(EN 1990 D, AISI K2)",
+    "joint and bearer\ncatalogue": "csomópont- és\nfőtartókatalógus",
+    "confirms": "megerősíti", "same coupons": "azonos próbatestek",
+    # F2
+    "pair of C-joists at 600 mm, OSB deck screwed at 300 mm": "két C-gerenda (600 mm), OSB-lap, csavarok 300 mm-enként",
+    "spreader beam": "elosztógerenda",
+    "F: jack with load cell,\nor dead weight": "F: hidraulikus sajtó erőmérő\ncellával, vagy holtteher",
+    "bearing stiffener,\n100 mm bearing": "merevítő, 100 mm\nfelfekvés",
+    "δ2 at mid-span; two lateral transducers on the free bottom flange at mid-span (distortional mode)":
+        "δ2 a támaszköz közepén; a szabad alsó övön középen két oldalirányú elmozdulásmérő (torzulásos horpadás)",
+    "L/3, constant moment": "L/3, állandó nyomaték",
+    "span L = 3.0, 4.2 and 5.4 m, chosen from the Stage-1 signature curve": "L = 3.0, 4.2 és 5.4 m támaszköz, az 1. fázis (véges sávos) jelleggörbéje alapján",
+    "section pair": "szelvénypár",
+    # F3
+    "(a) joist end on the bearer: EOF,\nwith and without bearing stiffener": "(a) gerendavég a főtartón: EOF,\nteherátadó merevítővel és anélkül",
+    "C-joist, cut length 3h": "C-gerenda, hossza 3h",
+    "bearer": "főtartó",
+    "stiffener\n(variant)": "merevítő\n(változat)",
+    "F on the top flange\nvia the deck": "F a felső övre,\na födémlapon át",
+    "web crushing δ": "benyomódás δ",
+    "bearing N = 100 mm": "felfekvés N = 100 mm",
+    "(b) bearer over the pile head: IOF,\npile reaction from below": "(b) főtartó a cölöpfej felett: IOF,\ncölöpreakció alulról",
+    "bearer: 2×C, box, RHS or HEA": "főtartó: 2×C, doboz, RHS vagy HEA",
+    "joist reactions through a spreader": "gerendareakciók teherelosztón át",
+    "pile head plate,\nrigid support": "cölöpfejlemez,\nmerev támasz",
+    "soft\nspring": "rugalmas\ntámasz",
+    # F4
+    "rim track,\nbolted to the rig": "peremprofil,\nkerethez csavarozva",
+    "joist stub, 3h long": "csonk, 3h hosszú",
+    "clip angle, tab or\nswaged end, with\nproduction screws": "szögacél, fül vagy\nbemetszett vég,\ngyártási csavarok",
+    "V (vertical shear)": "V (nyíróerő)",
+    "free end guided\nlaterally only": "szabad vég, csak\noldalirányban megvezetve",
+    "slip δ": "elcsúszás δ",
+    "rigid\nreaction\nframe": "merev\nreakció-\nkeret",
+    "screw lap-shear coupon (AISI S905; EN 1993-1-3 Annex A):\nt1/t2 combinations of the family, 5 replicates each":
+        "csavarkötés nyíróvizsgálata (AISI S905; EN 1993-1-3, A mell.):\na család t1/t2 kombinációi, 5-5 ismétléssel",
+    "gives the per-screw bearing and tilting resistance\nused in the joint evaluation": "csavaronkénti palástnyomási és billenési ellenállás\na kapcsolatok értékeléséhez",
+    # F5
+    "(a) compression N": "(a) nyomás N", "(b) uplift T": "(b) kiemelés T", "(c) shear H": "(c) nyírás H",
+    "(d) eccentric N\n(tolerance e)": "(d) külpontos N\n(tűrés e)",
+    "pile stub fixed to the rig": "rögzített cölöpcsonk",
+    # F6
+    "two bays of joists, rim track, OSB deck (ceiling optional)": "két gerendamező, peremprofil, OSB-lap (álmennyezet: opcionális)",
+    "pile stub or rigid post": "cölöpcsonk vagy merev oszlop",
+    "uniform load by sand bags or water tanks, in steps to 1.0, 1.35 and 1.5 × (g + q), then to failure":
+        "egyenletes teher homokzsákkal vagy víztartállyal, lépcsőkben 1.0, 1.35 és 1.5 × (g + q)-ig, majd tönkremenetelig",
+    "1 kN point load and heel drop:\nfrequency, damping, δ": "1 kN koncentrált erő és sarokejtés:\nfrekvencia, csillapítás, δ",
+    "accelerometers at mid-bay; transducers on the bearers at the pile heads for support settlement":
+        "gyorsulásmérők a mezők közepén; elmozdulásmérők a főtartókon a cölöpfejeknél (támaszsüllyedés)",
+    "bay 3.0 m": "mező 3.0 m",
+    "width at least\n4 joist spacings\n(2.4 m at 600 mm)": "szélesség legalább\n4 gerendaköz\n(600 mm-nél 2.4 m)",
+}
+OUT = figlang.setup(HU)
 W_IN = 15.5 / 2.54
 STEEL, BEARER, DECK, LOAD, SUP, GREY, GREEN = "#2a4d7a", "#b03a2e", "#c8a86a", "#d35400", "#333333", "#777777", "#1e8449"
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8})

@@ -8,7 +8,17 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).parent)); import vib_calc as v
 from floorframe import catalog
 
-OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "figs"); OUT.mkdir(parents=True, exist_ok=True)
+import figlang
+
+HU = {
+    "dry build-up, m = 60 kg/m²": "száraz rétegrend, m = 60 kg/m²",
+    "with gypsum-fibre or dry screed, m = 110 kg/m²": "gipszrost / száraz esztrich, m = 110 kg/m²",
+    "8 Hz (EN 1995-1-1 7.3.3)": "8 Hz (EN 1995-1-1, 7.3.3)",
+    "10 Hz target (CFS research)": "10 Hz célérték (kutatási javaslat)",
+    "span L [m]": "támaszköz L [m]",
+    "__regex__": [(r"^(C\d+)-(\d)\.(\d) @ (\d+) mm$", r"\1-\2,\3, \4 mm-enként")],
+}
+OUT = figlang.setup(HU)
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8})
 L = np.linspace(2.4, 6.0, 60)
 f, axs = plt.subplots(1, 2, figsize=(15.5 / 2.54, 2.9), sharey=True)

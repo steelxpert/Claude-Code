@@ -6,7 +6,30 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
-OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "figs"); OUT.mkdir(parents=True, exist_ok=True)
+sys.path.insert(0, str(Path(__file__).parent)); import figlang
+
+HU = {
+    "permit drawings\n(PDF, DXF)": "engedélyezési tervek\n(PDF, DXF)",
+    "floor outline, walls\nand loads, confirmed\nby the user": "födémkontúr, falak\nés terhek, a felhasználó\njóváhagyásával",
+    "layout engine:\ntables and rules,\nplain code": "kiosztó számítómag:\ntáblázatok, szabályok,\nhagyományos kód",
+    "layout, bill of\nmaterials, price": "kiosztás, anyag-\nkimutatás, ár",
+    "proposal pack with\nsigned design basis": "ajánlatcsomag aláírt\ntervezési alapelvekkel",
+    "A  reads the drawing,\nproposes the outline": "A  értelmezi a tervet,\njavasolja a kontúrt",
+    "B  explains the result,\ndrafts the proposal text": "B  magyarázza az\neredményt, megírja\naz ajánlatszöveget",
+    "C  answers questions\nfrom the design basis": "C  kérdésekre válaszol\na tervezési\nalapelvekből",
+    "proposal only": "csak javaslat",
+    "span tables, joint and\npile catalogues\n(engineer-signed)": "fesztávtáblázatok,\ncsomópont- és\ncölöpkatalógus (aláírt)",
+    "D  developer side:\nFE campaign, code,\nreports": "D  fejlesztői oldal:\nvégeselemes számítások,\nkód, jelentések",
+    "AI touch points (orange) sit beside the load path (blue), never in it":
+        "Az MI-funkciók (narancs) a statikai számítás (kék) mellett működnek, abba nem avatkoznak be",
+    "real project\nsession": "valós projekt,\nmunkamenet",
+    "engineer corrects\nthe AI's reading": "a mérnök javítja\naz MI értelmezését",
+    "correction written into\nthe harness\n(rules, examples)": "a javítás bekerül\na keretrendszerbe\n(szabályok, példák)",
+    "added to the test set\n(drawing + confirmed\nresult)": "bekerül a tesztkészletbe\n(terv + jóváhagyott\neredmény)",
+    "every change scored\nagainst all\npast projects": "minden módosítás\nellenőrzése az összes\nkorábbi projekten",
+    "next project": "következő projekt",
+}
+OUT = figlang.setup(HU)
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8})
 GREY, AI, ENG, HUM = "#777777", "#fde9d9", "#dfe8f3", "#e2f0d9"
 
