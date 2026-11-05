@@ -26,7 +26,7 @@ NOTICE = ("Tájékoztató fordítás, aláírás nélkül. Az angol nyelvű ered
 
 def start(code, title, subtitle, keywords, rows_before, rows_after=()):
     ap = argparse.ArgumentParser()
-    ap.add_argument("--figs", required=True); ap.add_argument("--out", required=True)
+    ap.add_argument("--figs", default="."); ap.add_argument("--out", required=True)
     ap.add_argument("--projno", default="2026.032a"); ap.add_argument("--rev", default="rev0")
     ap.add_argument("--common", default=str(HERE / "hu_common.py")); ap.add_argument("--signature", default=None)
     ap.add_argument("--final", action="store_true"); ap.add_argument("--formal", action="store_true", help="cover page and contents")
@@ -75,4 +75,14 @@ def _light(N, A, code, title, subtitle, rows):
     bdr.append(b); pPr.append(bdr)
     N.toc = lambda: None
     h = N.H
-    N.H = lambda level, text, new_page=False: h(level, text, False)
+
+    import os
+    breaks = set(filter(None, os.environ.get("HU_BREAK_BEFORE", "").split("|")))
+
+    def heading(level, text, new_page=False):
+        """No forced page breaks, except before headings that a render check found stranded at a page foot
+        (HU_BREAK_BEFORE="heading|heading", set by the pagination pass)."""
+        hp = h(level, text, text in breaks)
+        hp.paragraph_format.keep_with_next = True
+        return hp
+    N.H = heading

@@ -120,7 +120,10 @@ def rich(p, text, size=None, bold=False, italic=False, color=None):
             part = part[2:-2]; PENDING.append(part); kw["hl"] = HIGHLIGHT[0]
         r = p.add_run(part)
         r.bold, r.italic = kw["b"] or None, kw["i"] or None
-        r.font.subscript, r.font.superscript = kw["sub"] or None, kw["sup"] or None
+        if kw["sub"]:
+            r.font.subscript = True        # sub and sup share w:vertAlign: set only the one that applies
+        elif kw["sup"]:
+            r.font.superscript = True
         if size: r.font.size = Pt(size)
         if color: r.font.color.rgb = RGBColor.from_string(color)
         if kw["hl"]: r.font.highlight_color = WD_COLOR_INDEX.YELLOW
