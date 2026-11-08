@@ -6,6 +6,8 @@ notes and a rough first version of the design/proposal tool (FlexInSheet Kft. pr
 - `docs/01-qa-feasibility.md` — Q&A pass on the brainstorming note, with open items.
 - `docs/02-options-and-decisions.md` — options considered and recommended choices.
 - `docs/03-rough-app-spec.md` — what the code in this repo does and its limits.
+- `harness/` — project knowledge harness: `STATE_FLINS.md` (where we are), `gotchas.md`,
+  `recipes/`, `kickoffs/`, `meetings/`; `harness/README.md` explains the home layout.
 - `floorframe/` — Python package: catalogues, layout engine, DXF/SVG I/O, FEA campaign
   bookkeeping, FastAPI backend and browser UI.
 - `examples/sample_house.dxf` — L-shaped demo footprint; `examples/sample_house_layout.svg`

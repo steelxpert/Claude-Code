@@ -1,0 +1,7 @@
+FLIN-002 (project flins, FlexInSheet 2026.032a): decide the "home" of the FlexInSheet CFS floor project and its knowledge harness, by Q&A with the owner, then draft the kick-off structure for the staff+ meeting on Tue 2026-11-11.
+Verify: repo steelxpert/Claude-Code, branch claude/trusting-mayer-47ebp9 at 8676f47 or later; pytest = 12 passed. Ledger: G:\Saját meghajtó\ledger\STATE_INDEX.md; register flins / FLIN (FLIN-001 = 2026-11-08 cloud session: client meeting, HU notes CFS-001..005, deck, detail figures).
+Read first: README.md, docs/02, docs/03, deck AJLrG5BTfyRMYuw5RyQYs8 slides 15-17, FLiBess harness (Nonlinear Mechanical\PROJECT_STATE.md, METHOD.md, TOOLCHAIN.md), skills cfs-gmnia-virtual-testing, calculix-prepomax-ops, prepomax-harness, 3w-cp.
+Q&A (max 4 questions per round): roles; home (Claude Project vs repo vs Drive); harness (thin vs self-contained, harvest flow); kick-off audience. Then one layout (diagram + list), owner approval, agenda + workstream table.
+Non-negotiables: no restructuring without owner say-so; AI outside the load path (FLINS-CFS-003); span tables PLACEHOLDER until GMNIA + T-series; HU material per EN-HU glossary and light reading-copy format.
+Exit: layout approved; agenda drafted; committed and pushed to the same branch; 3w+cp (ledger row with measured machine, KICKOFF_NEXT_FLIN.txt). Machine: cloud. Which: Fable 5.1, high.
+Outcome: see harness/STATE_FLINS.md §6 (FLIN-002) and harness/README.md.
