@@ -55,6 +55,7 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | O-005 | The six client decisions of deck slide 17 (profile set Q5, geotechnical partner and pile catalogue, feedback on CFS-001…006, target market, hosting, AI assistance) | Tuesday 2026-11-11 |
 | O-006 | Test laboratory partner for T0–T6 and the certification body for T6 | open |
 | O-007 | Geotechnics lead Szecsey Márton: screw-pile catalogue, acceptance route (MSZ EN 1997-1), test loading | open |
+| O-009 | Upload the patched 3w-cp skill (`harness/skills-proposed/3w-cp.zip`): Where = venue on machine, smart token rule; until then the harness README copy is the stop-gap | owner, tonight |
 | O-008 | FLiBess EN-HU glossary (`research/glossary_EN-HU_Eurocode.md`) and its use rules: copy into this repo or keep the Drive copy as the single source | open |
 
 ## 5. Standing rules (non-negotiables)
@@ -76,7 +77,7 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | id | date | venue / model | what |
 |---|---|---|---|
 | FLIN-001 | 2026-11-08 | cloud, model n/r | client meeting material: HU notes FLINS-CFS-001…005 (-HU), deck (17 slides), detail figures D01–D09, glossary alignment, light reading-copy format; branch `claude/trusting-mayer-47ebp9` to 8676f47 |
-| FLIN-002 | 2026-11-08 | cloud, Fable 5.1 high | home and harness decided by owner Q&A (D-001…D-005, D-010); `harness/` created; flins/FLIN registered in the ledger; Tuesday chair notes drafted |
+| FLIN-002 | 2026-11-08 | cloud, Fable 5.1 high | home and harness decided by owner Q&A (D-001…D-005, D-010, D-011); `harness/` created; flins/FLIN registered in the ledger (rows FLIN-001, FLIN-002); Tuesday chair notes drafted; smart token rule and venue rule encoded; 3w-cp skill patch built (`harness/skills-proposed/3w-cp.zip`, owner uploads) |
 
 ## 7. Queue
 

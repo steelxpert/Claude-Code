@@ -1,0 +1,20 @@
+FLIN-003 (project flins, FlexInSheet 2026.032a): post-kick-off session - log the 2026-11-11 Dunaújváros decisions, then freeze the catalogue and build the GMNIA campaign case matrix.
+
+Verify context first:
+- Repo steelxpert/Claude-Code, branch claude/trusting-mayer-47ebp9 at 92342eb or later (harness/ exists); `python -m pytest` = 12 passed. If not, stop and ask.
+- Ledger G:\Saját meghajtó\ledger: STATE_INDEX.md prefix table says next id FLIN-003; the last flins row in SESSIONS.csv is FLIN-002. If not, stop and ask.
+- Ask the owner for the filled decision log (harness/meetings/2026-11-11_kickoff_Dunaujvaros.md, "Döntésnapló" D1-D6) or the outcome in a few lines. If the job was not awarded: one ledger row `paused (no award)`, KICKOFF_NEXT_FLIN.txt = "nothing queued", stop.
+
+Read first: harness/README.md (home, skill map, smart token rule), harness/STATE_FLINS.md (§3 decisions, §4 open items, §7 queue), harness/gotchas.md newest section, docs/02-options-and-decisions.md, floorframe/catalog/__init__.py + sections.json, floorframe/fea/campaign.py, docs/build_test_plan.py (T0-T2a cases); skills cfs-gmnia-virtual-testing, calculix-prepomax-ops, flins-sdr, hu-technical-doc-workflow.
+
+Scope:
+1. Decision log -> STATE §3 (D-012...) and §4 (close or carry O-005...O-007); client feedback on CFS-001...006 -> a rev bump of the affected note only if the owner says so.
+2. Catalogue freeze v0 from the rolled profile set (decision D1): section family (depth, flange, lip, t, fy, coating), build-ups (single C, back-to-back box = dobozszelvény), framing rules, load classes; `floorframe/catalog/sections.json` + `docs/catalog_v0.md` with sources; tests updated.
+3. GMNIA campaign case matrix in `floorframe/fea/campaign.py`: T0-T2a validation cases first (joist bending, web crippling = a gerinclemez beroppanása, joist-rim joint), then the span-matrix cases; every case names its DSM/CUFSM triage input (cfs_triage.py) and its imperfection recipe. No solve in this session unless the owner asks; solves are a separate Opus/Sonnet session (cloud, or WS_28core for long runs).
+4. Every number that enters a document gets a recipe in harness/recipes/ per its README.
+5. If O-002 (roles with Máté) is decided: a CONTRIBUTING section in README.md (branches, PRs, pytest gate, owner merges).
+
+Non-negotiables: no repo or Drive restructuring without owner say-so (O-001 rename 2026.032a -> 2026.032 only after the award; O-003 split only after O-002); the AI stays outside the structural load path (D-006); every span-table number stays PLACEHOLDER until the GMNIA tables and the T-series tests exist (D-007); Hungarian material per the EN-HU glossary (hidegen alakított, dobozszelvény, a gerinclemez beroppanása) and the light reading-copy format (D-008); smart token rule: Fable plans, troubleshoots and judges, regeneration and file work are delegated.
+
+Exit gates: STATE §3/§4/§6/§7 updated; catalogue v0 committed with sources; case matrix committed and listed in STATE; pytest green; committed and pushed to the same branch; 3w+cp (ledger row with the measured machine name, flins\KICKOFF_NEXT_FLIN.txt rewritten, HARVEST lines for cfs-gmnia-virtual-testing / calculix-prepomax-ops if any).
+Machine: cloud. Where: Claude Code cloud (Drive connector); hp_WS (desktop-lrm6oei) only if the decision log must be typed in from paper. Which: Fable 5.1, high for steps 1-3 (catalogue and case-matrix judgement); Sonnet 5.5 sub-agent for steps 4-5.

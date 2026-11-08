@@ -87,6 +87,22 @@ its ledger row records the model actually served (sub-agents appended with `+`).
 delegated task hits an unexplained failure it stops and hands back, it does not debug
 on its own.
 
+## Venue rule: every kickoff says where the session runs (owner rule, FLIN-002)
+
+The 3w-cp "Where" W names cloud or local. From FLIN-003 on, every FLIN kickoff and every
+FLIN wrap-up carries the fuller form `Where: <venue> on <machine>`, venue being one of:
+
+| Venue | Reaches | Use for |
+|---|---|---|
+| **Claude Code cloud** | the repo, Drive via connector, no PC files | code, docs, harness, ledger from the cloud |
+| **Claude Code local** (hostname named) | the repo plus PC files and tools | the same when PC-only files are needed |
+| **Cowork desktop + device bridge** (hostname named) | PC folders, PrePoMax / AIM / SpaceClaim, Drive folders staged | solves, GUI tools, client folders |
+| **Claude Project chat** | the Project's knowledge copies | reading and client-facing drafting only; never a kickoff (ORG-003b) |
+
+This copy is a stop-gap for FLINS. The same wording is proposed for the 3w-cp skill in
+`harness/kickoffs/3w-cp_WHERE_patch.md`; once the skill is updated, the skill wins and
+this section becomes a pointer.
+
 ## Session shape (FLIN-nnn)
 
 1. Verify context: branch and commit named in the kickoff, `python -m pytest` green.
