@@ -1,0 +1,24 @@
+SESSION: FLIN-004 | Pilot house - brief, design basis, fixed-price proposal | planning tier (high) + delegated tier for file work
+
+STEP 0: Claude Code CLOUD - start the session with steelxpert/Claude-Code selected as a source (FLIN-003 could read but not push). Ledger through the Google Drive connector (G:\Saját meghajtó\ledger). Load the SKILLS named below.
+
+FLIN-004 (project flins, FlexInSheet 2026.032a): scope and price the pilot (test) house the owner proposed at the 2026-11-10 kick-off (STATE D-012, D-013).
+
+Verify context first:
+- Repo steelxpert/Claude-Code, branch claude/trusting-mayer-47ebp9 holds the FLIN-003 commit (STATE §3 has D-012...D-014); `python -m pytest` = 12 passed. If not, stop and ask.
+- Ledger: STATE_INDEX.md prefix table says next id FLIN-004; last flins row FLIN-003. If not, stop and ask.
+- Ask the owner: did FLINS accept the pilot house idea (O-010)? If declined: one ledger row `paused (programme on hold)`, KICKOFF_NEXT_FLIN.txt = "nothing queued", stop.
+
+Read first: harness/README.md, harness/STATE_FLINS.md (§3 D-012...D-014, §4 O-010...O-012, §7), harness/gotchas.md newest section, harness/meetings/2026-11-11_kickoff_Dunaujvaros.md (Eredmény); skills structural-proposal-letter, flins-sdr, hu-technical-doc-workflow, correspondence-drafting, cfs-load-introduction.
+
+Scope:
+1. Brief by owner Q&A (one question per message): footprint and storeys, roof form and pitch, openings incl. skylight, site (snow / wind zone, terrain), build-ups and cladding, the profile set FLINS rolls today, preferred joints, 3D model format FLINS can open, what the owner already has from earlier FLINS jobs.
+2. Design basis: actions (EN 1990, EN 1991-1-1/-1-3/-1-4, HU NA), members EN 1993-1-3, joints EN 1993-1-8, stability / bracing concept, screw-pile reactions for the geotechnics lead (O-007); what is hand / spreadsheet calculation, what is global frame analysis, what (if anything) is GMNIA.
+3. Framing methodology list: every detail type the house must demonstrate (floor frame on pile heads, wall panel, bracing, opening framing, partial floor, roof, skylight trimming, hold-downs).
+4. Work breakdown with hours -> fixed price and end date; exclusions (architecture, MEP, fire and acoustic design, geotechnical design, shop drawings, tests).
+5. Proposal letter (HU, .docx) per the structural-proposal-letter skill; owner sends it.
+
+Non-negotiables: no repo or Drive restructuring without owner say-so (O-011 project number is the owner's call); the AI stays outside the structural load path (D-006); no span-table or resistance number leaves as other than PLACEHOLDER (D-007); Hungarian material per the EN-HU glossary and the light reading-copy format (D-008); smart token rule.
+
+Exit gates: STATE §3/§4/§6/§7 updated; brief + design basis + WBS committed under docs/ or harness/ as the owner decides; proposal letter delivered to the owner; pytest green; committed and pushed; 3w+cp.
+Machine: cloud. Where: Claude Code cloud (Drive connector).

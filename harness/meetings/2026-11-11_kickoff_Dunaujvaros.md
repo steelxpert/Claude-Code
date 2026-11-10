@@ -62,6 +62,15 @@
 | D5 | | | | |
 | D6 | | | | |
 
+## Eredmény (rögzítve: FLIN-003, a levezető szóbeli összefoglalója alapján)
+
+A megbeszélés napja: 2026-11-10, kedd (a fájlnév dátuma eltér, lásd STATE O-012).
+
+- A termékötlet (csavarcölöpökre támaszkodó, hidegen alakított acél vázrendszer) jó — ebben egyetértés van.
+- A fejlesztési programba (szerkezeti és szoftverfejlesztés) FLINS addig nem tesz jelentős időt és pénzt, amíg nem ismert: (a) milyen felépítmény kerül az alapkeretre, (b) mi a célpiac (lakó, kereskedelmi, védelmi).
+- A D1–D6 pontok egyenként nem zárultak le [a levezető megerősítésére vár]; a döntésnapló ezért üres marad.
+- A levezető javaslata: egy teljes, kis mintaház (modern pajtaház jellegű hétvégi ház) megtervezése csavarcölöpökön — födém (alapkeret), teherhordó külső és nem teherhordó belső falak, részleges közbenső födém, tető, falmerevítés, ablakkeretezés, tetőablak — 3D modell és Eurocode szerinti számítás formájában, rögzített áron és határidőre, a FLINS belső egyeztetéseinek alapjául. Állapot: javaslat, FLINS válaszára vár (STATE D-013, O-010).
+
 Következő lépés a megbeszélés után: a döntésnapló a `harness/STATE_FLINS.md` §3/§4 részébe kerül (FLIN-003), az észrevételek a feljegyzésekbe.
 
 ## Szóhasználat (EN-HU szójegyzék, Zone A)
