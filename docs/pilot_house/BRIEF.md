@@ -78,3 +78,54 @@ is redrawn, their sheets are not reused.
 ## 6. Attachment for the offer
 
 `concept_viewer.html` — interactive 3D framing concept (schematic sizes, marked CONCEPT).
+
+## 7. Framing details, one level deeper (owner: one framing type at a time)
+
+Order set by the owner: roof first. All numbers are first-pass hand estimates,
+PRELIMINARY, to make the parts plausible; they are not checks (STATE D-007).
+
+### 7.1 Roof (drafted 2026-11-10, owner has not yet commented)
+
+Load path: standing seam -> purlins -> main frames (grids 2, 3, 4) and gable walls
+(grids 1, 5) -> legs and studs -> floor frame -> soil screws. Rafter thrust is closed by
+the tie rod at eaves; legs get vertical load only.
+
+| part | concept | first-pass figure |
+|---|---|---|
+| rafter and leg | 2 × C150×45×1.5 back-to-back with a 6 mm gap, packer plates at about 600 mm; rafter about 3.4 m long | about 5.9 kN/m on plan per frame; M about 5 kNm with N about 17 kN; C150 pair roughly half used |
+| tie rod | M16 with turnbuckle at eaves, fork end pinned to the knee gusset | about 9 kN tension (M12 would carry it) |
+| knee gusset | 6 mm plate between the webs of leg and rafter, 4 × M12 in each member | bolt bearing in 2 × 1.5 mm webs about 30 kN per bolt; count set by stiffness and layout |
+| apex gusset | 6 mm plate between the webs, 4 × M12 per rafter, seat for the ridge purlin | — |
+| purlins | C150×45×1.5 at about 850 mm on slope (650 mm on plan), 4 per slope + eaves + ridge; single spans 3.0–3.25 m, butted over each frame on a screwed cleat angle | about 1.2 kN/m vertical per purlin |
+| sag straps | one line at mid-bay, eaves purlin over the ridge to the other eaves purlin | down-slope component about 0.8 kN/m per purlin at 40°: weak-axis bending of the C is the governing point of the roof |
+| roof bracing | strap X in the plane of both slopes, end bays 1–2 and 4–5 | extent decided by the transverse-stability check (9.25 m between grid 2 and gable 5) |
+| skylight | roof window about 780 × 1180 mm: one purlin cut, two trimmers down the slope between the purlins above and below, cut purlin on cleats, sag strap line moved aside | — |
+
+Loads behind the figures: roof dead about 0.65 kN/m² on plan; snow s_k 1.25 kN/m²,
+mu_1 0.53 at 40°, s about 0.67 kN/m²; ULS about 1.9 kN/m² on plan; frame tributary
+3.125 m.
+
+Base decisions taken by the planner, open to the owner's correction: gap-and-gusset
+frame joints; M16 tie rod with turnbuckle; single-span purlins on cleats with one sag
+strap line per bay; strap bracing in the roof end bays.
+
+To do in the viewer: close-up scenes for knee + tie-rod end, apex, purlin cleat + sag
+strap, skylight trimming; the current viewer still shows the uncut purlin through the
+skylight opening.
+
+### 7.2 Ground floor frame (drafted, parked: owner gave no preference; planner's options stand until he comments)
+
+Cross bearers 2 × C200×45×1.5 back-to-back on 3 soil screws (2 × 2.6 m; about
+13.5 kN/m, about 11 kNm over the centre screw - a C150 pair does not carry it at
+1.5 mm; whether FLINS can roll C200 is an open question). Joist cassettes C150 at
+400 mm stacked on top of the bearers (bearing joints, 350 mm total depth), end tracks
+U150, web stiffeners at joist ends, bolted saddle plate on each screw head. Centre
+screw about 45 kN design compression. Governing: web crippling (a gerinclemez
+beroppanása) at the bearer centre support and the joist ends. Open: stacked vs flush,
+module 400 / 600, subfloor as diaphragm (board, steel sheet or straps).
+
+### 7.3 Still to do, in this order
+
+Wall panels and openings; loft floor; bracing and hold-downs. Then work breakdown in
+hours (4 weeks) and the Hungarian offer letter. End products for FLINS are Hungarian;
+working versions stay English (owner, 2026-11-10).
