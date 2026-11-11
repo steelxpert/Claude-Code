@@ -71,6 +71,13 @@ button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-
 .chip2{font-size:12px;padding:2px 8px;border:1px solid var(--hl);background:var(--surface);color:var(--text);cursor:pointer}
 .selhint{font-size:13px;color:var(--muted);margin:6px 0 0}
 .tip{position:absolute;right:8px;top:8px;max-width:70%;background:var(--surface);color:var(--text);border:1px solid var(--hl);padding:3px 8px;font-size:13px;pointer-events:none}
+.selhelp{font-size:12px;color:var(--muted);margin:4px 0 0}
+#stage canvas:focus-visible{outline:2px solid var(--c-floor);outline-offset:-2px}
+.ctxmenu{position:absolute;z-index:5;min-width:250px;background:var(--surface);color:var(--text);border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.28);padding:4px 0}
+.ctxmenu button{display:flex;justify-content:space-between;gap:24px;width:100%;border:0;background:transparent;text-align:left;padding:5px 12px;font-size:13px}
+.ctxmenu button:disabled{color:var(--muted);opacity:.55;cursor:default}
+.ctxmenu button:hover:not(:disabled),.ctxmenu button:focus{background:var(--bg)}
+.ctxmenu .k{color:var(--muted);font-size:12px}
 .foot{margin-top:20px;font-size:12px;color:var(--muted)}
 @media (max-width:520px){th{width:40%}}
 </style>
@@ -95,9 +102,11 @@ button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-
   </div>
   <div class="selbar" id="selbar">
     <div class="selline"><span class="cnt" id="t-sel"></span>
+      <span class="cnt" id="t-hid" hidden></span><button type="button" id="sel-showall" hidden></button>
       <button type="button" id="sel-clear"></button><button type="button" id="sel-copy"></button><span class="n" id="sel-msg"></span></div>
     <div class="chips" id="sel-chips"></div>
     <p class="selhint" id="sel-hint"></p>
+    <p class="selhelp" id="sel-help"></p>
   </div>
   <div class="layers" id="layers" role="group"></div>
   <h2 id="t-h-facts"></h2>
@@ -124,7 +133,8 @@ const T = {
     rp: 'Roof panels: purlins + tracks', rb: 'Roof panels: blocking + bridging', rx: 'Roof panels: strap bracing', rbox: 'Ridge box',
     loft: 'Loft floor', straps: 'Strap bracing', parts: 'Partitions (non-load-bearing)', glass: 'Glazing'
   },
-  sel: {selected: 'Selected', hint: 'Click a member to highlight it. Click again to release.', clear: 'Clear selection', copy: 'Copy list', copied: 'Copied', manual: 'Press Ctrl+C to copy the selected text'},
+  sel: {selected: 'Selected', hint: 'Click a member to highlight it. Click again to release.', clear: 'Clear selection', copy: 'Copy list', copied: 'Copied', manual: 'Press Ctrl+C to copy the selected text', hidden: 'Hidden', showAll: 'Show all', help: 'Right-click for the menu \u00b7 H hide \u00b7 I isolate \u00b7 G ghost others \u00b7 F zoom \u00b7 S same kind \u00b7 V invert visibility \u00b7 A show all \u00b7 Esc clear'},
+  menu: {hide: ['Hide selected','H'], isolate: ['Isolate selected','I'], ghost: ['Ghost others','G'], zoom: ['Zoom to selected','F'], same: ['Select same kind','S'], invsel: ['Invert selection','Shift+I'], invvis: ['Invert visibility','V'], showall: ['Show all','A'], clear: ['Clear selection','Esc']},
   detailsLabel: 'Details',
   details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridgebox: 'Ridge box'},
   hideCap: 'Hide ridge cap',
@@ -673,6 +683,7 @@ function addDetail(key,g){
     o.userData.p0=o.position.clone();
     var mem=o.userData.member;
     if(mem){
+      mem.scene=key;
       o.userData.ex=exOffset(key,mem.label);
       o.userData.fast=/Screw|Clip angle/.test(mem.label);
     }
@@ -684,8 +695,8 @@ function applyExplode(on){
     if(!o.isMesh||!o.userData.p0) return;
     o.position.copy(o.userData.p0);
     if(on&&o.userData.ex) o.position.add(o.userData.ex);
-    if(o.userData.fast) o.visible=!on;
   });
+  refreshVis();
 }
 var CO={};
 function C1(g,l){return {group:g,mat:DM.c1,label:l}}
@@ -932,7 +943,7 @@ stage.insertBefore(renderer.domElement,stage.firstChild);
 var camera=new THREE.PerspectiveCamera(40,1,0.02,200);
 var controls=new THREE.OrbitControls(camera,renderer.domElement);
 controls.enableDamping=true; controls.dampingFactor=0.08;
-controls.minDistance=3; controls.maxDistance=60; controls.maxPolarAngle=Math.PI*0.52;
+controls.minDistance=0.3; controls.maxDistance=60; controls.maxPolarAngle=Math.PI*0.52;
 var TARGET=V(6.25,2.3,2.6);
 
 function fitDist(halfW,halfH){
@@ -1035,7 +1046,7 @@ function renderNotes(k){
   notesEl.hidden=false;
 }
 function showMode(k){
-  clearSel();
+  clearSel(); showAll();
   if(mode!=='house'){$('dexplode').checked=false;applyExplode(false)}
   mode=k; $('dexChip').hidden=(k==='house');
   camera.fov=(k==='ridgebox')?12:40; camera.updateProjectionMatrix();
@@ -1045,7 +1056,7 @@ function showMode(k){
   layersEl.style.display=house?'':'none'; $('explodeChip').style.display=house?'':'none';
   Object.keys(DG).forEach(function(d){DG[d].visible=(d===k)});
   Object.keys(dBtns).forEach(function(d){dBtns[d].setAttribute('aria-pressed',d===k?'true':'false')});
-  controls.minDistance=house?3:0.2; controls.maxPolarAngle=house?Math.PI*0.52:Math.PI;
+  controls.minDistance=house?0.3:0.2; controls.maxPolarAngle=house?Math.PI*0.52:Math.PI;
   renderNotes(k); setView('reset');
 }
 window.__view=function(x,y,z){setView('custom',V(x,y,z))};
@@ -1056,23 +1067,47 @@ window.__view=function(x,y,z){setView('custom',V(x,y,z))};
   detailsEl.appendChild(b); dBtns[k]=b;
 });
 
-/* ---------- picking and selection ---------- */
+/* ---------- picking, selection, visibility ---------- */
+var ghostOn=false;
 function hlCol(){var v=getComputedStyle(root).getPropertyValue('--hl').trim();return v||'#d6009b'}
-function paintHL(m){
-  var col=new THREE.Color(hlCol());
-  m.material.color.copy(col); m.material.emissive.copy(col).multiplyScalar(0.5);
+function ensureState(m,want){
+  var st=m.userData.state||'base';
+  if(st===want) return;
+  if(!m.userData.base) m.userData.base=m.material;
+  if(st!=='base') m.material.dispose();
+  m.material=(want==='base')?m.userData.base:m.userData.base.clone();
+  m.userData.state=want;
 }
-function repaintSel(){SEL.forEach(function(mem){mem.meshes.forEach(function(m){if(m.userData.orig)paintHL(m)})})}
-function setHL(mem,on){
-  mem.meshes.forEach(function(m){
-    if(on){if(!m.userData.orig){m.userData.orig=m.material;m.material=m.material.clone()}paintHL(m)}
-    else if(m.userData.orig){m.material=m.userData.orig;m.userData.orig=null}
-  });
+function paintMat(m){
+  var st=m.userData.state||'base', base=m.userData.base, i, c;
+  if(st==='hl'){var col=new THREE.Color(hlCol());m.material.color.copy(col);m.material.emissive.copy(col).multiplyScalar(0.5)}
+  else if(st==='ghost'){m.material.color.copy(base.color);m.material.transparent=true;m.material.opacity=0.12;m.material.depthWrite=false}
+  for(i=0;i<m.children.length;i++){c=m.children[i];if(c.isLineSegments)c.visible=(st!=='ghost')}
 }
-var selCnt=$('t-sel'), selChips=$('sel-chips'), selHint=$('sel-hint'), selMsg=$('sel-msg'), tipEl=$('pick-tip'), tipTimer=0, msgTimer=0;
-$('sel-clear').textContent=T.sel.clear; $('sel-copy').textContent=T.sel.copy; selHint.textContent=T.sel.hint;
+function applyMat(m){var mem=m.userData.member;if(!mem)return;ensureState(m,mem.sel?'hl':((ghostOn&&SEL.length)?'ghost':'base'));paintMat(m)}
+function refreshMats(){for(var i=0;i<MEMBERS.length;i++){var ms=MEMBERS[i].meshes;for(var j=0;j<ms.length;j++)applyMat(ms[j])}}
+function repaintSel(){refreshMats()}
+function refreshVis(){
+  var dx=$('dexplode').checked, i, j, ms;
+  for(i=0;i<MEMBERS.length;i++){ms=MEMBERS[i].meshes;for(j=0;j<ms.length;j++)ms[j].visible=!MEMBERS[i].hidden&&!(ms[j].userData.fast&&dx)}
+}
+function layerOf(mem){
+  if(mem.layer!==undefined) return mem.layer;
+  var o=mem.meshes[0], id=null;
+  while(o){if(o.name&&cbs[o.name]){id=o.name;break}o=o.parent}
+  mem.layer=id; return id;
+}
+function labelKind(l){return l.replace(/\d+(\/\w+|-\d+)?/g,'').replace(/\b(rear|front|left|right|x\+|x-|top|bottom|lower|upper|mid|at|bay|row|grid)\b/gi,'').replace(/·/g,' ').replace(/\s+/g,' ').trim()}
+function inScene(mem){return (mem.scene||'house')===mode}
+function layerOn(mem){var id=layerOf(mem);return !id||cbs[id].checked}
+function kindOf(mem){return layerOf(mem)||labelKind(mem.label)}
+function sceneMembers(){return MEMBERS.filter(inScene)}
+function hiddenCount(){var n=0;for(var i=0;i<MEMBERS.length;i++)if(MEMBERS[i].hidden&&inScene(MEMBERS[i]))n++;return n}
+var selCnt=$('t-sel'), selChips=$('sel-chips'), selHint=$('sel-hint'), selMsg=$('sel-msg'), tipEl=$('pick-tip'), tipTimer=0, msgTimer=0, hidEl=$('t-hid'), showAllBtn=$('sel-showall');
+$('sel-clear').textContent=T.sel.clear; $('sel-copy').textContent=T.sel.copy; selHint.textContent=T.sel.hint; showAllBtn.textContent=T.sel.showAll; $('sel-help').textContent=T.sel.help;
 function updateSel(){
   selCnt.textContent=T.sel.selected+': '+SEL.length;
+  var hc=hiddenCount(); hidEl.textContent=T.sel.hidden+': '+hc; hidEl.hidden=hc===0; showAllBtn.hidden=hc===0;
   selChips.textContent='';
   SEL.forEach(function(mem){
     var c=document.createElement('button'); c.type='button'; c.className='chip2'; c.textContent=mem.label;
@@ -1080,15 +1115,53 @@ function updateSel(){
     selChips.appendChild(c);
   });
   selHint.hidden=SEL.length>0;
-  window.__selected=SEL.map(function(m){return m.label});
+  window.__selected=SEL.map(function(m){return m.label}); window.__hiddenN=hc; window.__ghost=ghostOn;
 }
+function afterSel(){if(!SEL.length)ghostOn=false;refreshMats();updateSel()}
+function setSel(list){SEL.forEach(function(m){m.sel=false});SEL.length=0;list.forEach(function(m){m.sel=true;SEL.push(m)});afterSel()}
 function toggleMember(mem){
+  if(mem.hidden) return;
   var i=SEL.indexOf(mem);
-  if(i>=0){SEL.splice(i,1);setHL(mem,false)} else {SEL.push(mem);setHL(mem,true)}
-  updateSel();
+  if(i>=0){SEL.splice(i,1);mem.sel=false} else {SEL.push(mem);mem.sel=true}
+  afterSel();
 }
-function clearSel(){SEL.slice().forEach(function(m){setHL(m,false)});SEL.length=0;updateSel()}
+function clearSel(){SEL.forEach(function(m){m.sel=false});SEL.length=0;ghostOn=false;refreshMats();updateSel()}
+function hideSel(){if(!SEL.length)return;SEL.forEach(function(m){m.hidden=true;m.sel=false});SEL.length=0;ghostOn=false;refreshVis();refreshMats();updateSel()}
+function isolateSel(){if(!SEL.length)return;sceneMembers().forEach(function(m){m.hidden=!m.sel});refreshVis();updateSel()}
+function toggleGhost(){if(!SEL.length)return;ghostOn=!ghostOn;refreshMats();updateSel()}
+function showAll(){MEMBERS.forEach(function(m){m.hidden=false});ghostOn=false;refreshVis();refreshMats();updateSel()}
+function sameKind(){
+  if(!SEL.length) return;
+  var kinds={}; SEL.forEach(function(m){kinds[kindOf(m)]=1});
+  setSel(sceneMembers().filter(function(m){return !m.hidden&&layerOn(m)&&kinds[kindOf(m)]}));
+}
+function invertSel(){setSel(sceneMembers().filter(function(m){return !m.hidden&&layerOn(m)&&!m.sel}))}
+function invertVis(){
+  sceneMembers().forEach(function(m){
+    if(!layerOn(m)) return;
+    m.hidden=!m.hidden;
+    if(m.hidden&&m.sel){m.sel=false;SEL.splice(SEL.indexOf(m),1)}
+  });
+  refreshVis(); afterSel();
+}
+function zoomSel(){
+  if(!SEL.length) return;
+  scene.updateMatrixWorld(true);
+  var bb=new THREE.Box3(), tb=new THREE.Box3();
+  SEL.forEach(function(m){m.meshes.forEach(function(x){tb.setFromObject(x);bb.union(tb)})});
+  if(bb.isEmpty()) return;
+  var ctr=bb.getCenter(new THREE.Vector3()), dir=camera.position.clone().sub(controls.target).normalize();
+  camera.position.copy(ctr).add(dir); camera.lookAt(ctr); camera.updateMatrixWorld();
+  var rt=V(1,0,0).applyQuaternion(camera.quaternion), upv=V(0,1,0).applyQuaternion(camera.quaternion);
+  var tv=Math.tan(camera.fov*Math.PI/360), th=tv*camera.aspect, d=0.25, ci, cp;
+  for(ci=0;ci<8;ci++){
+    cp=V(ci&1?bb.max.x:bb.min.x,ci&2?bb.max.y:bb.min.y,ci&4?bb.max.z:bb.min.z).sub(ctr);
+    d=Math.max(d,cp.dot(dir)+Math.abs(cp.dot(rt))/th,cp.dot(dir)+Math.abs(cp.dot(upv))/tv);
+  }
+  controls.target.copy(ctr); camera.position.copy(ctr).addScaledVector(dir,d*1.2); camera.lookAt(ctr); controls.update();
+}
 $('sel-clear').addEventListener('click',clearSel);
+showAllBtn.addEventListener('click',showAll);
 function say(t){selMsg.textContent=t;clearTimeout(msgTimer);msgTimer=setTimeout(function(){selMsg.textContent=''},2500)}
 $('sel-copy').addEventListener('click',function(){
   var txt=SEL.map(function(m){return m.label}).join('\n');
@@ -1105,22 +1178,95 @@ function collect(o,out){
   if(o.isMesh){if(o.userData.member&&!o.userData.nopick)out.push(o);return}
   o.children.forEach(function(c){collect(c,out)});
 }
-var rc=new THREE.Raycaster(), downInfo=null, cv=renderer.domElement;
-cv.addEventListener('pointerdown',function(e){downInfo={x:e.clientX,y:e.clientY,t:performance.now()}});
-cv.addEventListener('pointerup',function(e){
-  var d=downInfo; downInfo=null;
-  if(!d||Math.hypot(e.clientX-d.x,e.clientY-d.y)>=5||performance.now()-d.t>=400) return;
+var rc=new THREE.Raycaster(), downInfo=null, lpTimer=0, cv=renderer.domElement, overCv=false;
+cv.tabIndex=0;
+function hitAt(cx,cy){
   var r=cv.getBoundingClientRect();
-  rc.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height*2-1)),camera);
+  rc.setFromCamera(new THREE.Vector2((cx-r.left)/r.width*2-1,-((cy-r.top)/r.height*2-1)),camera);
   var list=[];
   if(mode==='house') LAYERS.forEach(function(l){collect(l.group,list)}); else collect(DG[mode],list);
   scene.updateMatrixWorld(true);
   var hit=rc.intersectObjects(list,false)[0];
-  if(!hit) return;
-  var mem=hit.object.userData.member;
-  toggleMember(mem);
-  tipEl.textContent=mem.label; tipEl.hidden=false;
-  clearTimeout(tipTimer); tipTimer=setTimeout(function(){tipEl.hidden=true},2000);
+  return hit?hit.object.userData.member:null;
+}
+function showTip(mem){tipEl.textContent=mem.label;tipEl.hidden=false;clearTimeout(tipTimer);tipTimer=setTimeout(function(){tipEl.hidden=true},2000)}
+/* context menu */
+var menuEl=document.createElement('div'); menuEl.className='ctxmenu'; menuEl.setAttribute('role','menu'); menuEl.hidden=true; stage.appendChild(menuEl);
+var MENU=[
+  ['hide',hideSel,function(){return SEL.length>0}],
+  ['isolate',isolateSel,function(){return SEL.length>0}],
+  ['ghost',toggleGhost,function(){return SEL.length>0}],
+  ['zoom',zoomSel,function(){return SEL.length>0}],
+  ['same',sameKind,function(){return SEL.length>0}],
+  ['invsel',invertSel,function(){return true}],
+  ['invvis',invertVis,function(){return true}],
+  ['showall',showAll,function(){return hiddenCount()>0||ghostOn}],
+  ['clear',clearSel,function(){return SEL.length>0}]
+];
+function closeMenu(){if(!menuEl.hidden){menuEl.hidden=true;try{cv.focus({preventScroll:true})}catch(e){}}}
+function openMenu(cx,cy){
+  menuEl.textContent='';
+  MENU.forEach(function(it){
+    var b=document.createElement('button'), a=document.createElement('span'), k=document.createElement('span');
+    b.type='button'; b.setAttribute('role','menuitem');
+    a.textContent=T.menu[it[0]][0]; k.className='k'; k.textContent=T.menu[it[0]][1];
+    b.appendChild(a); b.appendChild(k); b.disabled=!it[2]();
+    b.addEventListener('click',function(){closeMenu();it[1]()});
+    menuEl.appendChild(b);
+  });
+  menuEl.hidden=false;
+  var r=stage.getBoundingClientRect(), w=menuEl.offsetWidth, h=menuEl.offsetHeight;
+  menuEl.style.left=Math.max(4,Math.min(cx-r.left,r.width-w-4))+'px';
+  menuEl.style.top=Math.max(4,Math.min(cy-r.top,r.height-h-4))+'px';
+  var f=menuEl.querySelector('button:not(:disabled)'); if(f) f.focus();
+}
+function contextAt(cx,cy){
+  var mem=hitAt(cx,cy);
+  if(mem&&!mem.sel&&SEL.length===0){toggleMember(mem);showTip(mem)}
+  openMenu(cx,cy);
+}
+cv.addEventListener('pointerdown',function(e){
+  clearTimeout(lpTimer);
+  if(!e.isPrimary){downInfo=null;return}
+  var d0={x:e.clientX,y:e.clientY,t:performance.now(),b:e.button,moved:false,lp:false};
+  downInfo=d0;
+  try{cv.focus({preventScroll:true})}catch(err){}
+  if(e.pointerType==='touch') lpTimer=setTimeout(function(){if(downInfo===d0&&!d0.moved){d0.lp=true;contextAt(d0.x,d0.y)}},600);
+});
+cv.addEventListener('pointermove',function(e){
+  var d=downInfo;
+  if(d&&!d.moved&&Math.hypot(e.clientX-d.x,e.clientY-d.y)>=5){d.moved=true;clearTimeout(lpTimer)}
+});
+cv.addEventListener('pointerup',function(e){
+  clearTimeout(lpTimer);
+  var d=downInfo; downInfo=null;
+  if(!d||d.lp||Math.hypot(e.clientX-d.x,e.clientY-d.y)>=5) return;
+  if(d.b===2){contextAt(e.clientX,e.clientY);return}
+  if(d.b===0&&performance.now()-d.t<400){var mem=hitAt(e.clientX,e.clientY);if(mem){toggleMember(mem);showTip(mem)}}
+});
+cv.addEventListener('contextmenu',function(e){e.preventDefault()});
+cv.addEventListener('pointerenter',function(){overCv=true});
+cv.addEventListener('pointerleave',function(){overCv=false});
+cv.addEventListener('wheel',closeMenu,{passive:true});
+window.addEventListener('scroll',closeMenu,true);
+document.addEventListener('pointerdown',function(e){if(!menuEl.hidden&&!menuEl.contains(e.target))closeMenu()},true);
+document.addEventListener('keydown',function(e){
+  var tg=e.target, tn=tg&&tg.tagName;
+  if(tn==='INPUT'||tn==='TEXTAREA'||tn==='SELECT'||(tg&&tg.isContentEditable)) return;
+  if(e.ctrlKey||e.metaKey||e.altKey) return;
+  var menuOpen=!menuEl.hidden;
+  if(e.key==='Escape'){closeMenu();clearSel();e.preventDefault();return}
+  if(!(overCv||document.activeElement===cv||menuOpen)) return;
+  if(menuOpen&&(e.key==='ArrowDown'||e.key==='ArrowUp')){
+    var items=Array.prototype.slice.call(menuEl.querySelectorAll('button:not(:disabled)')), i=items.indexOf(document.activeElement);
+    if(items.length){i=e.key==='ArrowDown'?(i+1)%items.length:(i<=0?items.length-1:i-1);items[i].focus()}
+    e.preventDefault(); return;
+  }
+  var k=e.key.toLowerCase(), done=true;
+  if(k==='h')hideSel(); else if(k==='i'){if(e.shiftKey)invertSel();else isolateSel()}
+  else if(k==='g')toggleGhost(); else if(k==='f')zoomSel(); else if(k==='s')sameKind();
+  else if(k==='v')invertVis(); else if(k==='a')showAll(); else done=false;
+  if(done){e.preventDefault();closeMenu()}
 });
 updateSel();
 
