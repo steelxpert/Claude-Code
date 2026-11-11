@@ -136,7 +136,7 @@ const T = {
   sel: {selected: 'Selected', hint: 'Click a member to highlight it. Click again to release.', clear: 'Clear selection', copy: 'Copy list', copied: 'Copied', manual: 'Press Ctrl+C to copy the selected text', hidden: 'Hidden', showAll: 'Show all', help: 'Right-click for the menu \u00b7 H hide \u00b7 I isolate \u00b7 G ghost others \u00b7 F zoom \u00b7 S same kind \u00b7 V invert visibility \u00b7 A show all \u00b7 Esc clear'},
   menu: {hide: ['Hide selected','H'], isolate: ['Isolate selected','I'], ghost: ['Ghost others','G'], zoom: ['Zoom to selected','F'], same: ['Select same kind','S'], invsel: ['Invert selection','Shift+I'], invvis: ['Invert visibility','V'], showall: ['Show all','A'], clear: ['Clear selection','Esc']},
   detailsLabel: 'Details',
-  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridgebox: 'Ridge box'},
+  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridgebox: 'Ridge box', eave: 'Eave contact (draft)'},
   hideCap: 'Hide ridge cap',
   explodeView: 'Exploded view',
   notesLabels: {parts: 'Parts', governs: 'Governs', tag: 'CONCEPT \u2014 preliminary, not a check'},
@@ -176,6 +176,13 @@ const T = {
       'Two bridging rows in line with the head and sill tracks, continuous from eave to ridge; the head and sill act as the blocking between the jambs',
       'Opening 780 \u00d7 1600 mm'],
       governs: 'jamb about 2.3 kNm over the 3.0 m bay (preliminary); head and sill carry three stub ends of about 0.45 kN each.'},
+    eave: {title: 'Eave contact (draft)', parts: [
+      'Wall top track set so its top meets the lower outer corner of the roof panel\'s eave-edge purlin (3 mm clearance)',
+      'Contact line is 48 mm outside the grid line, 27 mm in from the wall\'s outer face',
+      'Top of wall = eaves work point + 55 mm; wall panel height about 2655 mm above the floor frame',
+      'Wall top track is interrupted at each main frame',
+      'Eave closure and fixings: to be detailed'],
+      governs: 'to be detailed with the eave framing.'},
     ridgebox: {title: 'Ridge box', parts: [
       'Panels extended to the ridge: the lower corners of the two ridge-edge members meet on the ridge line',
       'Ridge cap: folded 1.5 mm plate on the top flanges of both panels',
@@ -227,7 +234,7 @@ var stage=document.getElementById('stage');
 var V=function(x,y,z){return new THREE.Vector3(x,y,z)};
 
 /* ---------- constants (metres) ---------- */
-var FL=0.45, EV=FL+2.6, LF=FL+2.35, W=5.2, L=12.5;
+var FL=0.45, EV=FL+2.6, LF=FL+2.35, W=5.2, L=12.5, DY=0.0545;
 var TAN=Math.tan(40*Math.PI/180), COS=Math.cos(40*Math.PI/180), SIN=Math.sin(40*Math.PI/180);
 var GX=[0,3.25,6.25,9.25,12.5];
 function yR(z){return EV+(2.6-Math.abs(z-2.6))*TAN}
@@ -379,6 +386,11 @@ function CM(id,a0,a1,webDir,flangeDir,o){
   if(!o.nocount) COUNT[id]++;
   return m;
 }
+function topTrack(z,ro){
+  [[0,3.25-0.06],[3.25+0.06,6.25-0.06],[6.25+0.06,9.25-0.06],[9.25+0.06,L]].forEach(function(sg){
+    M('walls',V(sg[0],EV-0.02+DY,z),V(sg[1],EV-0.02+DY,z),0.04,0.15,ro);
+  });
+}
 function STUD(z,x,y0,y1){CM('walls',V(x-0.0225,y0,z),V(x-0.0225,y1,z),V(0,0,1),V(1,0,0))}
 function GSTUD(x,z,y0,y1){CM('walls',V(x,y0,z-0.0225),V(x,y1,z-0.0225),V(1,0,0),V(0,0,1))}
 
@@ -410,22 +422,22 @@ SEQ('Wall A member',function(){
     M('walls',V(0,FL+0.02,z),V(1.6,FL+0.02,z),0.04,0.15,ro);
     M('walls',V(2.5,FL+0.02,z),V(L,FL+0.02,z),0.04,0.15,ro);
   });
-  LBL('Wall A top track',function(){M('walls',V(0,EV-0.02,z),V(L,EV-0.02,z),0.04,0.15,ro)});
+  LBL('Wall A top track',function(){topTrack(z,ro)});
   var xs=steps(0,12,0.6).concat([12.5]).filter(function(x){return x<1.6||x>2.5});
   xs=uniq(xs.concat([1.6,2.5]));
-  SEQ('Wall A stud',function(){xs.forEach(function(x){STUD(z,x,FL+0.04,EV-0.04)})});
+  SEQ('Wall A stud',function(){xs.forEach(function(x){STUD(z,x,FL+0.04,EV-0.04+DY)})});
   LBL('Wall A door header',function(){M('walls',V(1.6,FL+2.175,z),V(2.5,FL+2.175,z),0.09,0.15)});
-  LBL('Wall A door cripple',function(){STUD(z,2.05,FL+2.25,EV-0.04)});
+  LBL('Wall A door cripple',function(){STUD(z,2.05,FL+2.25,EV-0.04+DY)});
 });
 // wall C (front, glazed)
 SEQ('Wall C member',function(){
   var z=W, ro={ref:NZ};
   LBL('Wall C bottom track',function(){M('walls',V(0,FL+0.02,z),V(L,FL+0.02,z),0.04,0.15,ro)});
-  LBL('Wall C top track',function(){M('walls',V(0,EV-0.02,z),V(L,EV-0.02,z),0.04,0.15,ro)});
+  LBL('Wall C top track',function(){topTrack(z,ro)});
   var xs=steps(0,3,0.6).concat([3.25,11.6,12.2,12.5]);
-  SEQ('Wall C stud',function(){xs.forEach(function(x){STUD(z,x,FL+0.04,EV-0.04)})});
-  SEQ('Wall C mullion',function(){[4.8,6.35,7.9,9.45,11.0].forEach(function(x){M('walls',V(x,FL+0.04,z),V(x,EV-0.22,z),0.09,0.15)})});
-  LBL('Wall C glazing header',function(){M('walls',V(3.25,EV-0.12,z),V(11.0,EV-0.12,z),0.09,0.2)});
+  SEQ('Wall C stud',function(){xs.forEach(function(x){STUD(z,x,FL+0.04,EV-0.04+DY)})});
+  SEQ('Wall C mullion',function(){[4.8,6.35,7.9,9.45,11.0].forEach(function(x){M('walls',V(x,FL+0.04,z),V(x,EV-0.22+DY,z),0.09,0.15)})});
+  LBL('Wall C glazing header',function(){M('walls',V(3.25,EV-0.12+DY,z),V(11.0,EV-0.12+DY,z),0.09,0.2)});
 });
 // gables
 function gable(x,win){
@@ -480,7 +492,7 @@ function roofFrame(side){
   return side<0?{o:V(0,EV,0),a:V(0,SIN,COS),p:V(0,COS,-SIN),x:V(1,0,0)}:{o:V(0,EV,W),a:V(0,SIN,-COS),p:V(0,COS,SIN),x:V(1,0,0)};
 }
 function CP(F,i,x0,x1){
-  var flip=(i===6), sref=flip?(SL+0.060-0.00125):(PS[i]-0.0225);
+  var flip=(i===6), sref=flip?(SL+0.060-0.00125):(i===0?0.00125:PS[i]-0.0225);
   return CM('rp',sp(F,sref,PQ,x0),sp(F,sref,PQ,x1),F.p,flip?neg(F.a):F.a);
 }
 function panel(F,xa,xb,sky,side,bi){
@@ -553,15 +565,16 @@ M('loft',V(2.3,LF-0.075,3.6),V(2.3,LF-0.075,4.8),0.045,0.15);
 
 /* ---------- 9 strap bracing ---------- */
 function strap(p1,p2,n,grp){M('straps',p1,p2,0.06,0.012,{ref:n,group:grp})}
-function xbrace(fn,u0,u1,n){
-  SEQ('Wall brace strap',function(){strap(fn(u0,FL),fn(u1,EV),n); strap(fn(u0,EV),fn(u1,FL),n)});
+function xbrace(fn,u0,u1,n,top){
+  top=top||EV;
+  SEQ('Wall brace strap',function(){strap(fn(u0,FL),fn(u1,top),n); strap(fn(u0,top),fn(u1,FL),n)});
   SEQ('Hold-down',function(){[u0,u1].forEach(function(u){var p=fn(u,FL+0.125);B('straps',p.x,p.y,p.z,0.1,0.25,0.1,{nocount:true})})});
 }
 var OFS=0.095;
 var fA=function(u,y){return V(u,y,-OFS)}, fB=function(u,y){return V(u,y,W+OFS)};
 var f1=function(u,y){return V(-OFS,y,u)}, f5=function(u,y){return V(L+OFS,y,u)};
-xbrace(fA,3.25,6.25,NZ); xbrace(fA,9.25,12.5,NZ);
-xbrace(fB,0,3.25,NZ); xbrace(fB,11.0,12.5,NZ);
+xbrace(fA,3.25,6.25,NZ,EV+DY); xbrace(fA,9.25,12.5,NZ,EV+DY);
+xbrace(fB,0,3.25,NZ,EV+DY); xbrace(fB,11.0,12.5,NZ,EV+DY);
 xbrace(f1,3.0,5.2,NX); xbrace(f5,0,2.6,NX);
 /* ---------- 10 partitions ---------- */
 (function(){
@@ -576,7 +589,7 @@ xbrace(f1,3.0,5.2,NX); xbrace(f5,0,2.6,NX);
 
 /* ---------- 11 glazing (wall B) ---------- */
 [3.25,4.8,6.35,7.9,9.45,11.0].reduce(function(a,b){
-  QUAD('glass',[V(a,FL,W),V(b,FL,W),V(b,EV-0.2,W),V(a,EV-0.2,W)]); return b;
+  QUAD('glass',[V(a,FL,W),V(b,FL,W),V(b,EV-0.2+DY,W),V(a,EV-0.2+DY,W)]); return b;
 });
 
 /* ---------- ground grid and labels ---------- */
@@ -731,6 +744,11 @@ function exOffset(key,label){
     var cm=label.match(/cripple (\d)/); if(cm) return V(+cm[1]<=3?-0.15:0.15,0,0);
     if(/strap row \d top/.test(label)) return P.clone().multiplyScalar(0.25);
     if(/strap row \d bottom/.test(label)) return P.clone().multiplyScalar(-0.25);
+  } else if(key==='eave'){
+    var Pn=V(0,COS,-SIN);
+    if(/strap/.test(label)) return Pn.clone().multiplyScalar(0.35);
+    if(/purlin|Block/.test(label)) return Pn.clone().multiplyScalar(0.25);
+    if(/top track/.test(label)) return V(0,0.12,0);
   } else if(key==='ridgebox'){
     var zs=/rear/.test(label)?-0.22:0.22;
     if(/Rafter|Apex gusset|Bolt/.test(label)) return null;
@@ -977,6 +995,23 @@ function ridgeBox(){
 }
 ridgeBox();
 
+/* ---- eave contact (draft) ---- */
+function eaveScene(){
+  var g=new THREE.Group(), F=slopeF(), WTl=0.0545, t=CT;
+  dprefix=T.details.eave;
+  [-0.3,0.3].forEach(function(x,i){
+    cSection(V(x-0.0225,-0.85,0),V(x-0.0225,WTl-t,0),AZ,AX,{group:g,mat:DM.c1,slots:true,label:'Wall stud '+(i+1)});
+  });
+  uTrack(V(-0.6,WTl-t/2,0),V(0.6,WTl-t/2,0),AZ,neg(AY),{group:g,mat:DM.dark,label:'Wall top track'},0.158);
+  cSection(sp(F,0.00125,0.15,-0.6),sp(F,0.00125,0.15,0.6),F.p,F.a,{group:g,mat:DM.c2,slots:true,label:'Eave-edge purlin'});
+  cSection(sp(F,0.5587,0.15,-0.6),sp(F,0.5587,0.15,0.6),F.p,F.a,{group:g,mat:DM.c2,slots:true,label:'Next purlin'});
+  cSection(sp(F,0.0475,0.15,-0.0225),sp(F,0.5575,0.15,-0.0225),F.p,AX,{group:g,mat:DM.c1,slots:'mid',label:'Block'});
+  LBL('Bridging strap top',function(){obox(g,DM.rod,sp(F,0.45,0.2265,0),F.a,AX,0.9,0.05,0.003)});
+  LBL('Bridging strap bottom',function(){obox(g,DM.rod,sp(F,0.45,0.0735,0),F.a,AX,0.9,0.05,0.003)});
+  addDetail('eave',g);
+}
+eaveScene();
+
 /* ---- ridge box in the whole-house model ---- */
 var capGrp=new THREE.Group(); capGrp.userData.extra=0.3; G.rbox.add(capGrp);
 function ridgeHouse(){
@@ -1029,8 +1064,8 @@ var mode='house', bounds={};
 function setView(name,cdir){
   var d,dir;
   if(mode!=='house'){
-    var rdg=mode.indexOf('ridge')===0, dx=$('dexplode').checked, bkey=mode+(dx?'x':'');
-    if(!bounds[bkey]) bounds[bkey]=rdg?(dx?new THREE.Box3(V(-0.4,-0.45,-0.95),V(1.6,1.1,0.95)):new THREE.Box3(V(-0.4,-0.4,-0.6),V(1.6,0.35,0.6))):new THREE.Box3().setFromObject(DG[mode]);
+    var rdg=(mode==='ridgebox'||mode==='eave'), dx=$('dexplode').checked, bkey=mode+(dx?'x':'');
+    if(!bounds[bkey]) bounds[bkey]=mode==='eave'?(dx?new THREE.Box3(V(-0.6,-0.95,-0.75),V(0.6,1.05,0.8)):new THREE.Box3(V(-0.6,-0.9,-0.5),V(0.6,0.7,0.8))):rdg?(dx?new THREE.Box3(V(-0.4,-0.45,-0.95),V(1.6,1.1,0.95)):new THREE.Box3(V(-0.4,-0.4,-0.6),V(1.6,0.35,0.6))):new THREE.Box3().setFromObject(DG[mode]);
     var bb=bounds[bkey], ctr=bb.getCenter(new THREE.Vector3());
     var slope=(mode==='block'||mode==='skyp'), pan=(mode==='panel');
     dir=cdir?cdir.clone():({front:V(0,0.12,1),rear:V(0,0.12,-1),top:V(0,1,0.001)})[name]||(rdg?V(1,0.06,0.02):pan?V(0.25,-0.45,-0.93):slope?V(0.55,0.54,-0.91):V(1,0.25,0.35));
@@ -1124,7 +1159,7 @@ function showMode(k){
   clearSel(); showAll();
   if(mode!=='house'){$('dexplode').checked=false;applyExplode(false)}
   mode=k; $('dexChip').hidden=(k==='house');
-  camera.fov=(k==='ridgebox')?12:40; camera.updateProjectionMatrix();
+  camera.fov=(k==='ridgebox'||k==='eave')?12:40; camera.updateProjectionMatrix();
   $('hidecap').checked=false; if(RIDGE_CAP) RIDGE_CAP.visible=true; $('capChip').hidden=(k!=='ridgebox'); var house=k==='house';
   LAYERS.forEach(function(l){l.group.visible=house&&cbs[l.id].checked});
   gridLines.visible=house; labels.forEach(function(l){l.sp.visible=house});
@@ -1137,7 +1172,7 @@ function showMode(k){
 window.__view=function(x,y,z){setView('custom',V(x,y,z))};
 window.__cam=function(a,b,c,d,e,f){camera.position.set(a,b,c);controls.target.set(d,e,f);controls.update()};
 window.__members=MEMBERS;
-['house','knee','apex','panel','block','skyp','ridgebox'].forEach(function(k){
+['house','knee','apex','panel','block','skyp','ridgebox','eave'].forEach(function(k){
   var b=document.createElement('button'); b.type='button'; b.id='d-'+k; b.textContent=T.details[k];
   b.setAttribute('aria-pressed',k==='house'?'true':'false');
   b.addEventListener('click',function(){showMode(k)});
