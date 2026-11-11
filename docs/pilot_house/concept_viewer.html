@@ -192,6 +192,7 @@ const T = {
       'Bottom track U150, open side up, cradles the two studs',
       'Top track U150, same rotation, holds the cripple stud above',
       'Clip angles to the jamb studs',
+      'Bottom track runs through the door opening and is cut out on site after erection',
       'Jamb studs: C150 capped with a U150 track to form a box; the web faces the opening'],
       governs: 'to be checked: header bending and the jamb studs under the header reaction.'},
     wpanel: {title: 'Wall panel', parts: [
@@ -748,6 +749,7 @@ function exOffset(key,label){
   } else if(key==='dheader'){
     if(/Door header .* top track/.test(label)) return V(0,0.15,0);
     if(/Door header .* bottom track/.test(label)) return V(0,-0.15,0);
+    if(/bottom track \(cut out/.test(label)) return V(0,-0.15,0);
     if(/stud outside/.test(label)) return V(0,0,-0.12);
     if(/stud inside/.test(label)) return V(0,0,0.12);
     if(/cripple above door/.test(label)) return V(0,0.35,0);
@@ -1133,8 +1135,7 @@ function wallsHouse(){
     var tx0=xa2, tx1=xb2;
     uTrack(V(tx0,top-t/2,z),V(tx1,top-t/2,z),NZv,MY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' top track'},0.150); COUNT.walls++;
     if(door){
-      uTrack(V(xa2,FL+t/2,z),V(1.6,FL+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' bottom track west'},0.150);
-      uTrack(V(2.5,FL+t/2,z),V(xb2,FL+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' bottom track east'},0.150); COUNT.walls+=2;
+      uTrack(V(xa2,FL+t/2,z),V(xb2,FL+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' bottom track (cut out at the door after erection)'},0.150); COUNT.walls++;
     } else { uTrack(V(xa2,FL+t/2,z),V(xb2,FL+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' bottom track'},0.150); COUNT.walls++; }
     LBL(pn+' '+MD+' end stud at grid '+(bi+1),function(){CM('walls',V(xa2+t/2,y0,z),V(xa2+t/2,y1,z),NZv,PX)});
     LBL(pn+' '+MD+' end stud at grid '+(bi+2),function(){CM('walls',V(xb2-t/2,y0,z),V(xb2-t/2,y1,z),NZv,MX)});
@@ -1206,9 +1207,10 @@ wallPanelScene();
 
 /* ---- door header scene ---- */
 function doorHeaderScene(){
-  var g=new THREE.Group(), t=CT, top=2.7577, y0=1.6, y1=top-0.0025, MD='·', yb=2.1, ys=yb+t+0.075, yt=yb+t+0.150;
+  var g=new THREE.Group(), t=CT, top=2.7577, y0=0.0025, y1=top-0.0025, MD='·', yb=2.1, ys=yb+t+0.075, yt=yb+t+0.150;
   dprefix=T.details.dheader;
   uTrack(V(-0.7,top-t/2,0),V(0.7,top-t/2,0),AZ,neg(AY),{group:g,mat:DM.dark,label:'Wall top track'},0.150);
+  uTrack(V(-0.7,t/2,0),V(0.7,t/2,0),AZ,AY,{group:g,mat:DM.dark,label:'Wall A panel bay 1-2 '+'·'+' bottom track (cut out at the door after erection)'},0.150);
   [[-0.45,-1,'grid-1'],[0.45,1,'grid-2']].forEach(function(j){
     var xw=j[0]+j[1]*0.00125, tip=xw+j[1]*0.045, xc=tip+j[1]*0.00125;
     cSection(V(xw,y0,0),V(xw,y1,0),AZ,j[1]>0?AX:neg(AX),{group:g,mat:DM.c1,slots:true,label:'Door jamb '+j[2]+' side '+MD+' stud'});
