@@ -156,3 +156,5 @@ approval -> implement -> check -> next); every sketch as an assembly view and an
 view; few words, judge by pictures; end products Hungarian, working versions English.
 
 Grid naming (owner, 2026-11-11): cross grids A (rear wall, door, Z=0), B (centre line, middle soil screws), C (front wall, glazed). Earlier text in this brief that says "wall B" for the glazed front means wall C.
+
+Web perforations (owner, 2026-11-11, approved): slotted holes 38 x 100 mm at 600 mm c/c in the webs of wall studs and roof purlins (incl. ridge-edge members and skylight cripples), first slot 300 mm from the stud bottom / purlin end, none within 250 mm of a member end. Not in tracks, frame members, mullions; floor and loft joists to be decided with the floors. Open: confirm size and end distance against shear and web crippling.
