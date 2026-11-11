@@ -7,7 +7,7 @@
   --c-screw:#6c7785; --c-floor:#4d6d8e; --c-wall:#7b8ea3; --c-frame:#2c4863;
   --c-rod:#e8590c; --c-purlin:#5d86a9; --c-sky:#3b878c; --c-loft:#6b6f9c;
   --c-strap:#e8590c; --c-part:#b9c5d2; --c-glass:#8fc6ea;
-  --d-c1:#5f86ab; --d-c2:#9fb6cd; --d-dark:#36424f; --d-bolt:#151b22; --c-track:#2f4b66; --c-trim:#c28a2e; --d-mid:#7a9a6c; --hl:#d6009b; --c-gridline:#6f8196;
+  --d-c1:#5f86ab; --d-c2:#9fb6cd; --d-dark:#36424f; --d-bolt:#151b22; --c-track:#2f4b66; --c-trim:#c28a2e; --d-mid:#7a9a6c; --hl:#d6009b; --c-gridline:#6f8196; --d-ghost:#d3dce8;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
@@ -17,7 +17,7 @@
     --c-screw:#8e99a8; --c-floor:#6c93b8; --c-wall:#8fa3b9; --c-frame:#5a86b0;
     --c-rod:#ff8a3d; --c-purlin:#7aa6c9; --c-sky:#52a9ae; --c-loft:#8b90c2;
     --c-strap:#ff8a3d; --c-part:#5b6b7d; --c-glass:#5aa3d0;
-    --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585; --hl:#ff3fcf; --c-gridline:#6d86a0;
+    --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585; --hl:#ff3fcf; --c-gridline:#6d86a0; --d-ghost:#8da2b8;
     color-scheme:dark;
   }
 }
@@ -27,7 +27,7 @@
   --c-screw:#8e99a8; --c-floor:#6c93b8; --c-wall:#8fa3b9; --c-frame:#5a86b0;
   --c-rod:#ff8a3d; --c-purlin:#7aa6c9; --c-sky:#52a9ae; --c-loft:#8b90c2;
   --c-strap:#ff8a3d; --c-part:#5b6b7d; --c-glass:#5aa3d0;
-  --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585; --hl:#ff3fcf; --c-gridline:#6d86a0;
+  --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585; --hl:#ff3fcf; --c-gridline:#6d86a0; --d-ghost:#8da2b8;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -98,6 +98,7 @@ button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-
     </div>
     <label class="chip" id="explodeChip"><input type="checkbox" id="explode"> <span id="t-explode"></span></label>
     <label class="chip" id="dexChip" hidden><input type="checkbox" id="dexplode"> <span id="t-dex"></span></label>
+    <label class="chip" id="nbChip" hidden><input type="checkbox" id="nbcheck" checked> <span id="t-nb"></span></label>
     <label class="chip" id="capChip" hidden><input type="checkbox" id="hidecap"> <span id="t-hidecap"></span></label>
   </div>
   <div class="selbar" id="selbar">
@@ -138,6 +139,7 @@ const T = {
   detailsLabel: 'Details',
   details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridgebox: 'Ridge box', eave: 'Eave contact', wpanel: 'Wall panel (draft)'},
   hideCap: 'Hide ridge cap',
+  showNb: 'Show neighbouring panels\' end studs',
   explodeView: 'Exploded view',
   notesLabels: {parts: 'Parts', governs: 'Governs', tag: 'CONCEPT \u2014 preliminary, not a check'},
   notes: {
@@ -189,6 +191,7 @@ const T = {
       'Panel: bay length less 6 mm, height about 2760 mm, 150 mm thick; bottom track and top track U150, the top track stopped 60 mm short of the frame line',
       'End studs C150 with the web on the panel end, flanges into the panel; at the joints they stand back-to-back with the neighbouring panel, 6 mm gap, and act as the frame leg',
       'Intermediate studs C150 at 600 mm with slotted webs, open side toward higher X',
+      'Each panel has one end stud per end. The pale studs belong to the neighbouring panels: placed side by side, the last stud of one panel and the first stud of the next stand back-to-back',
       'Two rows of solid blocking + strap bridging at 920 and 1840 mm: 50 x 1.5 mm straps on both faces, solid C150 blocks with one slot in the first and last stud space'],
       governs: 'to be checked: end studs as frame leg under the rafter reaction; stud buckling length between bridging rows about 920 mm.'},
     ridgebox: {title: 'Ridge box', parts: [
@@ -234,7 +237,7 @@ const T = {
 function $(id){return document.getElementById(id)}
 document.title = T.docTitle;
 $('t-title').textContent = T.title; $('t-badge').textContent = T.badge; $('t-hint').textContent = T.hint;
-$('t-explode').textContent = T.explode; $('t-hidecap').textContent = T.hideCap; $('t-dex').textContent = T.explodeView; $('layers').setAttribute('aria-label', T.layersLabel);
+$('t-explode').textContent = T.explode; $('t-hidecap').textContent = T.hideCap; $('t-nb').textContent = T.showNb; $('t-dex').textContent = T.explodeView; $('layers').setAttribute('aria-label', T.layersLabel);
 ['front','rear','top'].forEach(function(n){$('v-'+n).textContent = T.buttons[n]});
 $('v-reset').textContent = T.buttons.reset;
 $('t-h-facts').textContent = T.factsHead; $('t-h-open').textContent = T.openHead; $('t-foot').textContent = T.foot;
@@ -620,7 +623,8 @@ function paintLabels(color){
 
 /* ---------- detail scenes ---------- */
 function mkMat(){return new THREE.MeshStandardMaterial({color:0x888888,roughness:.55,metalness:.35})}
-var DM={c1:mkMat(),c2:mkMat(),dark:mkMat(),rod:mkMat(),bolt:mkMat(),track:mkMat(),trim:mkMat(),mid:mkMat()};
+var DM={c1:mkMat(),c2:mkMat(),dark:mkMat(),rod:mkMat(),bolt:mkMat(),track:mkMat(),trim:mkMat(),mid:mkMat(),ghost:mkMat()};
+DM.ghost.transparent=true; DM.ghost.opacity=0.35; DM.ghost.depthWrite=false;
 var DG={}, AX=V(1,0,0), AY=V(0,1,0), AZ=V(0,0,1);
 function VA(p,d,k){return p.clone().addScaledVector(d,k)}
 function sp(F,s,q,t){return F.o.clone().addScaledVector(F.a,s).addScaledVector(F.p,q).addScaledVector(F.x,t)}
@@ -740,8 +744,8 @@ function exOffset(key,label){
     if(/block/.test(label)) return V(0,0,0.15);
     if(/top track/.test(label)) return V(0,0.25,0);
     if(/bottom track/.test(label)) return V(0,-0.25,0);
-    if(/Neighbour.*left/.test(label)) return V(-0.25,0,0);
-    if(/Neighbour.*right/.test(label)) return V(0.25,0,0);
+    if(/Neighbouring panel bay 1-2/.test(label)) return V(-0.25,0,0);
+    if(/Neighbouring panel bay 3-4/.test(label)) return V(0.25,0,0);
   } else if(key==='eave'){
     var Pn=V(0,COS,-SIN);
     if(/Eave cap/.test(label)) return V(0,0.10,-0.25);
@@ -1148,6 +1152,7 @@ function wallsHouse(){
 wallsHouse();
 
 /* ---- wall panel scene ---- */
+var WP_NB=null;
 function wallPanelScene(){
   var g=new THREE.Group(), t=CT, top=2.7577, y0=0.0025, y1=top-0.0025, xa=-1.497, xb=1.497, MD='·', pn='Wall A panel bay 2-3';
   dprefix=T.details.wpanel;
@@ -1155,8 +1160,9 @@ function wallPanelScene(){
   uTrack(V(xa+0.057,top-t/2,0),V(xb-0.057,top-t/2,0),AZ,neg(AY),{group:g,mat:DM.dark,label:pn+' '+MD+' top track'},0.150);
   cSection(V(xa+t/2,y0,0),V(xa+t/2,y1,0),AZ,AX,{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' end stud at grid 2'});
   cSection(V(xb-t/2,y0,0),V(xb-t/2,y1,0),AZ,neg(AX),{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' end stud at grid 3'});
-  cSection(V(xa-0.006-t/2,y0,0),V(xa-0.006-t/2,y1,0),AZ,neg(AX),{group:g,mat:DM.c2,slots:true,label:'Neighbour end stud at grid 2 (left)'});
-  cSection(V(xb+0.006+t/2,y0,0),V(xb+0.006+t/2,y1,0),AZ,AX,{group:g,mat:DM.c2,slots:true,label:'Neighbour end stud at grid 3 (right)'});
+  var nbG=new THREE.Group(); g.add(nbG); WP_NB=nbG;
+  cSection(V(xa-0.006-t/2,y0,0),V(xa-0.006-t/2,y1,0),AZ,neg(AX),{group:nbG,mat:DM.ghost,slots:true,label:'Neighbouring panel bay 1-2 '+MD+' end stud at grid 2'});
+  cSection(V(xb+0.006+t/2,y0,0),V(xb+0.006+t/2,y1,0),AZ,AX,{group:nbG,mat:DM.ghost,slots:true,label:'Neighbouring panel bay 3-4 '+MD+' end stud at grid 3'});
   var xs=[], i;
   for(i=1;xa+0.6*i<=xb-0.145;i++) xs.push(xa+0.6*i);
   xs.forEach(function(x,k){cSection(V(x-0.0225,y0,0),V(x-0.0225,y1,0),AZ,AX,{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' stud '+(k+1)})});
@@ -1238,7 +1244,7 @@ function applyTheme(){
   function c(n){return cs.getPropertyValue(n).trim()}
   scene.background.set(c('--scene'));
   LAYERS.forEach(function(l){MAT[l.id].color.set(c(l.tok))});
-  DM.c1.color.set(c('--d-c1')); DM.c2.color.set(c('--d-c2')); DM.dark.color.set(c('--d-dark')); DM.rod.color.set(c('--accent')); DM.bolt.color.set(c('--d-bolt')); DM.track.color.set(c('--c-track')); DM.trim.color.set(c('--c-trim')); DM.mid.color.set(c('--d-mid')); MAT.rptrack.color.set(c('--c-track')); MAT.rptrim.color.set(c('--c-trim')); repaintSel();
+  DM.c1.color.set(c('--d-c1')); DM.c2.color.set(c('--d-c2')); DM.dark.color.set(c('--d-dark')); DM.rod.color.set(c('--accent')); DM.bolt.color.set(c('--d-bolt')); DM.track.color.set(c('--c-track')); DM.trim.color.set(c('--c-trim')); DM.mid.color.set(c('--d-mid')); DM.ghost.color.set(c('--d-ghost')); MAT.rptrack.color.set(c('--c-track')); MAT.rptrim.color.set(c('--c-trim')); repaintSel();
   edgeMat.color.set(c('--edge'));
   gridMat.color.set(c('--grid'));
   glMat.color.set(c('--c-gridline')); paintLabels(c('--text'));
@@ -1266,6 +1272,7 @@ LAYERS.forEach(function(l){
 document.getElementById('v-reset').addEventListener('click',function(){setView('reset')});
 var explode=document.getElementById('explode');
 $('dexplode').addEventListener('change',function(){applyExplode($('dexplode').checked);setView('reset')});
+$('nbcheck').addEventListener('change',function(){if(WP_NB)WP_NB.visible=$('nbcheck').checked});
 $('hidecap').addEventListener('change',function(){if(RIDGE_CAP)RIDGE_CAP.visible=!$('hidecap').checked});
 var roofParts=[G.rp,G.rb,G.rx,G.rbox,roofGlass,capGrp,ecapA,ecapC,iangA,iangC];
 
@@ -1288,6 +1295,7 @@ function showMode(k){
   if(mode!=='house'){$('dexplode').checked=false;applyExplode(false)}
   mode=k; $('dexChip').hidden=(k==='house');
   camera.fov=(k==='ridgebox'||k==='eave'||k==='wpanel')?12:40; camera.updateProjectionMatrix();
+  $('nbcheck').checked=true; if(WP_NB) WP_NB.visible=true; $('nbChip').hidden=(k!=='wpanel');
   $('hidecap').checked=false; if(RIDGE_CAP) RIDGE_CAP.visible=true; $('capChip').hidden=(k!=='ridgebox'); var house=k==='house';
   LAYERS.forEach(function(l){l.group.visible=house&&cbs[l.id].checked});
   gridLines.visible=house; labels.forEach(function(l){l.sp.visible=house});
