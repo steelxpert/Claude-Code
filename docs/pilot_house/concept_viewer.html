@@ -185,10 +185,10 @@ const T = {
       'The wall top, the purlin web and the eave cap enclose a box along the eave',
       'Inner eave angle: folded 1.5 mm angle, 45 mm legs, joining the eave-edge purlin\'s bottom flange to the inner flange of the wall top track; stops at each frame',
       'Eave cap: folded 1.5 mm plate on the roof panel top and the wall\'s outer face, bent where the two planes meet; screwed to the eave-edge purlin and to the wall top track',
-      'Wall top track is interrupted at each main frame'],
+      'Eave closure and fixings: to be detailed'],
       governs: 'to be detailed with the eave framing.'},
     wpanel: {title: 'Wall panel (draft)', parts: [
-      'Panel: bay length less 6 mm, height about 2760 mm, 150 mm thick; bottom track and top track U150, the top track stopped 60 mm short of the frame line',
+      'Panel: bay length less 6 mm, height about 2760 mm, 150 mm thick; bottom track and top track U150; top and bottom tracks run the full panel length and cover the end studs',
       'End studs C150 with the web on the panel end, flanges into the panel; at the joints they stand back-to-back with the neighbouring panel, 6 mm gap, and act as the frame leg',
       'Intermediate studs C150 at 600 mm with slotted webs, open side toward higher X',
       'Each panel has one end stud per end. The pale studs belong to the neighbouring panels: placed side by side, the last stud of one panel and the first stud of the next stand back-to-back',
@@ -221,7 +221,7 @@ const T = {
   open: [
     'Roof diagonal straps only in the gable-end bays: wind on the long walls must reach the gables through the frames and the ridge box - to be shown in the calculation.',
     'Asymmetric track is a new section for FLINS.',
-    'Knee joint to be re-detailed: the frame leg is now two end studs belonging to two wall panels.',
+    'Knee joint to be re-detailed: the frame leg is now two end studs belonging to two wall panels: the rafter foot must stop at the wall\'s inside face.',
     'Glazed bays of wall C: panel build-up to be decided.',
     'Eave: the roof panel bears on the inner edge of the wall track, 75 mm off the wall centre line - eccentric load on the wall top to be checked.',
     'Perforation size and end distance to be confirmed against shear and web crippling at supports.',
@@ -1115,7 +1115,7 @@ function wallsHouse(){
     var xa=GX[bi], xb=GX[bi+1], xa2=bi===0?0:xa+0.003, xb2=bi===3?L:xb-0.003;
     var pn='Wall '+wn+' panel bay '+(bi+1)+'-'+(bi+2);
     var glazed=(wn==='C'&&bi>0), door=(wn==='A'&&bi===0), c4=(wn==='C'&&bi===3), i;
-    var tx0=bi>0?xa+0.06:xa2, tx1=bi<3?xb-0.06:xb2;
+    var tx0=xa2, tx1=xb2;
     uTrack(V(tx0,top-t/2,z),V(tx1,top-t/2,z),NZv,MY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' top track'},0.150); COUNT.walls++;
     if(door){
       uTrack(V(xa2,FL+t/2,z),V(1.6,FL+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' bottom track west'},0.150);
@@ -1157,7 +1157,7 @@ function wallPanelScene(){
   var g=new THREE.Group(), t=CT, top=2.7577, y0=0.0025, y1=top-0.0025, xa=-1.497, xb=1.497, MD='·', pn='Wall A panel bay 2-3';
   dprefix=T.details.wpanel;
   uTrack(V(xa,t/2,0),V(xb,t/2,0),AZ,AY,{group:g,mat:DM.dark,label:pn+' '+MD+' bottom track'},0.150);
-  uTrack(V(xa+0.057,top-t/2,0),V(xb-0.057,top-t/2,0),AZ,neg(AY),{group:g,mat:DM.dark,label:pn+' '+MD+' top track'},0.150);
+  uTrack(V(xa,top-t/2,0),V(xb,top-t/2,0),AZ,neg(AY),{group:g,mat:DM.dark,label:pn+' '+MD+' top track'},0.150);
   cSection(V(xa+t/2,y0,0),V(xa+t/2,y1,0),AZ,AX,{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' end stud at grid 2'});
   cSection(V(xb-t/2,y0,0),V(xb-t/2,y1,0),AZ,neg(AX),{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' end stud at grid 3'});
   var nbG=new THREE.Group(); g.add(nbG); WP_NB=nbG;
