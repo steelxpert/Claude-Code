@@ -194,7 +194,7 @@ const T = {
     ['Ground floor', 'Cross bearers on 15 soil screws, joists lengthwise'],
     ['Loft', 'Over bay 1\u20132, joists on a header at grid 2'],
     ['Bracing', 'Flat-strap X with hold-downs'],
-    ['Web perforations', 'Slotted holes 38 \u00d7 100 mm at 600 mm in the webs of wall studs and roof purlins; none within 250 mm of a member end'],
+    ['Web perforations', 'Slotted holes 38 \u00d7 100 mm at 600 mm in the webs of wall studs and roof purlins; none within 250 mm of a member end; one slot in each solid block'],
     ['Profiles', 'C150\u00d745\u00d71.5 / U150\u00d745, max 1.5 mm']
   ],
   openHead: 'Open points',
@@ -343,25 +343,27 @@ function mergeGeos(list){
   out.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
   return out;
 }
-function buildC(a0,a1,webDir,flangeDir,slotted){
+function buildC(a0,a1,webDir,flangeDir,slotted,n0){
+  n0=n0||0;
   var D=0.150, F=0.045, LP=0.010, t=0.0025, r=0.019, hs=0.031;
   var ax=new THREE.Vector3().subVectors(a1,a0), len=ax.length(), axn=ax.clone().normalize();
   var w=webDir.clone().normalize(), f=flangeDir.clone().normalize(), ez=new THREE.Vector3().crossVectors(w,f);
   var sgn=ez.dot(axn)>=0?1:-1;
   var fromA0=Math.abs(a1.x-a0.x)>1e-6?(a0.x<a1.x):(a0.y<=a1.y);
-  var sh=new THREE.Shape(), d=0.3;
+  var sh=new THREE.Shape(), ds=[], d;
   sh.moveTo(-D/2,-len/2); sh.lineTo(D/2,-len/2); sh.lineTo(D/2,len/2); sh.lineTo(-D/2,len/2); sh.lineTo(-D/2,-len/2);
-  if(slotted) while(d<=len-0.25+1e-9){
-    var dist=fromA0?d:len-d, y0=-sgn*(dist-len/2), h=new THREE.Path();
+  if(slotted==='mid') ds.push(len/2); else if(slotted) for(d=0.3;d<=len-0.25+1e-9;d+=0.6) ds.push(d);
+  ds.forEach(function(dd){
+    var dist=fromA0?dd:len-dd, y0=-sgn*(dist-len/2), h=new THREE.Path();
     h.moveTo(r,y0-hs); h.lineTo(r,y0+hs); h.absarc(0,y0+hs,r,0,Math.PI,false); h.lineTo(-r,y0-hs); h.absarc(0,y0-hs,r,Math.PI,2*Math.PI,false);
-    sh.holes.push(h); d+=0.6;
-  }
+    sh.holes.push(h);
+  });
   var wg=new THREE.ExtrudeGeometry(sh,{depth:t,bevelEnabled:false,curveSegments:6});
   wg.translate(0,0,-t/2); wg.rotateX(-Math.PI/2);
   var parts=[];
   [1,-1].forEach(function(sd){
-    var fg=new THREE.BoxGeometry(t,F+t/2,len); fg.translate(sd*(D/2-t/2),(F-t/2)/2,0); parts.push(fg);
-    var lg=new THREE.BoxGeometry(LP,t,len); lg.translate(sd*(D/2-t-LP/2),F-t/2,0); parts.push(lg);
+    var fg=new THREE.BoxGeometry(t,F+t/2,len-n0); fg.translate(sd*(D/2-t/2),(F-t/2)/2,sgn*n0/2); parts.push(fg);
+    var lg=new THREE.BoxGeometry(LP,t,len-n0); lg.translate(sd*(D/2-t-LP/2),F-t/2,sgn*n0/2); parts.push(lg);
   });
   var pg=mergeGeos(parts), geo=mergeGeos([wg,pg]);
   var m=new THREE.Mesh(geo,MAT.walls);
@@ -372,7 +374,7 @@ function buildC(a0,a1,webDir,flangeDir,slotted){
 }
 function CM(id,a0,a1,webDir,flangeDir,o){
   o=o||{};
-  var m=buildC(a0,a1,webDir,flangeDir,true);
+  var m=buildC(a0,a1,webDir,flangeDir,o.mid?'mid':true);
   m.material=o.mat||MAT[id]; (o.group||G[id]).add(m); reg(m,id);
   if(!o.nocount) COUNT[id]++;
   return m;
@@ -507,7 +509,7 @@ function panel(F,xa,xb,sky,side,bi){
     var qt=sky?0.2325:0.2285, qb=sky?0.0675:0.0715, bs='Bridging strap '+rs+' bay '+bn+(sky?' row '+(ri+1):'');
     [[0,1],[5,6]].forEach(function(b){
       LBL('Bridging block '+rs+' bay '+bn+(sky?' row '+(ri+1):'')+' '+(b[0]+1)+'-'+(b[1]+1),function(){
-        M('rb',P(PS[b[0]]+0.0225,PQ,xr0),P(PS[b[1]]-0.0225,PQ,xr0),0.045,0.15,{ref:F.p});
+        CM('rb',P(PS[b[0]]+0.0225,PQ,xr0-0.0225),P(PS[b[1]]-0.0225,PQ,xr0-0.0225),F.p,V(1,0,0),{mid:true});
       });
     });
     LBL(bs+' top',function(){M('rb',P(0,qt,xr0),P(PS[6],qt,xr0),0.05,0.004,{ref:F.p})});
@@ -649,7 +651,7 @@ function plate(g,mat,pts,th,ex,ey,origin){
 var CT=0.0025; /* drawn thickness of C walls (real 0.0015) */
 function cSection(a0,a1,webDir,flangeDir,o){ LBL((o&&o.label)||dn('C section'),function(){ cSection0(a0,a1,webDir,flangeDir,o) }); }
 function cSection0(a0,a1,webDir,flangeDir,o){
-  if(o.slots){var sm=buildC(a0,a1,webDir,flangeDir,true);sm.material=o.mat;o.group.add(sm);reg(sm,null,'C section');return}
+  if(o.slots){var sm=buildC(a0,a1,webDir,flangeDir,o.slots==='mid'?'mid':true,o.n0);sm.material=o.mat;o.group.add(sm);reg(sm,null,'C section');return}
   var D=0.150, F=0.045, LP=0.010, t=CT;
   var len=a0.distanceTo(a1), mid=a0.clone().add(a1).multiplyScalar(.5);
   var w=webDir.clone().normalize(), f=flangeDir.clone().normalize();
@@ -840,7 +842,7 @@ function PSP(i){return 0.025+i*0.5557}
   });
   [[0,1],[5,6]].forEach(function(b){
     var s0=S[b[0]]+CT/2, s1=S[b[1]]-CT/2;
-    cSection(sp(F,s0,0.15,0),sp(F,s1,0.15,0),F.p,F.x,{group:g,mat:DM.c2,n0:0.05,label:'Block '+(b[0]+1)+'-'+(b[1]+1)});
+    cSection(sp(F,s0,0.15,0),sp(F,s1,0.15,0),F.p,F.x,{group:g,mat:DM.c2,n0:0.05,slots:'mid',label:'Block '+(b[0]+1)+'-'+(b[1]+1)});
     clip(g,sp(F,s0,0.15,CT/2),AX,F.a,0.03);
     clip(g,sp(F,s1,0.15,CT/2),AX,neg(F.a),0.03);
   });
@@ -932,7 +934,7 @@ function ridgeBox(){
       cSection(sp(F,-0.05875,0.1515,sx*0.0055),sp(F,-0.05875,0.1515,xe),F.p,F.a,{group:g,mat:DM.c1,label:'Ridge-edge member '+n+' '+xn,slots:true});
       cSection(sp(F,0.5185,0.1515,sx*0.0055),sp(F,0.5185,0.1515,xe),F.p,neg(F.a),{group:g,mat:DM.c2,label:'Next purlin '+n+' '+xn,slots:true});
     });
-    cSection(sp(F,-0.012,0.1515,XB),sp(F,0.4725,0.1515,XB),F.p,AX,{group:g,mat:DM.c2,label:'Block '+n});
+    cSection(sp(F,-0.012,0.1515,XB),sp(F,0.4725,0.1515,XB),F.p,AX,{group:g,mat:DM.c2,slots:'mid',label:'Block '+n});
     /* straps end straight on the ridge-edge member flanges */
     LBL('Bridging strap '+n+' top',function(){
       var a=plane(k,1.1914,0.0015), b=plane(k,0.1414,0.0015);
