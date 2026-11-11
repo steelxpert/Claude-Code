@@ -121,12 +121,12 @@ const T = {
   layers: {
     screws: 'Soil screws', floor: 'Ground floor frame', walls: 'Wall panels (load-bearing)',
     frames: 'Main frames', rods: 'Tie rods',
-    rp: 'Roof panels: purlins + tracks', rb: 'Roof panels: blocking + bridging', rx: 'Roof panels: strap bracing',
+    rp: 'Roof panels: purlins + tracks', rb: 'Roof panels: blocking + bridging', rx: 'Roof panels: strap bracing', rbox: 'Ridge box',
     loft: 'Loft floor', straps: 'Strap bracing', parts: 'Partitions (non-load-bearing)', glass: 'Glazing'
   },
   sel: {selected: 'Selected', hint: 'Click a member to highlight it. Click again to release.', clear: 'Clear selection', copy: 'Copy list', copied: 'Copied', manual: 'Press Ctrl+C to copy the selected text'},
   detailsLabel: 'Details',
-  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridgebox: 'Ridge box (draft)'},
+  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridgebox: 'Ridge box'},
   hideCap: 'Hide ridge cap',
   explodeView: 'Exploded view',
   notesLabels: {parts: 'Parts', governs: 'Governs', tag: 'CONCEPT \u2014 preliminary, not a check'},
@@ -144,7 +144,7 @@ const T = {
       'Gusset: 6 mm kite plate between the webs, covering 400 mm of each rafter',
       'Bolts: 4 \u00d7 M12 per rafter',
       'Gusset stays below the rafter top lines',
-      'Ridge edge of the roof panels: to be detailed'],
+      'Ridge: see the Ridge box detail'],
       governs: 'bolt bearing in the 2 \u00d7 1.5 mm webs; rafter compression about 17 kN (preliminary).'},
     panel: {title: 'Roof panel on rafter', parts: [
       'Rafter pair 2 \u00d7 C150\u00d745\u00d71.5 with 6 mm gap, at 40\u00b0',
@@ -166,18 +166,19 @@ const T = {
       'Two bridging rows in line with the head and sill tracks, continuous from eave to ridge; the head and sill act as the blocking between the jambs',
       'Opening 780 \u00d7 1600 mm'],
       governs: 'jamb about 2.3 kNm over the 3.0 m bay (preliminary); head and sill carry three stub ends of about 0.45 kN each.'},
-    ridgebox: {title: 'Ridge box (draft)', parts: [
+    ridgebox: {title: 'Ridge box', parts: [
       'Panels extended to the ridge: the lower corners of the two ridge-edge members meet on the ridge line',
       'Ridge cap: folded 1.5 mm plate on the top flanges of both panels',
       'Inner angle: folded 1.5 mm angle, 45 mm legs, joining the two bottom flanges; stops at each frame',
       'Ridge blocking plate at each bridging row: fills the box, 50 mm bent edge on all four sides',
-      'Bridging straps run up to the ridge and lap over it'],
+      'Bridging straps end straight on the ridge-edge members; a ridge blocking plate sits at every bridging row'],
       governs: 'The two webs, the cap and the inner angle form a closed box that works as the ridge beam: about 8 kN per bay, about 6.5 kNm, against an estimated 9 to 10 kNm (preliminary). Ends of the ridge-edge members at the tracks: about 4 kN, near the web crippling limit, may need a clip.'}
   },
   factsHead: 'Key facts',
   facts: [
     ['Grid', '12\u00a0500 \u00d7 5\u00a0200 mm (3250 + 3000 + 3000 + 3250)'],
     ['Scope', 'Bare steel skeleton. Deck, covering and finishes by others, not relied on structurally.'],
+    ['Ridge', 'Closed ridge box: the two ridge-edge members, a folded cap and an inner angle, with a blocking plate at every bridging row'],
     ['Roof', '8 factory panels; purlins C150 at about 560 mm ending in asymmetric tracks (lower flange 70 mm); tracks screwed to the rafters at 600 mm; 6 mm gap between panels'],
     ['Main frames', 'Grids 2, 3, 4: back-to-back C150, steel tie rod at eaves'],
     ['Ground floor', 'Cross bearers on 15 soil screws, joists lengthwise'],
@@ -187,9 +188,10 @@ const T = {
   ],
   openHead: 'Open points',
   open: [
-    'Bridging rows to be spliced over the ridge to carry the down-slope load (with the ridge detail).',
     'Asymmetric track is a new section for FLINS.',
-    'Eave and ridge framing: to be detailed.',
+    'Eave framing: to be detailed.',
+    'Ends of the ridge-edge members at the tracks: about 4 kN, near the web crippling limit, may need a clip (preliminary).',
+    'Top purlin spacing at the ridge is about 630 mm, slightly over the 600 module.',
     'Skylight panel has no X-bracing by design; the neighbouring panels carry the bracing (to be shown in the calculation).',
     'Little bracing length on the glazed wall B.',
     'Cross bearers probably need a deeper section.',
@@ -232,6 +234,7 @@ var LAYERS=[
  {id:'rp',name:T.layers.rp,tok:'--c-purlin'},
  {id:'rb',name:T.layers.rb,tok:'--c-sky'},
  {id:'rx',name:T.layers.rx,tok:'--accent'},
+ {id:'rbox',name:T.layers.rbox,tok:'--d-mid'},
  {id:'loft',name:T.layers.loft,tok:'--c-loft'},
  {id:'straps',name:T.layers.straps,tok:'--c-strap'},
  {id:'parts',name:T.layers.parts,tok:'--c-part'},
@@ -404,8 +407,9 @@ function kp(s,q){return [COS*s-SIN*q, SIN*s+COS*q]}
 });
 
 /* ---------- 6 roof panels (8 factory panels on top of the rafters) ---------- */
-var SL=2.6/COS, LT=SL-0.010, PQ=0.15;
+var SL=2.6/COS, LT=SL+0.060, PQ=0.15;
 var PS=[0,1,2,3,4,5,6].map(function(i){return 0.025+i*0.5557});
+PS[6]=SL+0.060-0.0225;
 var BAYS=[[0,3.25],[3.25,6.25],[6.25,9.25],[9.25,12.5]];
 function roofFrame(side){
   return side<0?{o:V(0,EV,0),a:V(0,SIN,COS),p:V(0,COS,-SIN),x:V(1,0,0)}:{o:V(0,EV,W),a:V(0,SIN,-COS),p:V(0,COS,SIN),x:V(1,0,0)};
@@ -428,7 +432,7 @@ function panel(F,xa,xb,sky,side,bi){
       if(sky&&i>=2&&i<=4){               /* cripples, ending inside the head/sill tracks */
         LBL('Skylight '+MD+' cripple '+(i-1),function(){M('rp',P(PS[i],PQ,xl),P(PS[i],PQ,7.3575),0.045,0.15,{ref:F.p})});
         LBL('Skylight '+MD+' cripple '+(i+2),function(){M('rp',P(PS[i],PQ,8.1425),P(PS[i],PQ,xr),0.045,0.15,{ref:F.p})});
-      } else LBL(pn+' '+MD+' purlin '+(i+1),function(){M('rp',P(PS[i],PQ,xl),P(PS[i],PQ,xr),0.045,0.15,{ref:F.p})});
+      } else LBL(pn+' '+MD+(i===6?' ridge-edge member':' purlin '+(i+1)),function(){M('rp',P(PS[i],PQ,xl),P(PS[i],PQ,xr),0.045,0.15,{ref:F.p})});
     })(i);
   }
   /* blocking + bridging: mid-bay row, or two rows in line with the skylight head/sill */
@@ -439,8 +443,8 @@ function panel(F,xa,xb,sky,side,bi){
         M('rb',P(PS[b[0]]+0.0225,PQ,xr0),P(PS[b[1]]-0.0225,PQ,xr0),0.045,0.15,{ref:F.p});
       });
     });
-    LBL(bs+' top',function(){M('rb',P(0,qt,xr0),P(LT,qt,xr0),0.05,0.004,{ref:F.p})});
-    LBL(bs+' bottom',function(){M('rb',P(0,qb,xr0),P(LT,qb,xr0),0.05,0.004,{ref:F.p})});
+    LBL(bs+' top',function(){M('rb',P(0,qt,xr0),P(PS[6],qt,xr0),0.05,0.004,{ref:F.p})});
+    LBL(bs+' bottom',function(){M('rb',P(0,qb,xr0),P(PS[6],qb,xr0),0.05,0.004,{ref:F.p})});
   });
   if(sky){
     [[0.860,'lower'],[2.525,'upper']].forEach(function(j){
@@ -853,23 +857,20 @@ function ridgeBox(){
       cSection(sp(F,0.5185,0.1515,sx*0.0055),sp(F,0.5185,0.1515,xe),F.p,neg(F.a),{group:g,mat:DM.c2,label:'Next purlin '+n+' '+xn});
     });
     cSection(sp(F,-0.012,0.1515,XB),sp(F,0.4725,0.1515,XB),F.p,AX,{group:g,mat:DM.c2,label:'Block '+n});
-    /* top strap over the ridge-edge member and the cap, lap at the apex */
+    /* straps end straight on the ridge-edge member flanges */
     LBL('Bridging strap '+n+' top',function(){
-      var a=plane(k,1.1914,0.0015), b=plane(k,0.2,0.0015), c=plane(k,0.195,0.0045), d=plane(k,0,0.0045);
-      [[a,b],[b,c],[c,d]].forEach(function(sg){segBox(g,DM.rod,V(XB,sg[0].y,sg[0].z),V(XB,sg[1].y,sg[1].z),0.05,0.003)});
-      if(k>0){var e=plane(-1,0.08,0.0075);segBox(g,DM.rod,V(XB,d.y,d.z),V(XB,e.y,e.z),0.05,0.003)}
+      var a=plane(k,1.1914,0.0015), b=plane(k,0.1414,0.0015);
+      segBox(g,DM.rod,V(XB,a.y,a.z),V(XB,b.y,b.z),0.05,0.003);
     });
-    /* bottom strap, lapping onto the inner angle leg */
+    [-0.012,0.012].forEach(function(dx){[0.15,0.17].forEach(function(u){screw(g,plane(k,u,0.003).setX(XB+dx*(u>0.16?1:-1)),neg(F.p))})});
     LBL('Bridging strap '+n+' bottom',function(){
-      segBox(g,DM.rod,sp(F,1.0,0.0735,XB),sp(F,0.0,0.0735,XB),0.05,0.003);
-      segBox(g,DM.rod,sp(F,0.0,0.0705,XB),sp(F,-0.04,0.0705,XB),0.05,0.003);
+      segBox(g,DM.rod,sp(F,1.0,0.0735,XB),sp(F,-0.012,0.0735,XB),0.05,0.003);
     });
-    [-0.012,0.012].forEach(function(dx){screw(g,sp(F,-0.03,0.069,XB+dx),F.p)});
-    XL.forEach(function(x){screw(capG,plane(k,0.1544,0.003).setX(x),neg(F.p))});
+    [-0.012,0.012].forEach(function(dx){screw(g,sp(F,0.01,0.072,XB+dx),F.p)});
+    XL.forEach(function(x){screw(capG,plane(k,0.1544,0.009).setX(x),neg(F.p))});
   });
-  [-0.012,0.012].forEach(function(dx){[0.02,0.06].forEach(function(u){screw(g,plane(-1,u,0.009).setX(XB+dx),neg(Fk[-1].p))})});
   /* ridge cap (inverted V) */
-  LBL('Ridge cap',function(){[1,-1].forEach(function(k){segBox(capG,DM.mid,plane(k,0,0.0015).setX(0.6),plane(k,0.20,0.0015).setX(0.6),2.0,0.003)})});
+  LBL('Ridge cap',function(){[1,-1].forEach(function(k){segBox(capG,DM.mid,plane(k,-0.0115,0.0075).setX(0.6),plane(k,0.20,0.0075).setX(0.6),2.0,0.003)})});
   /* inner angle under the two bottom flanges, stops at the frame */
   [[0.075,1.6,'x+',[0.3,0.6,0.9,1.2,1.5]],[-0.4,-0.075,'x-',[-0.3]]].forEach(function(pc){
     var xc=(pc[0]+pc[1])/2, w=pc[1]-pc[0];
@@ -897,6 +898,30 @@ function ridgeBox(){
   addDetail('ridgebox',g);
 }
 ridgeBox();
+
+/* ---- ridge box in the whole-house model ---- */
+var capGrp=new THREE.Group(); capGrp.userData.extra=0.3; G.rbox.add(capGrp);
+function ridgeHouse(){
+  var YC=0.2976;
+  function hp(v){return V(v.x,v.y+RIDGE,v.z+2.6)}
+  function plane(k,u,off){return V(0,YC-u*SIN+off*COS,k*(u*COS+off*SIN))}
+  function plane2(k,u,off){return V(0,0.097-u*SIN+off*COS,k*(u*COS+off*SIN))}
+  function bay(xa,xb){var i=GX.indexOf(xa);return (i+1)+'-'+(i+2)}
+  LBL('Ridge cap',function(){[1,-1].forEach(function(k){
+    segBox(capGrp,MAT.rbox,hp(plane(k,-0.0115,0.0075)).setX(6.25),hp(plane(k,0.20,0.0075)).setX(6.25),12.5,0.003);
+  }); COUNT.rbox++});
+  [[0,3.25],[3.25,6.25],[6.25,9.25],[9.25,12.5]].forEach(function(b){
+    var xc=(b[0]+b[1])/2, w=b[1]-b[0]-0.15;
+    LBL('Ridge inner angle bay '+bay(b[0],b[1]),function(){[1,-1].forEach(function(k){
+      segBox(G.rbox,MAT.rbox,hp(plane2(k,0,-0.0015)).setX(xc),hp(plane2(k,0.045,-0.0015)).setX(xc),w,0.003);
+    }); COUNT.rbox++});
+  });
+  var q=0.07, Vb=[[0,0.101],[0.1006,0.2133],[0,0.2946],[-0.1006,0.2133]];
+  [[1.625,'1-2'],[4.75,'2-3'],[7.335,'3-4'],[7.75,'3-4'],[8.165,'3-4'],[10.875,'4-5']].forEach(function(r){
+    LBL('Ridge blocking plate bay '+r[1]+' at '+r[0],function(){plate(G.rbox,MAT.rptrim,Vb,0.003,V(0,0,1),V(0,1,0),V(r[0],RIDGE,2.6)); COUNT.rbox++});
+  });
+}
+ridgeHouse();
 
 /* ---------- lights, renderer, camera ---------- */
 scene.add(new THREE.HemisphereLight(0xffffff,0x7d8896,0.85));
@@ -993,7 +1018,7 @@ document.getElementById('v-reset').addEventListener('click',function(){setView('
 var explode=document.getElementById('explode');
 $('dexplode').addEventListener('change',function(){applyExplode($('dexplode').checked);setView('reset')});
 $('hidecap').addEventListener('change',function(){if(RIDGE_CAP)RIDGE_CAP.visible=!$('hidecap').checked});
-var roofParts=[G.rp,G.rb,G.rx,roofGlass];
+var roofParts=[G.rp,G.rb,G.rx,G.rbox,roofGlass,capGrp];
 
 /* ---------- details selector ---------- */
 var detailsEl=$('details'), dBtns={}, notesEl=$('notes');
@@ -1102,8 +1127,9 @@ updateSel();
 /* ---------- loop ---------- */
 (function loop(){
   requestAnimationFrame(loop);
-  var t=explode.checked?1.2:0;
+  var t0=explode.checked?1.2:0;
   roofParts.forEach(function(g){
+    var t=t0?t0+(g.userData.extra||0):0;
     var d=t-g.position.y;
     g.position.y=Math.abs(d)<0.002?t:g.position.y+d*0.15;
   });
