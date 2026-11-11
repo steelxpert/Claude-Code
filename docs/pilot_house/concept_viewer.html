@@ -90,6 +90,8 @@ button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-
       <button type="button" id="v-reset"></button>
     </div>
     <label class="chip" id="explodeChip"><input type="checkbox" id="explode"> <span id="t-explode"></span></label>
+    <label class="chip" id="dexChip" hidden><input type="checkbox" id="dexplode"> <span id="t-dex"></span></label>
+    <label class="chip" id="capChip" hidden><input type="checkbox" id="hidecap"> <span id="t-hidecap"></span></label>
   </div>
   <div class="selbar" id="selbar">
     <div class="selline"><span class="cnt" id="t-sel"></span>
@@ -124,7 +126,9 @@ const T = {
   },
   sel: {selected: 'Selected', hint: 'Click a member to highlight it. Click again to release.', clear: 'Clear selection', copy: 'Copy list', copied: 'Copied', manual: 'Press Ctrl+C to copy the selected text'},
   detailsLabel: 'Details',
-  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridge1: 'Ridge option 1 (draft)', ridge2: 'Ridge option 2 (draft)'},
+  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridgebox: 'Ridge box (draft)'},
+  hideCap: 'Hide ridge cap',
+  explodeView: 'Exploded view',
   notesLabels: {parts: 'Parts', governs: 'Governs', tag: 'CONCEPT \u2014 preliminary, not a check'},
   notes: {
     knee: {title: 'Knee and tie-rod end', parts: [
@@ -162,17 +166,13 @@ const T = {
       'Two bridging rows in line with the head and sill tracks, continuous from eave to ridge; the head and sill act as the blocking between the jambs',
       'Opening 780 \u00d7 1600 mm'],
       governs: 'jamb about 2.3 kNm over the 3.0 m bay (preliminary); head and sill carry three stub ends of about 0.45 kN each.'},
-    ridge1: {title: 'Ridge option 1: ridge beam + cap (draft)', parts: [
-      'Ridge beam: 2 \u00d7 C150 back-to-back, frame to frame, on a seat plate on the apex gusset',
-      'Ridge cap: folded 1.5 mm plate over the beam, screwed to the top purlins of both panels',
-      'Bridging straps of both slopes run up to the beam',
-      'Bridging row shown nearer to the frame than in the real panel (mid-bay)'],
-      governs: 'The down-slope load of both slopes meets at the ridge as a VERTICAL force, about 8 kN per bay at mid-span (preliminary); the ridge beam carries it to the frames: about 6.5 kNm against about 10 kNm for the C150 pair (preliminary).'},
-    ridge2: {title: 'Ridge option 2: cap + strap splice (draft)', parts: [
-      'Ridge cap: folded 1.5 mm plate, one part, screwed to the top purlins of both panels',
-      'Bridging straps of the two slopes spliced over the ridge',
-      'Bridging row shown nearer to the frame than in the real panel (mid-bay)'],
-      governs: 'The two slopes balance each other horizontally, but the vertical force at the ridge, about 8 kN per bay (preliminary), has no support of its own: it loads the two top purlins sideways over the 3.0 to 3.25 m bay. Acceptable only with a structural roof deck by others.'}
+    ridgebox: {title: 'Ridge box (draft)', parts: [
+      'Panels extended to the ridge: the lower corners of the two ridge-edge members meet on the ridge line',
+      'Ridge cap: folded 1.5 mm plate on the top flanges of both panels',
+      'Inner angle: folded 1.5 mm angle, 45 mm legs, joining the two bottom flanges; stops at each frame',
+      'Ridge blocking plate at each bridging row: fills the box, 50 mm bent edge on all four sides',
+      'Bridging straps run up to the ridge and lap over it'],
+      governs: 'The two webs, the cap and the inner angle form a closed box that works as the ridge beam: about 8 kN per bay, about 6.5 kNm, against an estimated 9 to 10 kNm (preliminary). Ends of the ridge-edge members at the tracks: about 4 kN, near the web crippling limit, may need a clip.'}
   },
   factsHead: 'Key facts',
   facts: [
@@ -201,7 +201,7 @@ const T = {
 function $(id){return document.getElementById(id)}
 document.title = T.docTitle;
 $('t-title').textContent = T.title; $('t-badge').textContent = T.badge; $('t-hint').textContent = T.hint;
-$('t-explode').textContent = T.explode; $('layers').setAttribute('aria-label', T.layersLabel);
+$('t-explode').textContent = T.explode; $('t-hidecap').textContent = T.hideCap; $('t-dex').textContent = T.explodeView; $('layers').setAttribute('aria-label', T.layersLabel);
 ['front','rear','top'].forEach(function(n){$('v-'+n).textContent = T.buttons[n]});
 $('v-reset').textContent = T.buttons.reset;
 $('t-h-facts').textContent = T.factsHead; $('t-h-open').textContent = T.openHead; $('t-foot').textContent = T.foot;
@@ -630,7 +630,59 @@ function clip(g,c,dA,nA,sA){
     screw(g,VA(VA(c,dA,0.003),nA,0.03).addScaledVector(w,k*0.035),neg(dA));
   });
 }
-function addDetail(key,g){g.visible=false;scene.add(g);DG[key]=g}
+function exOffset(key,label){
+  var P=V(0,COS,-SIN), sgn=/left|x\+/.test(label)?1:-1;
+  if(key==='knee'){
+    if(/Knee gusset|Packer/.test(label)) return V(0.25,0,0);
+    if(/Tie rod|Turnbuckle|Fork|Pin/.test(label)) return V(0,0,0.3);
+  } else if(key==='apex'){
+    if(/Apex gusset/.test(label)) return V(0.25,0,0);
+  } else if(key==='panel'){
+    var up=P.clone().multiplyScalar(0.2);
+    if(/Track/.test(label)) return up;
+    if(/Purlin/.test(label)) return up.add(V((/left/.test(label)?1:-1)*0.15,0,0));
+  } else if(key==='block'){
+    if(/strap top/.test(label)) return P.clone().multiplyScalar(0.25);
+    if(/strap bottom/.test(label)) return P.clone().multiplyScalar(-0.25);
+    if(/Block/.test(label)) return V(0.25,0,0);
+  } else if(key==='skyp'){
+    if(/Panel track|cap track/.test(label)) return P.clone().multiplyScalar(0.2);
+    var cm=label.match(/cripple (\d)/); if(cm) return V(+cm[1]<=3?-0.15:0.15,0,0);
+    if(/strap row \d top/.test(label)) return P.clone().multiplyScalar(0.25);
+    if(/strap row \d bottom/.test(label)) return P.clone().multiplyScalar(-0.25);
+  } else if(key==='ridgebox'){
+    var zs=/rear/.test(label)?-0.22:0.22;
+    if(/Rafter|Apex gusset|Bolt/.test(label)) return null;
+    if(/strap .*top/.test(label)) return V(0,0.70,zs);
+    if(/strap .*bottom/.test(label)) return V(0,-0.05,zs);
+    if(/Panel track|Ridge-edge|Next purlin|Block/.test(label)) return V(0,0.05,zs);
+    if(/Inner angle/.test(label)) return V(0,-0.22,0);
+    if(/blocking plate/.test(label)) return V(0,0.30,0);
+    if(/Ridge cap/.test(label)) return V(0,0.55,0);
+  }
+  return null;
+}
+function addDetail(key,g){
+  g.visible=false;scene.add(g);DG[key]=g;
+  g.traverse(function(o){
+    if(!o.isMesh) return;
+    o.userData.p0=o.position.clone();
+    var mem=o.userData.member;
+    if(mem){
+      o.userData.ex=exOffset(key,mem.label);
+      o.userData.fast=/Screw|Clip angle/.test(mem.label);
+    }
+  });
+}
+function applyExplode(on){
+  var g=DG[mode]; if(!g) return;
+  g.traverse(function(o){
+    if(!o.isMesh||!o.userData.p0) return;
+    o.position.copy(o.userData.p0);
+    if(on&&o.userData.ex) o.position.add(o.userData.ex);
+    if(o.userData.fast) o.visible=!on;
+  });
+}
 var CO={};
 function C1(g,l){return {group:g,mat:DM.c1,label:l}}
 function C2(g,l){return {group:g,mat:DM.c2,label:l}}
@@ -772,6 +824,7 @@ function uTrack0(a0,a1,webDir,flangeDir,o,D){
   [0,1,2,0,2,3].forEach(function(k){arr.push(gp[k].x,gp[k].y,gp[k].z)});
   gg.setAttribute('position',new THREE.Float32BufferAttribute(arr,3)); gg.computeVertexNormals();
   var gm=new THREE.Mesh(gg,MAT.glass); gm.renderOrder=2; gm.userData.nopick=true; g.add(gm);
+  gm.userData.ex=V(0,COS,-SIN).multiplyScalar(0.3);
   addDetail('skyp',g);
 })();
 
@@ -780,75 +833,70 @@ function segBox(g,mat,p,q,wx,th){
   var d=new THREE.Vector3().subVectors(q,p), len=d.length();
   obox(g,mat,p.clone().add(q).multiplyScalar(.5),AX,d.normalize(),wx,len+0.002,th);
 }
-function ridgeScene(opt){
-  var g=new THREE.Group(), key='ridge'+opt, YC=0.2977, XL=[-0.75,-0.45,-0.15,0.15,0.45,0.75];
-  dprefix=T.details[key];
+var RIDGE_CAP=null;
+function ridgeBox(){
+  var g=new THREE.Group(), capG=new THREE.Group(), YC=0.2976, XL=[-0.3,0,0.3,0.6,0.9,1.2,1.5];
+  g.add(capG); RIDGE_CAP=capG; dprefix=T.details.ridgebox;
   var Fk={'1':{o:V(0,0,0),a:V(0,-SIN,COS),p:V(0,COS,SIN),x:AX},'-1':{o:V(0,0,0),a:V(0,-SIN,-COS),p:V(0,COS,-SIN),x:AX}};
   function nm(k){return k>0?'front':'rear'}
   function plane(k,u,off){return V(0,YC-u*SIN+off*COS,k*(u*COS+off*SIN))}
-  var q=0.07, Yt=q/COS;
+  function plane2(k,u,off){return V(0,0.097-u*SIN+off*COS,k*(u*COS+off*SIN))}
+  var q=0.07, Yt=q/COS, XB=0.8;
   [1,-1].forEach(function(k){
     var F=Fk[k], n=nm(k);
     pairC(sp(F,0.06,0,0),sp(F,1.0,0,0),F.p,AX,k>0?C1(g,'Rafter '+n+' C'):C2(g,'Rafter '+n+' C'));
     [0.15,0.25].forEach(function(s){[-0.035,0.035].forEach(function(qq){bolt(g,sp(F,s,qq,0),AX,0.011)})});
     [1,-1].forEach(function(sx){
-      var xw=sx*(0.003+CT/2), xn=sx>0?'x+':'x-';
-      track(sp(F,0.010,0.1515,xw),sp(F,1.0,0.1515,xw),F.p,AX.clone().multiplyScalar(sx),{group:g,mat:DM.track,label:'Panel track '+n+' '+xn});
-      cSection(sp(F,0.0125,0.1515,sx*0.0055),sp(F,0.0125,0.1515,sx*0.8055),F.p,F.a,{group:g,mat:DM.c1,label:'Top purlin '+n+' '+xn});
-      cSection(sp(F,0.6135,0.1515,sx*0.0055),sp(F,0.6135,0.1515,sx*0.8055),F.p,neg(F.a),{group:g,mat:DM.c2,label:'Second purlin '+n+' '+xn});
+      var xw=sx*(0.003+CT/2), xn=sx>0?'x+':'x-', xe=sx>0?1.6:-0.4;
+      track(sp(F,-0.060,0.1515,xw),sp(F,1.0,0.1515,xw),F.p,AX.clone().multiplyScalar(sx),{group:g,mat:DM.track,label:'Panel track '+n+' '+xn});
+      cSection(sp(F,-0.05875,0.1515,sx*0.0055),sp(F,-0.05875,0.1515,xe),F.p,F.a,{group:g,mat:DM.c1,label:'Ridge-edge member '+n+' '+xn});
+      cSection(sp(F,0.5185,0.1515,sx*0.0055),sp(F,0.5185,0.1515,xe),F.p,neg(F.a),{group:g,mat:DM.c2,label:'Next purlin '+n+' '+xn});
     });
-    LBL('Bridging strap '+n+' bottom',function(){obox(g,DM.rod,sp(F,(1.0+0.0125)/2,0.0735,0.6),F.a,AX,1.0-0.0125,0.05,0.003)});
-    if(opt===1){
-      var B=V(0,0.168,k*0.152), A=V(0,0.1965,k*0.048), nk=V(0,COS,k*SIN), ak=V(0,-SIN,k*COS), nl=V(0,0.9647,k*0.2644);
-      var T1=B.clone().addScaledVector(ak,0.070);
-      var P1=B.clone().addScaledVector(ak,0.99).addScaledVector(nk,0.0015), P2=T1.clone().addScaledVector(nk,0.0045), P3=B.clone().addScaledVector(nk,0.0045),
-          P4=A.clone().addScaledVector(nl,0.0045), P5=V(0,0.2010,k*0.010);
-      LBL('Bridging strap '+n+' top',function(){
-        [[P1,P2],[P2,P3],[P3,P4],[P4,P5]].forEach(function(sg){
-          segBox(g,DM.rod,V(0.6,sg[0].y,sg[0].z),V(0.6,sg[1].y,sg[1].z),0.05,0.003);
-        });
+    cSection(sp(F,-0.012,0.1515,XB),sp(F,0.4725,0.1515,XB),F.p,AX,{group:g,mat:DM.c2,label:'Block '+n});
+    /* top strap over the ridge-edge member and the cap, lap at the apex */
+    LBL('Bridging strap '+n+' top',function(){
+      var a=plane(k,1.1914,0.0015), b=plane(k,0.2,0.0015), c=plane(k,0.195,0.0045), d=plane(k,0,0.0045);
+      [[a,b],[b,c],[c,d]].forEach(function(sg){segBox(g,DM.rod,V(XB,sg[0].y,sg[0].z),V(XB,sg[1].y,sg[1].z),0.05,0.003)});
+      if(k>0){var e=plane(-1,0.08,0.0075);segBox(g,DM.rod,V(XB,d.y,d.z),V(XB,e.y,e.z),0.05,0.003)}
+    });
+    /* bottom strap, lapping onto the inner angle leg */
+    LBL('Bridging strap '+n+' bottom',function(){
+      segBox(g,DM.rod,sp(F,1.0,0.0735,XB),sp(F,0.0,0.0735,XB),0.05,0.003);
+      segBox(g,DM.rod,sp(F,0.0,0.0705,XB),sp(F,-0.04,0.0705,XB),0.05,0.003);
+    });
+    [-0.012,0.012].forEach(function(dx){screw(g,sp(F,-0.03,0.069,XB+dx),F.p)});
+    XL.forEach(function(x){screw(capG,plane(k,0.1544,0.003).setX(x),neg(F.p))});
+  });
+  [-0.012,0.012].forEach(function(dx){[0.02,0.06].forEach(function(u){screw(g,plane(-1,u,0.009).setX(XB+dx),neg(Fk[-1].p))})});
+  /* ridge cap (inverted V) */
+  LBL('Ridge cap',function(){[1,-1].forEach(function(k){segBox(capG,DM.mid,plane(k,0,0.0015).setX(0.6),plane(k,0.20,0.0015).setX(0.6),2.0,0.003)})});
+  /* inner angle under the two bottom flanges, stops at the frame */
+  [[0.075,1.6,'x+',[0.3,0.6,0.9,1.2,1.5]],[-0.4,-0.075,'x-',[-0.3]]].forEach(function(pc){
+    var xc=(pc[0]+pc[1])/2, w=pc[1]-pc[0];
+    LBL('Inner angle '+pc[2],function(){[1,-1].forEach(function(k){segBox(g,DM.mid,plane2(k,0,-0.0015).setX(xc),plane2(k,0.045,-0.0015).setX(xc),w,0.003)})});
+    pc[3].forEach(function(x){[1,-1].forEach(function(k){screw(g,plane2(k,0.0225,-0.003).setX(x),Fk[k].p)})});
+  });
+  /* ridge blocking plate with bent edges */
+  var Vb=[[0,0.101],[0.1006,0.2133],[0,0.2946],[-0.1006,0.2133]];
+  LBL('Ridge blocking plate',function(){
+    plate(g,DM.trim,Vb,0.003,AZ,AY,V(XB,0,0));
+    for(var i=0;i<4;i++){
+      var p0=Vb[i], p1=Vb[(i+1)%4], dz=p1[0]-p0[0], dy=p1[1]-p0[1], len=Math.hypot(dz,dy);
+      var ez=dz/len, ey=dy/len, mz=(p0[0]+p1[0])/2, my=(p0[1]+p1[1])/2, nz=-ey, ny=ez;
+      if((0-mz)*nz+(0.2-my)*ny<0){nz=-nz;ny=-ny}
+      obox(g,DM.trim,V(XB+0.025,my+ny*0.0015,mz+nz*0.0015),V(0,ey,ez),AX,len,0.05,0.003);
+      [0.25,0.5,0.75].forEach(function(f){
+        var hz=p0[0]+dz*f+nz*0.003, hy=p0[1]+dy*f+ny*0.003;
+        screw(g,V(XB+0.025,hy,hz),V(0,-ny,-nz));
       });
-      screw(g,V(0.6,0.2025,k*0.025),neg(AY));
-      XL.forEach(function(x){screw(g,V(x,B.y,B.z).addScaledVector(ak,0.035).addScaledVector(nk,0.003),neg(nk))});
-    } else {
-      var off=0.0075, hdl=0.009;
-      LBL('Ridge cap leg '+n,function(){segBox(g,DM.mid,plane(k,0,off),plane(k,0.27,off),1.6,0.003)});
-      LBL('Bridging strap '+n+' top',function(){
-        var a=plane(k,1.1914,0.0015), b=plane(k,0,0.0015);
-        segBox(g,DM.rod,V(0.6,a.y,a.z),V(0.6,b.y,b.z),0.05,0.003);
-        if(k>0){var c=plane(-1,0.08,0.0045);segBox(g,DM.rod,V(0.6,b.y,b.z),V(0.6,c.y,c.z),0.05,0.003)}
-      });
-      XL.forEach(function(x){screw(g,plane(k,0.2264,hdl).setX(x),neg(Fk[k].p))});
     }
   });
-  if(opt===2){
-    [0.02,0.06].forEach(function(u){[-0.012,0.012].forEach(function(dx){screw(g,plane(-1,u,0.0075).setX(0.6+dx),neg(Fk[-1].p))})});
-  }
-  var ue=sp(Fk[1],0.4,q,0), le=sp(Fk[1],0.4,-q,0), pts;
-  if(opt===1){
-    var sc=(COS*q-0.039)/SIN, zc=COS*sc+SIN*q;
-    pts=[[-zc,0.039],[zc,0.039],[ue.z,ue.y],[le.z,le.y],[0,-Yt],[-le.z,le.y],[-ue.z,ue.y]];
-  } else pts=[[0,Yt],[ue.z,ue.y],[le.z,le.y],[0,-Yt],[-le.z,le.y],[-ue.z,ue.y]];
-  LBL('Apex gusset',function(){plate(g,DM.dark,pts,0.006,AZ,AY)});
-  if(opt===1){
-    LBL('Seat plate',function(){obox(g,DM.dark,V(0,0.042,0),AX,AY,0.20,0.006,0.12)});
-    [1,-1].forEach(function(sx){
-      pairC(V(sx*0.005,0.12,0),V(sx*0.8,0.12,0),AY,AZ,sx>0?C1(g,'Ridge beam x+ C'):C2(g,'Ridge beam x- C'));
-      [-0.03,0.03].forEach(function(z){bolt(g,V(sx*0.06,0.0425,z),AY,0.0085)});
-    });
-    LBL('Ridge cap',function(){
-      segBox(g,DM.mid,V(0,0.1965,-0.048),V(0,0.1965,0.048),1.6,0.003);
-      [1,-1].forEach(function(k){
-        var B=V(0,0.168,k*0.152);
-        segBox(g,DM.mid,V(0,0.1965,k*0.048),B,1.6,0.003);
-        segBox(g,DM.mid,B,B.clone().addScaledVector(V(0,-SIN,k*COS),0.070),1.6,0.003);
-      });
-    });
-    XL.forEach(function(x){[-0.03,0.03].forEach(function(z){screw(g,V(x,0.198,z),neg(AY))})});
-  }
-  addDetail(key,g);
+  /* apex gusset */
+  var ue=sp(Fk[1],0.4,q,0), le=sp(Fk[1],0.4,-q,0);
+  LBL('Apex gusset',function(){plate(g,DM.dark,[[0,Yt],[ue.z,ue.y],[le.z,le.y],[0,-Yt],[-le.z,le.y],[-ue.z,ue.y]],0.006,AZ,AY)});
+  addDetail('ridgebox',g);
 }
-ridgeScene(1); ridgeScene(2);
+ridgeBox();
 
 /* ---------- lights, renderer, camera ---------- */
 scene.add(new THREE.HemisphereLight(0xffffff,0x7d8896,0.85));
@@ -870,11 +918,11 @@ var mode='house', bounds={};
 function setView(name,cdir){
   var d,dir;
   if(mode!=='house'){
-    var rdg=mode.indexOf('ridge')===0;
-    if(!bounds[mode]) bounds[mode]=rdg?new THREE.Box3(V(-0.1,-0.4,-0.6),V(0.1,0.35,0.6)):new THREE.Box3().setFromObject(DG[mode]);
-    var bb=bounds[mode], ctr=bb.getCenter(new THREE.Vector3());
+    var rdg=mode.indexOf('ridge')===0, dx=$('dexplode').checked, bkey=mode+(dx?'x':'');
+    if(!bounds[bkey]) bounds[bkey]=rdg?(dx?new THREE.Box3(V(-0.4,-0.45,-0.95),V(1.6,1.1,0.95)):new THREE.Box3(V(-0.4,-0.4,-0.6),V(1.6,0.35,0.6))):new THREE.Box3().setFromObject(DG[mode]);
+    var bb=bounds[bkey], ctr=bb.getCenter(new THREE.Vector3());
     var slope=(mode==='block'||mode==='skyp'), pan=(mode==='panel');
-    dir=cdir?cdir.clone():({front:V(0,0.12,1),rear:V(0,0.12,-1),top:V(0,1,0.001)})[name]||(rdg?V(1,0.2,0.15):pan?V(0.25,-0.45,-0.93):slope?V(0.55,0.54,-0.91):V(1,0.25,0.35));
+    dir=cdir?cdir.clone():({front:V(0,0.12,1),rear:V(0,0.12,-1),top:V(0,1,0.001)})[name]||(rdg?V(1,0.06,0.02):pan?V(0.25,-0.45,-0.93):slope?V(0.55,0.54,-0.91):V(1,0.25,0.35));
     dir.normalize();
     camera.position.copy(ctr).add(dir); camera.lookAt(ctr); camera.updateMatrixWorld();
     var rt=V(1,0,0).applyQuaternion(camera.quaternion), upv=V(0,1,0).applyQuaternion(camera.quaternion);
@@ -883,7 +931,7 @@ function setView(name,cdir){
       var cp=V(ci&1?bb.max.x:bb.min.x,ci&2?bb.max.y:bb.min.y,ci&4?bb.max.z:bb.min.z).sub(ctr);
       dh=Math.max(dh,cp.dot(dir)+Math.abs(cp.dot(rt))/th); dv=Math.max(dv,cp.dot(dir)+Math.abs(cp.dot(upv))/tv);
     }
-    d=rdg?Math.max(dh,dv)*1.7:pan?Math.max(dh*1.08,dv*0.8):slope?Math.max(dh,dv)*1.08:Math.max(dh*1.08,dv*1.2);
+    d=rdg?Math.max(dh,dv)*1.05:pan?Math.max(dh*1.08,dv*0.8):slope?Math.max(dh,dv)*1.08:Math.max(dh*1.08,dv*1.2);
     controls.target.copy(ctr);
     camera.position.copy(ctr).addScaledVector(dir,d);
     camera.lookAt(ctr); controls.update();
@@ -943,6 +991,8 @@ LAYERS.forEach(function(l){
 ['front','rear','top'].forEach(function(n){document.getElementById('v-'+n).addEventListener('click',function(){setView(n)})});
 document.getElementById('v-reset').addEventListener('click',function(){setView('reset')});
 var explode=document.getElementById('explode');
+$('dexplode').addEventListener('change',function(){applyExplode($('dexplode').checked);setView('reset')});
+$('hidecap').addEventListener('change',function(){if(RIDGE_CAP)RIDGE_CAP.visible=!$('hidecap').checked});
 var roofParts=[G.rp,G.rb,G.rx,roofGlass];
 
 /* ---------- details selector ---------- */
@@ -960,7 +1010,11 @@ function renderNotes(k){
   notesEl.hidden=false;
 }
 function showMode(k){
-  clearSel(); mode=k; var house=k==='house';
+  clearSel();
+  if(mode!=='house'){$('dexplode').checked=false;applyExplode(false)}
+  mode=k; $('dexChip').hidden=(k==='house');
+  camera.fov=(k==='ridgebox')?12:40; camera.updateProjectionMatrix();
+  $('hidecap').checked=false; if(RIDGE_CAP) RIDGE_CAP.visible=true; $('capChip').hidden=(k!=='ridgebox'); var house=k==='house';
   LAYERS.forEach(function(l){l.group.visible=house&&cbs[l.id].checked});
   gridLines.visible=house; labels.forEach(function(l){l.sp.visible=house});
   layersEl.style.display=house?'':'none'; $('explodeChip').style.display=house?'':'none';
@@ -970,7 +1024,7 @@ function showMode(k){
   renderNotes(k); setView('reset');
 }
 window.__view=function(x,y,z){setView('custom',V(x,y,z))};
-['house','knee','apex','panel','block','skyp','ridge1','ridge2'].forEach(function(k){
+['house','knee','apex','panel','block','skyp','ridgebox'].forEach(function(k){
   var b=document.createElement('button'); b.type='button'; b.id='d-'+k; b.textContent=T.details[k];
   b.setAttribute('aria-pressed',k==='house'?'true':'false');
   b.addEventListener('click',function(){showMode(k)});
