@@ -144,7 +144,7 @@ const T = {
       'Head and sill: one U150 track each, down the slope between the jambs, web facing the window',
       'Three cut purlins end as six cripples inside the head and sill tracks',
       'Jamb cap track stopped 50 mm short at each end so the C enters the panel track',
-      'Two bridging rows beside the opening instead of the mid-bay row',
+      'Two bridging rows in line with the head and sill tracks, continuous from eave to ridge; the head and sill act as the blocking between the jambs',
       'Opening 780 \u00d7 1600 mm'],
       governs: 'jamb about 2.3 kNm over the 3.0 m bay (preliminary); head and sill carry three stub ends of about 0.45 kN each.'}
   },
@@ -378,12 +378,13 @@ function panel(F,xa,xb,sky){
     } else M('rp',P(PS[i],PQ,xl),P(PS[i],PQ,xr),0.045,0.15,{ref:F.p});
   }
   /* blocking + bridging: mid-bay row, or two rows beside the skylight */
-  (sky?[7.15,8.35]:[xm]).forEach(function(xr0){
+  (sky?[7.335,8.165]:[xm]).forEach(function(xr0){
+    var qt=sky?0.2325:0.2285, qb=sky?0.0675:0.0715;
     [[0,1],[5,6]].forEach(function(b){
       M('rb',P(PS[b[0]]+0.0225,PQ,xr0),P(PS[b[1]]-0.0225,PQ,xr0),0.045,0.15,{ref:F.p});
     });
-    M('rb',P(0,0.2285,xr0),P(LT,0.2285,xr0),0.05,0.004,{ref:F.p});
-    M('rb',P(0,0.0715,xr0),P(LT,0.0715,xr0),0.05,0.004,{ref:F.p});
+    M('rb',P(0,qt,xr0),P(LT,qt,xr0),0.05,0.004,{ref:F.p});
+    M('rb',P(0,qb,xr0),P(LT,qb,xr0),0.05,0.004,{ref:F.p});
   });
   if(sky){
     [0.860,2.525].forEach(function(s0){M('rp',P(s0,PQ,xl),P(s0,PQ,xr),0.05,0.153,{ref:F.p,mat:MAT.rptrim})});
@@ -686,11 +687,11 @@ function uTrack(a0,a1,webDir,flangeDir,o,D){
     });
   });
   /* two bridging rows beside the opening */
-  [-0.6,0.6].forEach(function(x){
+  [-0.415,0.415].forEach(function(x){
     var sm=(S0+S1)/2, ln=S1-S0;
     obox(g,DM.rod,sp(F,sm,0.2305,x),F.a,F.x,ln,0.05,0.003);
     obox(g,DM.rod,sp(F,sm,0.0695,x),F.a,F.x,ln,0.05,0.003);
-    [PSP(1),PSP(5)].forEach(function(s){
+    [PSP(1),PSP(5),0.860+0.001,2.525+0.001,1.2,1.7,2.2].forEach(function(s){
       screw(g,sp(F,s+0.022,0.232,x),neg(F.p));
       screw(g,sp(F,s+0.022,0.068,x),F.p);
     });
