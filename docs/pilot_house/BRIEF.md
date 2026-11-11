@@ -154,3 +154,5 @@ detailed.
 Owner's working rules for this thread: one item at a time (instruction -> comment ->
 approval -> implement -> check -> next); every sketch as an assembly view and an exploded
 view; few words, judge by pictures; end products Hungarian, working versions English.
+
+Grid naming (owner, 2026-11-11): cross grids A (rear wall, door, Z=0), B (centre line, middle soil screws), C (front wall, glazed). Earlier text in this brief that says "wall B" for the glazed front means wall C.

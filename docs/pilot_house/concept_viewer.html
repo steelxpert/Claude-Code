@@ -7,7 +7,7 @@
   --c-screw:#6c7785; --c-floor:#4d6d8e; --c-wall:#7b8ea3; --c-frame:#2c4863;
   --c-rod:#e8590c; --c-purlin:#5d86a9; --c-sky:#3b878c; --c-loft:#6b6f9c;
   --c-strap:#e8590c; --c-part:#b9c5d2; --c-glass:#8fc6ea;
-  --d-c1:#5f86ab; --d-c2:#9fb6cd; --d-dark:#36424f; --d-bolt:#151b22; --c-track:#2f4b66; --c-trim:#c28a2e; --d-mid:#7a9a6c; --hl:#d6009b;
+  --d-c1:#5f86ab; --d-c2:#9fb6cd; --d-dark:#36424f; --d-bolt:#151b22; --c-track:#2f4b66; --c-trim:#c28a2e; --d-mid:#7a9a6c; --hl:#d6009b; --c-gridline:#6f8196;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
@@ -17,7 +17,7 @@
     --c-screw:#8e99a8; --c-floor:#6c93b8; --c-wall:#8fa3b9; --c-frame:#5a86b0;
     --c-rod:#ff8a3d; --c-purlin:#7aa6c9; --c-sky:#52a9ae; --c-loft:#8b90c2;
     --c-strap:#ff8a3d; --c-part:#5b6b7d; --c-glass:#5aa3d0;
-    --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585; --hl:#ff3fcf;
+    --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585; --hl:#ff3fcf; --c-gridline:#6d86a0;
     color-scheme:dark;
   }
 }
@@ -27,7 +27,7 @@
   --c-screw:#8e99a8; --c-floor:#6c93b8; --c-wall:#8fa3b9; --c-frame:#5a86b0;
   --c-rod:#ff8a3d; --c-purlin:#7aa6c9; --c-sky:#52a9ae; --c-loft:#8b90c2;
   --c-strap:#ff8a3d; --c-part:#5b6b7d; --c-glass:#5aa3d0;
-  --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585; --hl:#ff3fcf;
+  --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585; --hl:#ff3fcf; --c-gridline:#6d86a0;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -130,7 +130,7 @@ const T = {
   layers: {
     screws: 'Soil screws', floor: 'Ground floor frame', walls: 'Wall panels (load-bearing)',
     frames: 'Main frames', rods: 'Tie rods',
-    rp: 'Roof panels: purlins + tracks', rb: 'Roof panels: blocking + bridging', rx: 'Roof panels: strap bracing', rbox: 'Ridge box',
+    rp: 'Roof panels: purlins + tracks', rb: 'Roof panels: blocking + bridging', rx: 'Roof panels: strap bracing', rbox: 'Ridge box', grid: 'Grid lines',
     loft: 'Loft floor', straps: 'Strap bracing', parts: 'Partitions (non-load-bearing)', glass: 'Glazing'
   },
   sel: {selected: 'Selected', hint: 'Click a member to highlight it. Click again to release.', clear: 'Clear selection', copy: 'Copy list', copied: 'Copied', manual: 'Press Ctrl+C to copy the selected text', hidden: 'Hidden', showAll: 'Show all', help: 'Right-click for the menu \u00b7 H hide \u00b7 I isolate \u00b7 G ghost others \u00b7 F zoom \u00b7 S same kind \u00b7 V invert visibility \u00b7 A show all \u00b7 Esc clear'},
@@ -203,12 +203,12 @@ const T = {
     'Eave framing: to be detailed.',
     'Ends of the ridge-edge members at the tracks: about 4 kN, near the web crippling limit, may need a clip (preliminary).',
     'Top purlin spacing at the ridge is about 630 mm, slightly over the 600 module.',
-    'Little bracing length on the glazed wall B.',
+    'Little bracing length on the glazed wall C.',
     'Cross bearers probably need a deeper section.',
     'Bolt bearing in 1.5 mm webs at frame joints.',
     'Uplift on the soil screws.'
   ],
-  foot: 'Grid lines: 1\u20135 along the length, A (rear) and B (front, glazed) across. Counts beside each layer are drawn members.'
+  foot: 'Grid lines: 1\u20135 along the length, A (rear), B (centre) and C (front, glazed) across. Counts beside each layer are drawn members.'
 };
 function $(id){return document.getElementById(id)}
 document.title = T.docTitle;
@@ -248,7 +248,8 @@ var LAYERS=[
  {id:'loft',name:T.layers.loft,tok:'--c-loft'},
  {id:'straps',name:T.layers.straps,tok:'--c-strap'},
  {id:'parts',name:T.layers.parts,tok:'--c-part'},
- {id:'glass',name:T.layers.glass,tok:'--c-glass'}
+ {id:'glass',name:T.layers.glass,tok:'--c-glass'},
+ {id:'grid',name:T.layers.grid,tok:'--c-gridline'}
 ];
 var scene=new THREE.Scene();
 scene.background=new THREE.Color(0xe3e8ee);
@@ -329,15 +330,15 @@ function QUAD(id,pts,o){
 
 /* ---------- 1 soil screws ---------- */
 GX.forEach(function(x,xi){[0,2.6,5.2].forEach(function(z,zi){
-  LBL('Soil screw '+(xi+1)+'/'+['A','mid','B'][zi],function(){
+  LBL('Soil screw '+(xi+1)+'/'+['A','B','C'][zi],function(){
     CYL('screws',V(x,-1.6,z),V(x,FL-0.2,z),0.09);
     B('screws',x,FL-0.2-0.005,z,0.2,0.01,0.2,{nocount:true});
   });
 });});
 
 /* ---------- 2 ground floor ---------- */
-GX.forEach(function(x,xi){LBL('Floor bearer grid '+(xi+1),function(){M('floor',V(x,FL-0.1,0),V(x,FL-0.1,W),0.09,0.2)})});
-[0,W].forEach(function(z,zi){LBL('Floor rim joist '+['A','B'][zi],function(){M('floor',V(0,FL-0.075,z),V(L,FL-0.075,z),0.045,0.15)})});
+GX.forEach(function(x,xi){LBL('Cross bearer grid '+(xi+1),function(){M('floor',V(x,FL-0.1,0),V(x,FL-0.1,W),0.09,0.2)})});
+[0,W].forEach(function(z,zi){LBL('Floor rim joist '+['A','C'][zi],function(){M('floor',V(0,FL-0.075,z),V(L,FL-0.075,z),0.045,0.15)})});
 SEQ('Floor joist',function(){
 for(var bi=0;bi<4;bi++){
   [0.4,1.0,1.6,2.2,3.0,3.6,4.2,4.8].forEach(function(z){
@@ -362,15 +363,15 @@ SEQ('Wall A member',function(){
   LBL('Wall A door header',function(){M('walls',V(1.6,FL+2.175,z),V(2.5,FL+2.175,z),0.09,0.15)});
   LBL('Wall A door cripple',function(){M('walls',V(2.05,FL+2.25,z),V(2.05,EV-0.04,z),0.045,0.15)});
 });
-// wall B (front, glazed)
-SEQ('Wall B member',function(){
+// wall C (front, glazed)
+SEQ('Wall C member',function(){
   var z=W, ro={ref:NZ};
-  LBL('Wall B bottom track',function(){M('walls',V(0,FL+0.02,z),V(L,FL+0.02,z),0.04,0.15,ro)});
-  LBL('Wall B top track',function(){M('walls',V(0,EV-0.02,z),V(L,EV-0.02,z),0.04,0.15,ro)});
+  LBL('Wall C bottom track',function(){M('walls',V(0,FL+0.02,z),V(L,FL+0.02,z),0.04,0.15,ro)});
+  LBL('Wall C top track',function(){M('walls',V(0,EV-0.02,z),V(L,EV-0.02,z),0.04,0.15,ro)});
   var xs=steps(0,3,0.6).concat([3.25,11.6,12.2,12.5]);
-  SEQ('Wall B stud',function(){xs.forEach(function(x){M('walls',V(x,FL+0.04,z),V(x,EV-0.04,z),0.045,0.15)})});
-  SEQ('Wall B mullion',function(){[4.8,6.35,7.9,9.45,11.0].forEach(function(x){M('walls',V(x,FL+0.04,z),V(x,EV-0.22,z),0.09,0.15)})});
-  LBL('Wall B glazing header',function(){M('walls',V(3.25,EV-0.12,z),V(11.0,EV-0.12,z),0.09,0.2)});
+  SEQ('Wall C stud',function(){xs.forEach(function(x){M('walls',V(x,FL+0.04,z),V(x,EV-0.04,z),0.045,0.15)})});
+  SEQ('Wall C mullion',function(){[4.8,6.35,7.9,9.45,11.0].forEach(function(x){M('walls',V(x,FL+0.04,z),V(x,EV-0.22,z),0.09,0.15)})});
+  LBL('Wall C glazing header',function(){M('walls',V(3.25,EV-0.12,z),V(11.0,EV-0.12,z),0.09,0.2)});
 });
 // gables
 function gable(x,win){
@@ -398,7 +399,7 @@ gable(L,{z0:3.0,z1:4.5,y0:0.4,y1:1.9});
 function kp(s,q){return [COS*s-SIN*q, SIN*s+COS*q]}
 [3.25,6.25,9.25].forEach(function(x,fi){
   var fn=fi+2, ff='Frame '+fn;
-  [0,W].forEach(function(z,zi){LBL(ff+' leg '+['A','B'][zi],function(){M('frames',V(x,FL,z),V(x,EV,z),0.096,0.15)})});
+  [0,W].forEach(function(z,zi){LBL(ff+' leg '+['A','C'][zi],function(){M('frames',V(x,FL,z),V(x,EV,z),0.096,0.15)})});
   LBL(ff+' rafter rear',function(){M('frames',V(x,EV,0),V(x,RIDGE,2.6),0.096,0.15)});
   LBL(ff+' rafter front',function(){M('frames',V(x,EV,W),V(x,RIDGE,2.6),0.096,0.15)});
   /* knee gussets (below the rafter top plane) */
@@ -530,16 +531,23 @@ var gridMat=new THREE.LineBasicMaterial({color:0xb4bfcc,transparent:true,opacity
   var g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
   gridLines=new THREE.LineSegments(g,gridMat); scene.add(gridLines);
 })();
+var glMat=new THREE.MeshBasicMaterial({color:0x6f8196});
+(function(){
+  var X0=-0.8, X1=L+0.8, Z0=-0.8, Z1=W+0.8, m;
+  [0,2.6,W].forEach(function(z){m=new THREE.Mesh(new THREE.BoxGeometry(X1-X0,0.004,0.035),glMat);m.position.set((X0+X1)/2,0.012,z);G.grid.add(m)});
+  GX.forEach(function(x){m=new THREE.Mesh(new THREE.BoxGeometry(0.035,0.004,Z1-Z0),glMat);m.position.set(x,0.012,(Z0+Z1)/2);G.grid.add(m)});
+  COUNT.grid=8;
+})();
 var labels=[];
 function label(text,x,z){
   var c=document.createElement('canvas'); c.width=c.height=96;
   var tex=new THREE.CanvasTexture(c);
   var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,depthTest:false,transparent:true}));
-  sp.scale.set(0.6,0.6,1); sp.position.set(x,0.05,z); sp.renderOrder=5; scene.add(sp);
+  sp.scale.set(0.6,0.6,1); sp.position.set(x,0.05,z); sp.renderOrder=5; G.grid.add(sp);
   labels.push({c:c,tex:tex,text:text,sp:sp});
 }
-['1','2','3','4','5'].forEach(function(t,i){label(t,GX[i],6.2)});
-label('A',-1.0,0); label('B',-1.0,W);
+[['A',0],['B',2.6],['C',W]].forEach(function(l){label(l[0],-1.1,l[1]);label(l[0],L+1.1,l[1])});
+GX.forEach(function(x,i){label(String(i+1),x,-1.1);label(String(i+1),x,W+1.1)});
 function paintLabels(color){
   labels.forEach(function(l){
     var g=l.c.getContext('2d'); g.clearRect(0,0,96,96);
@@ -1011,7 +1019,7 @@ function applyTheme(){
   DM.c1.color.set(c('--d-c1')); DM.c2.color.set(c('--d-c2')); DM.dark.color.set(c('--d-dark')); DM.rod.color.set(c('--accent')); DM.bolt.color.set(c('--d-bolt')); DM.track.color.set(c('--c-track')); DM.trim.color.set(c('--c-trim')); DM.mid.color.set(c('--d-mid')); MAT.rptrack.color.set(c('--c-track')); MAT.rptrim.color.set(c('--c-trim')); repaintSel();
   edgeMat.color.set(c('--edge'));
   gridMat.color.set(c('--grid'));
-  paintLabels(c('--muted'));
+  glMat.color.set(c('--c-gridline')); paintLabels(c('--text'));
 }
 applyTheme();
 if(window.matchMedia){
