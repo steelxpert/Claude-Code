@@ -929,7 +929,15 @@ function ridgeHouse(){
   });
   var q=0.07, Vb=[[0,0.101],[0.1006,0.2133],[0,0.2946],[-0.1006,0.2133]];
   [[1.625,'1-2'],[4.75,'2-3'],[7.335,'3-4'],[7.75,'3-4'],[8.165,'3-4'],[10.875,'4-5']].forEach(function(r){
-    LBL('Ridge blocking plate bay '+r[1]+' at '+r[0],function(){plate(G.rbox,MAT.rptrim,Vb,0.003,V(0,0,1),V(0,1,0),V(r[0],RIDGE,2.6)); COUNT.rbox++});
+    LBL('Ridge blocking plate bay '+r[1]+' at '+r[0],function(){
+      plate(G.rbox,MAT.rptrim,Vb,0.003,V(0,0,1),V(0,1,0),V(r[0],RIDGE,2.6)); COUNT.rbox++;
+      for(var i=0;i<4;i++){
+        var p0=Vb[i], p1=Vb[(i+1)%4], dz=p1[0]-p0[0], dy=p1[1]-p0[1], len=Math.hypot(dz,dy);
+        var ez=dz/len, ey=dy/len, mz=(p0[0]+p1[0])/2, my=(p0[1]+p1[1])/2, nz=-ey, ny=ez;
+        if((0-mz)*nz+(0.2-my)*ny<0){nz=-nz;ny=-ny}
+        obox(G.rbox,MAT.rptrim,V(r[0]+0.025,RIDGE+my+ny*0.0015,2.6+mz+nz*0.0015),V(0,ey,ez),V(1,0,0),len,0.05,0.003);
+      }
+    });
   });
 }
 ridgeHouse();
@@ -1060,6 +1068,8 @@ function showMode(k){
   renderNotes(k); setView('reset');
 }
 window.__view=function(x,y,z){setView('custom',V(x,y,z))};
+window.__cam=function(a,b,c,d,e,f){camera.position.set(a,b,c);controls.target.set(d,e,f);controls.update()};
+window.__members=MEMBERS;
 ['house','knee','apex','panel','block','skyp','ridgebox'].forEach(function(k){
   var b=document.createElement('button'); b.type='button'; b.id='d-'+k; b.textContent=T.details[k];
   b.setAttribute('aria-pressed',k==='house'?'true':'false');
