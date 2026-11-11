@@ -4,7 +4,7 @@ Purpose: session handoff. A new session reads `harness/README.md` (how the home 
 this file (where we are) and the newest `gotchas.md` section, then the kickoff it was
 given. Method comes from the skills named in the README skill map, never from here.
 
-Last updated: 2026-11-10 (FLIN-003, cloud). Register and queue in §6–§7.
+Last updated: 2026-11-11 (FLIN-003, cloud). Register and queue in §6–§7.
 
 **Direction change (kick-off, Tuesday 2026-11-10, D-012…D-014):** the floor-system
 development programme (catalogue, GMNIA campaign, T-series, app) is ON HOLD; the owner
@@ -49,6 +49,9 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | D-012 | Kick-off outcome (2026-11-10): the product idea (CFS / LGS frame system on screw piles) is agreed to be good, but FLINS will not fund the structural + software development programme until they know (a) what superstructure is built on the foundation frame and (b) the market (residential, commercial, defence). Catalogue freeze, GMNIA campaign, T0–T6 tests and app development are ON HOLD; nothing issued so far is withdrawn | FLIN-003 |
 | D-013 | Owner's proposal at the meeting: STEELXPERT designs one complete small pilot (test) house on screw piles — a modern barn-house style weekend cottage — with floor (foundation) frame, load-bearing external and non-load-bearing internal walls, partial upper floor (ceiling) frame, roof, wall bracing, window framing, skylight; deliverable = 3D model + EC-compliant calculation for a set price and end date, as the basis of FLINS in-house discussion. Status: PROPOSED, FLINS acceptance pending (O-010) | FLIN-003 |
 | D-014 | FLIN-003 scope steps 2–5 (catalogue v0, GMNIA case matrix, recipes, CONTRIBUTING) NOT run: their input (rolled profile set, deck decision D1) was not decided and D-012 parks them. `floorframe/` stays as is (12 tests) | FLIN-003 |
+| D-015 | Pilot house concept, owner Q&A (2026-11-10): reference geometry 12.5 x 5.2 m grid, gable about 40 deg; CFS frames on grids 2, 3, 4 with a steel tie rod at eaves; loft over bay 1-2; skylight on the rear slope; ground floor on cross bearers and 15 soil screws; profiles C150x45x1.5 / U150x45, nothing thicker than 1.5 mm; screws / rivets, bolts only at primary joints; envelope loads for Hungary; framing-level model in SpaceClaim, about 4 weeks. Record: `docs/pilot_house/BRIEF.md` | FLIN-003 |
+| D-016 | Owner's working rules for the pilot house: one item at a time (instruct -> comment -> approve -> implement -> check); few words, judge by pictures; every sketch as assembly + exploded view; draft before publishing; FLINS delivers the bare steel skeleton, deck and finishes by others and never relied on structurally; end products Hungarian, working versions English | FLIN-003 |
+| D-017 | Framing decided so far (owner-approved, shown in `docs/pilot_house/concept_viewer.html`, recorded in BRIEF 7.4 onward): roof = 8 shop panels on the frame rafters, purlins ending in asymmetric tracks, blocking + strap bridging, framed skylight 780 x 1600 with boxed jambs, closed ridge box with blocking plates, diagonal straps in the gable-end bays only; cross grids A / B / C on the soil screw lines (front wall = wall C); slotted web perforations 38 x 100 at 600; eave: roof panel's lowest edge on the inner top edge of the wall track, folded cap outside and angle inside; long walls = shop panels per bay, single end studs back-to-back with the neighbour (they are the frame leg), two bridging rows; door with boxed header and capped jambs, bottom track cut out on site | FLIN-003 |
 | D-010 | Tuesday 2026-11-11 kick-off: live at FLINS, Dunaújváros; decisions first (the six items of deck slide 17), then workstreams; no new client material is prepared for it; the agenda is the owner's internal chair notes (`harness/meetings/2026-11-11_kickoff_Dunaujvaros.md`) | FLIN-002 |
 
 ## 4. Open owner items (O-nnn)
@@ -66,6 +69,7 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | O-010 | Pilot house (D-013): FLINS acceptance; fixed price and end date; brief (footprint, storeys, roof pitch, site / snow / wind zone, cladding and build-ups, profile set FLINS can roll today, preferred joints); 3D model format FLINS can open; one written proposal letter (structural-proposal-letter skill) | owner + FLINS, open |
 | O-011 | Project number / Drive folder: does the pilot house stay under 2026.032a or get its own number; O-001 rename stays blocked until an order exists | owner |
 | O-012 | The meeting note file is named 2026-11-11 but the kick-off Tuesday was 2026-11-10; file not renamed (no restructuring without say-so) | owner |
+| O-013 | Pilot house, still to instruct (owner): glazed bays of wall C; knee joint (rafter foot vs the end-stud leg); gable walls; remaining wall bracing (wall A has one braced bay); loft; ground floor; partitions. For the calculation: wind on the long walls with roof diagonals only in the end bays; ridge-edge member ends about 4 kN; eccentric bearing at the eave; asymmetric track is a new section for FLINS | open |
 | O-008 | FLiBess EN-HU glossary (`research/glossary_EN-HU_Eurocode.md`) and its use rules: copy into this repo or keep the Drive copy as the single source | open |
 
 ## 5. Standing rules (non-negotiables)
@@ -88,17 +92,15 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 |---|---|---|---|
 | FLIN-001 | 2026-11-08 | cloud, model n/r | client meeting material: HU notes FLINS-CFS-001…005 (-HU), deck (17 slides), detail figures D01–D09, glossary alignment, light reading-copy format; branch `claude/trusting-mayer-47ebp9` to 8676f47 |
 | FLIN-002 | 2026-11-08 | cloud, Fable 5.1 high | home and harness decided by owner Q&A (D-001…D-005, D-010, D-011); `harness/` created; flins/FLIN registered in the ledger (rows FLIN-001, FLIN-002); Tuesday chair notes drafted; smart token rule and venue rule encoded; 3w-cp skill patch built (`harness/skills-proposed/3w-cp.zip`, owner uploads) |
-| FLIN-003 | 2026-11-10 | cloud (model in the ledger row) | context verified (1382e5e, 12 passed, ledger FLIN-003); kick-off outcome logged: D-012 programme on hold, D-013 pilot house proposed, D-014 catalogue / case matrix not run; O-005…O-007 re-statused, O-010…O-012 new; kickoff FLIN-004 written |
+| FLIN-003 | 2026-11-10..11 | cloud (model in the ledger row) | context verified (1382e5e, 12 passed, ledger FLIN-003); kick-off outcome logged: D-012 programme on hold, D-013 pilot house proposed, D-014 catalogue / case matrix not run; then, at the owner's lead, the pilot house concept: brief by Q&A (D-015), interactive 3D viewer with detail scenes and member picking, roof / ridge / eave / long wall panels / door decided item by item (D-016, D-017); branch at 5ccf1cc; kickoff FLIN-004 rewritten |
 
 ## 7. Queue
 
-1. **FLIN-004** — pilot house, scoping (only after the owner confirms FLINS wants it, O-010):
-   design brief + design basis (EN 1990 / 1991 actions for the site, EN 1993-1-3 members,
-   EN 1993-1-8 joints, bracing concept, screw-pile reactions), framing methodology list
-   (what the house must demonstrate), work breakdown with hours, and the fixed-price
-   proposal letter. Kickoff: `harness/kickoffs/KICKOFF_FLIN-004.txt`.
+1. **FLIN-004** — pilot house framing, continued one item at a time (O-013): glazed bays of
+   wall C, knee joint, gable walls, loft, ground floor; then the work breakdown in hours and
+   the Hungarian fixed-price offer with the viewer as attachment (O-010). Kickoff:
+   `harness/kickoffs/KICKOFF_FLIN-004.txt`.
 2. Parked by D-012, resume only on a FLINS decision on superstructure + market: catalogue
-   freeze v0, GMNIA campaign case matrix (T0–T2a first), test programme, app. The old
-   kickoff `KICKOFF_FLIN-003.txt` keeps the scope text.
-3. If FLINS declines the pilot house: one ledger row `paused (programme on hold)` and the
-   thread sleeps.
+   freeze v0, GMNIA campaign case matrix, test programme, app (`KICKOFF_FLIN-003.txt` keeps
+   that scope text).
+3. If FLINS declines the pilot house: one ledger row `paused (programme on hold)`.

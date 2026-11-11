@@ -30,3 +30,23 @@ Tags: [MEASURED] seen and reproduced in the session · [DOC] from documentation 
 7. [MEASURED] A shallow clone fetched by `FETCH_HEAD` has no remote-tracking ref, so the stop
    hook reports "no remote branch" although the push succeeded. Fix: set
    `remote.origin.fetch` to `+refs/heads/*:refs/remotes/origin/*`, fetch the branch, `git branch -u`.
+8. [MEASURED, FLIN-003] A cloud session whose repo is not in its sources can clone and read
+   through the git proxy but every push returns 403. Attach the repo with push access at
+   Step 0 (`add_repo`, access push) before any work; a later attach works but costs a turn.
+9. [MEASURED, FLIN-003] The Drive connector creates and trashes files but cannot change the
+   content of an existing file. Ledger rows from a cloud session go into a
+   `PENDING_ROW_<id>.txt` in the ledger root for the next PC session to append.
+10. [MEASURED, FLIN-003] Opening `SESSIONS.csv` in Excel (Hungarian locale) and saving wraps
+   every row in quotes and pads `;;;`. Repair = Drive web > Manage versions > delete the
+   damaged current version (Download of an older version can be greyed out). Text editor only.
+11. [MEASURED, FLIN-003] The container cannot fetch three.js from cdnjs / jsDelivr (proxy 403).
+   Test artifact pages with `npm i three@0.128.0` in the scratchpad and Playwright
+   `page.route` fulfilling the two script URLs from `node_modules`; wrap the file in a
+   doctype / body shell for the test only.
+12. [PROCESS, FLIN-003] The owner steers the design himself: one item at a time, pictures
+   over text, assembly + exploded view for every sketch, draft before publishing. Running
+   ahead with own details (first roof draft, rafter proposal) cost rework.
+13. [PROCESS, FLIN-003] Sub-agent hand-backs list what they did NOT look at; open the key
+   screenshot yourself before showing it. A geometry brief with coordinates gets a right
+   first draft; a vague one does not.
+
