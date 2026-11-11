@@ -7,7 +7,7 @@
   --c-screw:#6c7785; --c-floor:#4d6d8e; --c-wall:#7b8ea3; --c-frame:#2c4863;
   --c-rod:#e8590c; --c-purlin:#5d86a9; --c-sky:#3b878c; --c-loft:#6b6f9c;
   --c-strap:#e8590c; --c-part:#b9c5d2; --c-glass:#8fc6ea;
-  --d-c1:#5f86ab; --d-c2:#9fb6cd; --d-dark:#36424f; --d-bolt:#151b22;
+  --d-c1:#5f86ab; --d-c2:#9fb6cd; --d-dark:#36424f; --d-bolt:#151b22; --c-track:#2f4b66; --c-trim:#c28a2e; --d-mid:#7a9a6c;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
@@ -17,7 +17,7 @@
     --c-screw:#8e99a8; --c-floor:#6c93b8; --c-wall:#8fa3b9; --c-frame:#5a86b0;
     --c-rod:#ff8a3d; --c-purlin:#7aa6c9; --c-sky:#52a9ae; --c-loft:#8b90c2;
     --c-strap:#ff8a3d; --c-part:#5b6b7d; --c-glass:#5aa3d0;
-    --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35;
+    --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585;
     color-scheme:dark;
   }
 }
@@ -27,7 +27,7 @@
   --c-screw:#8e99a8; --c-floor:#6c93b8; --c-wall:#8fa3b9; --c-frame:#5a86b0;
   --c-rod:#ff8a3d; --c-purlin:#7aa6c9; --c-sky:#52a9ae; --c-loft:#8b90c2;
   --c-strap:#ff8a3d; --c-part:#5b6b7d; --c-glass:#5aa3d0;
-  --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35;
+  --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -104,11 +104,12 @@ const T = {
   layersLabel: 'Layers',
   layers: {
     screws: 'Soil screws', floor: 'Ground floor frame', walls: 'Wall panels (load-bearing)',
-    frames: 'Main frames', rods: 'Tie rods', purlins: 'Purlins', sky: 'Skylight trimmers',
-    loft: 'Loft floor', straps: 'Strap bracing', sag: 'Sag straps', parts: 'Partitions (non-load-bearing)', glass: 'Glazing'
+    frames: 'Main frames', rods: 'Tie rods',
+    rp: 'Roof panels: purlins + tracks', rb: 'Roof panels: blocking + bridging', rx: 'Roof panels: strap bracing',
+    loft: 'Loft floor', straps: 'Strap bracing', parts: 'Partitions (non-load-bearing)', glass: 'Glazing'
   },
   detailsLabel: 'Details',
-  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', cleat: 'Purlin cleat + sag strap', sky: 'Skylight trimming'},
+  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel'},
   notesLabels: {parts: 'Parts', governs: 'Governs', tag: 'CONCEPT \u2014 preliminary, not a check'},
   notes: {
     knee: {title: 'Knee and tie-rod end', parts: [
@@ -117,37 +118,41 @@ const T = {
       'Bolts: 4 \u00d7 M12 per member, double shear',
       'Tie rod M16 with fork end pinned to the gusset, and turnbuckle',
       'Packer plates in the rafter gap at about 600 mm',
-      'Eaves purlin C150 on a small cleat angle'],
+      'Eave edge of the roof panel: to be detailed'],
       governs: 'bolt bearing in the 2 \u00d7 1.5 mm webs (about 30 kN per bolt, preliminary); tie force about 9 kN.'},
     apex: {title: 'Apex', parts: [
       'Rafters: 2 \u00d7 C150\u00d745\u00d71.5 back-to-back with 6 mm gap, 40\u00b0 each side',
       'Gusset: 6 mm kite plate between the webs, covering 400 mm of each rafter',
       'Bolts: 4 \u00d7 M12 per rafter',
-      'Seat plate 6 \u00d7 150 \u00d7 200 mm on the gusset',
-      'Ridge purlin C150 with 4 screws into the seat'],
+      'Gusset stays below the rafter top lines',
+      'Ridge edge of the roof panels: to be detailed'],
       governs: 'bolt bearing in the 2 \u00d7 1.5 mm webs; rafter compression about 17 kN (preliminary).'},
-    cleat: {title: 'Purlin cleat and sag strap', parts: [
-      'Rafter pair 2 \u00d7 C150\u00d745\u00d71.5 at 40\u00b0',
-      'Purlins C150\u00d745\u00d71.5 at 850 mm on slope, each as two spans butted over the rafter with a 10 mm gap',
-      'Cleat angle per purlin: 60 mm flat leg, 140 mm standing leg, 3 mm thick, 150 mm long',
-      '4 screws cleat to rafter; 4 screws from each purlin web into the standing leg',
-      'Sag strap 40 \u00d7 1.5 mm, 2 screws per purlin'],
-      governs: 'weak-axis bending of the purlin from the down-slope load at 40\u00b0 (about 0.8 kN/m per purlin, preliminary); the sag strap halves that span.'},
-    sky: {title: 'Skylight trimming', parts: [
-      'Purlins C150\u00d745\u00d71.5 at 850 mm on slope; the middle one is cut',
+    panel: {title: 'Roof panel on rafter', parts: [
+      'Rafter pair 2 \u00d7 C150\u00d745\u00d71.5 with 6 mm gap, at 40\u00b0',
+      'Two tracks with webs 6 mm apart, centred on the rafter gap: upper flange 45 mm, lower flange 70 mm lying on the rafter top flanges, flanges pointing into their own panels',
+      'Purlins C150 at about 556 mm along the slope, ends inside the tracks',
+      'One self-drilling screw through each track lower flange into the rafter flange, midway between purlins (about 600 mm)',
+      'Track flange to purlin flange screws, top and bottom, at each purlin end'],
+      governs: 'panel sliding down the slope, about 5 kN per track line; about 0.8 kN per screw against about 4.6 kN bearing (preliminary); purlin end uplift on the track screws.'},
+    block: {title: 'Blocking and bridging', parts: [
+      'Purlins C150 at about 556 mm along the slope',
+      'Two flat straps 50 \u00d7 1.5 mm, one on the top face and one on the bottom face, one screw per strap per purlin flange',
+      'Solid C150 blocks between the first and second and between the sixth and seventh purlin, with clip angles to the purlin webs'],
+      governs: 'the straps collect about 1.1 kN per purlin, about 8 kN at the row end (preliminary); the row needs an anchor, decided with the ridge detail.'},
+    skyp: {title: 'Skylight opening in panel', parts: [
+      'Purlins C150; the two purlins at the opening are cut into stubs',
       'Opening 780 \u00d7 1180 mm',
-      'Two side trimmers C150 down the slope between the lower and upper purlin',
-      'Two header trimmers C150 across the opening; cut purlin lands as two stubs on the side trimmers',
+      'Two trimmers C150 down the slope, from the third to the sixth purlin from the eave',
+      'Two short members C150 across the opening (head and sill)',
       'Clip angles 50 \u00d7 50 \u00d7 120 \u00d7 3 mm, 4 screws at every member end',
-      'Glazing in the opening; sag strap moved 150 mm outside one trimmer'],
-      governs: 'the trimmers carry the reactions of the cut purlin to the purlins above and below; clip-angle screws in shear.'}
+      'Glazing in the opening'],
+      governs: 'the trimmers carry the cut purlins to the third and sixth purlins; clip-angle screws in shear.'}
   },
   factsHead: 'Key facts',
   facts: [
     ['Grid', '12\u00a0500 \u00d7 5\u00a0200 mm (3250 + 3000 + 3000 + 3250)'],
-    ['Roof', 'Gable, about 40\u00b0'],
+    ['Roof', '8 factory panels; purlins C150 at about 560 mm ending in asymmetric tracks (lower flange 70 mm); tracks screwed to the rafters at 600 mm; 6 mm gap between panels'],
     ['Main frames', 'Grids 2, 3, 4: back-to-back C150, steel tie rod at eaves'],
-    ['Purlins', 'C150\u00d745\u00d71.5, frame to frame'],
     ['Ground floor', 'Cross bearers on 15 soil screws, joists lengthwise'],
     ['Loft', 'Over bay 1\u20132, joists on a header at grid 2'],
     ['Bracing', 'Flat-strap X with hold-downs'],
@@ -155,7 +160,10 @@ const T = {
   ],
   openHead: 'Open points',
   open: [
-    'Transverse stability relies on roof bracing to the gables.',
+    'Bridging row needs an anchor for the down-slope load (with the ridge detail).',
+    'Asymmetric track is a new section for FLINS.',
+    'Eave and ridge framing: to be detailed.',
+    'Skylight panel has no X-bracing.',
     'Little bracing length on the glazed wall B.',
     'Cross bearers probably need a deeper section.',
     'Bolt bearing in 1.5 mm webs at frame joints.',
@@ -194,11 +202,11 @@ var LAYERS=[
  {id:'walls',name:T.layers.walls,tok:'--c-wall'},
  {id:'frames',name:T.layers.frames,tok:'--c-frame'},
  {id:'rods',name:T.layers.rods,tok:'--c-rod'},
- {id:'purlins',name:T.layers.purlins,tok:'--c-purlin'},
- {id:'sky',name:T.layers.sky,tok:'--c-sky'},
+ {id:'rp',name:T.layers.rp,tok:'--c-purlin'},
+ {id:'rb',name:T.layers.rb,tok:'--c-sky'},
+ {id:'rx',name:T.layers.rx,tok:'--accent'},
  {id:'loft',name:T.layers.loft,tok:'--c-loft'},
  {id:'straps',name:T.layers.straps,tok:'--c-strap'},
- {id:'sag',name:T.layers.sag,tok:'--accent'},
  {id:'parts',name:T.layers.parts,tok:'--c-part'},
  {id:'glass',name:T.layers.glass,tok:'--c-glass'}
 ];
@@ -214,7 +222,9 @@ LAYERS.forEach(function(l){
     MAT[l.id]=new THREE.MeshStandardMaterial({color:0x888888,roughness:.6,metalness:.3});
   }
 });
-var roofStraps=new THREE.Group(); G.straps.add(roofStraps);
+var roofGlass=new THREE.Group(); G.glass.add(roofGlass);
+MAT.rptrack=new THREE.MeshStandardMaterial({color:0x2f4b66,roughness:.6,metalness:.3});
+MAT.rptrim=new THREE.MeshStandardMaterial({color:0xc28a2e,roughness:.6,metalness:.3});
 var edgeMat=new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:.35});
 
 /* ---------- helpers ---------- */
@@ -229,7 +239,7 @@ function M(id,p1,p2,w,d,o){
   x.normalize();
   var y=new THREE.Vector3().crossVectors(z,x);
   var geo=new THREE.BoxGeometry(w,d,len);
-  var m=new THREE.Mesh(geo,MAT[id]);
+  var m=new THREE.Mesh(geo,o.mat||MAT[id]);
   m.position.copy(p1).add(p2).multiplyScalar(.5);
   m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(x,y,z));
   m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat));
@@ -305,16 +315,16 @@ var NZ=V(0,0,1), NX=V(1,0,0);
 function gable(x,win){
   var ro={ref:NX};
   M('walls',V(x,FL+0.02,0),V(x,FL+0.02,W),0.04,0.15,ro);
-  M('walls',V(x,yR(0)-0.02,0),V(x,RIDGE-0.02,2.6),0.04,0.15,ro);
-  M('walls',V(x,RIDGE-0.02,2.6),V(x,yR(W)-0.02,W),0.04,0.15,ro);
+  M('walls',V(x,yR(0)+0.0718,0),V(x,RIDGE+0.0718,2.6),0.04,0.15,ro);
+  M('walls',V(x,RIDGE+0.0718,2.6),V(x,yR(W)+0.0718,W),0.04,0.15,ro);
   var zs=steps(0,4.8,0.6).concat([W]).filter(function(z){return z<win.z0||z>win.z1});
   zs=uniq(zs.concat([win.z0,win.z1]));
-  zs.forEach(function(z){M('walls',V(x,FL+0.04,z),V(x,yR(z)-0.04,z),0.045,0.15,ro)});
+  zs.forEach(function(z){M('walls',V(x,FL+0.04,z),V(x,yR(z)+0.0457,z),0.045,0.15,ro)});
   var zm=(win.z0+win.z1)/2, ya=FL+win.y0, yb=FL+win.y1;
   M('walls',V(x,ya,win.z0),V(x,ya,win.z1),0.045,0.15);          // sill
   M('walls',V(x,yb,win.z0),V(x,yb,win.z1),0.045,0.15);          // header
   M('walls',V(x,FL+0.04,zm),V(x,ya,zm),0.045,0.15,ro);          // cripple below
-  M('walls',V(x,yb,zm),V(x,yR(zm)-0.04,zm),0.045,0.15,ro);      // cripple above
+  M('walls',V(x,yb,zm),V(x,yR(zm)+0.0457,zm),0.045,0.15,ro);      // cripple above
   var gx=x===0?0.001:x-0.001;
   QUAD('glass',[V(gx,ya,win.z0),V(gx,ya,win.z1),V(gx,yb,win.z1),V(gx,yb,win.z0)]);
 }
@@ -322,34 +332,73 @@ gable(0,{z0:1.5,z1:2.5,y0:1.3,y1:2.3});
 gable(L,{z0:3.0,z1:4.5,y0:0.4,y1:1.9});
 
 /* ---------- 4 main frames, 5 tie rods ---------- */
+function kp(s,q){return [COS*s-SIN*q, SIN*s+COS*q]}
 [3.25,6.25,9.25].forEach(function(x){
-  [0,W].forEach(function(z){M('frames',V(x,FL,z),V(x,EV,z),0.09,0.15)});
-  M('frames',V(x,EV,0),V(x,RIDGE,2.6),0.09,0.2);
-  M('frames',V(x,EV,W),V(x,RIDGE,2.6),0.09,0.2);
-  [[EV,0],[EV,W],[RIDGE,2.6]].forEach(function(p){B('frames',x+0.055,p[0],p[1],0.01,0.35,0.35,{nocount:true})});
+  [0,W].forEach(function(z){M('frames',V(x,FL,z),V(x,EV,z),0.096,0.15)});
+  M('frames',V(x,EV,0),V(x,RIDGE,2.6),0.096,0.15);
+  M('frames',V(x,EV,W),V(x,RIDGE,2.6),0.096,0.15);
+  /* knee gussets (below the rafter top plane) */
+  [[0,1],[W,-1]].forEach(function(k){
+    var u=kp(0,0.07), pts=[[-0.07,-0.325],[0.07,-0.325],[0.07,-0.07],[0.24,0],kp(0.45,-0.07),kp(0.45,0.07),u,[-0.07,u[1]]]
+      .map(function(p){return [k[1]*p[0],p[1]]});
+    plate(G.frames,MAT.frames,pts,0.01,V(0,0,1),V(0,1,0),V(x+0.055,EV,k[0]));
+  });
+  /* apex gusset */
+  (function(){
+    var q=0.07, Yt=q/COS, ue=[COS*0.4+SIN*q,-SIN*0.4+COS*q], le=[COS*0.4-SIN*q,-SIN*0.4-COS*q];
+    var pts=[[0,Yt],ue,le,[0,-Yt],[-le[0],le[1]],[-ue[0],ue[1]]];
+    plate(G.frames,MAT.frames,pts,0.01,V(0,0,1),V(0,1,0),V(x+0.055,RIDGE,2.6));
+  })();
   CYL('rods',V(x,EV,0),V(x,EV,W),0.03);
 });
 
-/* ---------- 6 purlins ---------- */
-[0,0.65,1.3,1.95,2.6,3.25,3.9,4.55,5.2].forEach(function(z){
-  var n=z<2.6?V(0,COS,-SIN):(z>2.6?V(0,COS,SIN):V(0,1,0));
-  var yy=yR(z)+0.1;
-  if(z===1.3){
-    M('purlins',V(0,yy,z),V(7.2,yy,z),0.045,0.15,{ref:n});
-    M('purlins',V(8.3,yy,z),V(L,yy,z),0.045,0.15,{ref:n});
-  } else M('purlins',V(0,yy,z),V(L,yy,z),0.045,0.15,{ref:n});
+/* ---------- 6 roof panels (8 factory panels on top of the rafters) ---------- */
+var SL=2.6/COS, LT=SL-0.010, PQ=0.15;
+var PS=[0,1,2,3,4,5,6].map(function(i){return 0.025+i*0.5557});
+var BAYS=[[0,3.25],[3.25,6.25],[6.25,9.25],[9.25,12.5]];
+function roofFrame(side){
+  return side<0?{o:V(0,EV,0),a:V(0,SIN,COS),p:V(0,COS,-SIN),x:V(1,0,0)}:{o:V(0,EV,W),a:V(0,SIN,-COS),p:V(0,COS,SIN),x:V(1,0,0)};
+}
+function panel(F,xa,xb,sky){
+  var xm=(xa+xb)/2, i;
+  function P(s,q,x){return sp(F,s,q,x)}
+  [[xa+0.003,1],[xb-0.003,-1]].forEach(function(t){
+    var xw=t[0], sg=t[1], mt=MAT.rptrack;
+    M('rp',P(0,PQ,xw),P(LT,PQ,xw),0.0025,0.153,{ref:F.p,mat:mt});
+    var qu=PQ+0.0765-0.00125, ql=PQ-0.0765+0.00125;
+    M('rp',P(0,qu,xw+sg*0.0225),P(LT,qu,xw+sg*0.0225),0.045,0.0025,{ref:F.p,mat:mt,nocount:true});
+    M('rp',P(0,ql,xw+sg*0.035),P(LT,ql,xw+sg*0.035),0.070,0.0025,{ref:F.p,mat:mt,nocount:true});
+  });
+  var xl=xa+0.0043, xr=xb-0.0043;
+  for(i=0;i<7;i++){
+    if(sky&&(i===3||i===4)){
+      M('rp',P(PS[i],PQ,xl),P(PS[i],PQ,7.315),0.045,0.15,{ref:F.p});
+      M('rp',P(PS[i],PQ,8.185),P(PS[i],PQ,xr),0.045,0.15,{ref:F.p});
+    } else M('rp',P(PS[i],PQ,xl),P(PS[i],PQ,xr),0.045,0.15,{ref:F.p});
+  }
+  /* blocking + bridging */
+  [[0,1],[5,6]].forEach(function(b){
+    M('rb',P(PS[b[0]]+0.0225,PQ,xm),P(PS[b[1]]-0.0225,PQ,xm),0.045,0.15,{ref:F.p});
+  });
+  (sky?[[0,1.38],[2.56,LT]]:[[0,LT]]).forEach(function(r){
+    M('rb',P(r[0],0.227,xm),P(r[1],0.227,xm),0.05,0.004,{ref:F.p});
+    M('rb',P(r[0],0.073,xm),P(r[1],0.073,xm),0.05,0.004,{ref:F.p});
+  });
+  if(sky){
+    [7.3375,8.1625].forEach(function(x){M('rp',P(PS[2]+0.0225,PQ,x),P(PS[5]-0.0225,PQ,x),0.045,0.15,{ref:F.p,mat:MAT.rptrim})});
+    [1.3575,2.5825].forEach(function(s){M('rp',P(s,PQ,7.36),P(s,PQ,8.14),0.045,0.15,{ref:F.p,mat:MAT.rptrim})});
+    var gp=[P(1.38,PQ,7.36),P(1.38,PQ,8.14),P(2.56,PQ,8.14),P(2.56,PQ,7.36)], gg=new THREE.BufferGeometry(), arr=[];
+    [0,1,2,0,2,3].forEach(function(k){arr.push(gp[k].x,gp[k].y,gp[k].z)});
+    gg.setAttribute('position',new THREE.Float32BufferAttribute(arr,3)); gg.computeVertexNormals();
+    var gm=new THREE.Mesh(gg,MAT.glass); gm.renderOrder=2; roofGlass.add(gm); COUNT.glass++;
+  } else {
+    M('rx',P(0,0.231,xa+0.003),P(LT,0.231,xb-0.003),0.06,0.004,{ref:F.p});
+    M('rx',P(0,0.235,xb-0.003),P(LT,0.235,xa+0.003),0.06,0.004,{ref:F.p});
+  }
+}
+[-1,1].forEach(function(side){
+  BAYS.forEach(function(b){panel(roofFrame(side),b[0],b[1],side<0&&b[0]===6.25)});
 });
-[0,L].forEach(function(x){
-  M('purlins',V(x,EV+0.1,0),V(x,RIDGE+0.1,2.6),0.045,0.15);
-  M('purlins',V(x,RIDGE+0.1,2.6),V(x,EV+0.1,W),0.045,0.15);
-});
-
-/* ---------- 7 skylight ---------- */
-[7.2,8.3].forEach(function(x){M('sky',V(x,yR(0.65)+0.1,0.65),V(x,yR(1.95)+0.1,1.95),0.045,0.15)});
-(function(){
-  var o=0.2;
-  QUAD('sky',[V(7.2,yR(0.65)+o,0.65),V(8.3,yR(0.65)+o,0.65),V(8.3,yR(1.95)+o,1.95),V(7.2,yR(1.95)+o,1.95)],{nocount:true});
-})();
 
 /* ---------- 8 loft ---------- */
 M('loft',V(3.25,LF-0.1,0),V(3.25,LF-0.1,W),0.09,0.2);
@@ -372,23 +421,6 @@ var f1=function(u,y){return V(-OFS,y,u)}, f5=function(u,y){return V(L+OFS,y,u)};
 xbrace(fA,3.25,6.25,NZ); xbrace(fA,9.25,12.5,NZ);
 xbrace(fB,0,3.25,NZ); xbrace(fB,11.0,12.5,NZ);
 xbrace(f1,3.0,5.2,NX); xbrace(f5,0,2.6,NX);
-[[0,3.25],[9.25,12.5]].forEach(function(b){
-  [[0,2.6,V(0,COS,-SIN)],[W,2.6,V(0,COS,SIN)]].forEach(function(s){
-    var e=s[0], zr=s[1], n=s[2], o=0.2;
-    strap(V(b[0],yR(e)+o,e),V(b[1],RIDGE+o,zr),n,roofStraps);
-    strap(V(b[0],RIDGE+o,zr),V(b[1],yR(e)+o,e),n,roofStraps);
-  });
-});
-
-/* ---------- 9b sag straps (over the ridge, one line per bay) ---------- */
-[1.625,4.75,6.9,10.875].forEach(function(x){
-  var zs=[0,0.65,1.3,1.95,2.6,3.25,3.9,4.55,5.2], i;
-  function pt(z){return V(x,z===2.6?RIDGE+0.18:yR(z)+0.2028,z)}
-  for(i=0;i<8;i++){
-    M('sag',pt(zs[i]),pt(zs[i+1]),0.04,0.008,{ref:i<4?V(0,COS,-SIN):V(0,COS,SIN),nocount:i>0});
-  }
-});
-
 /* ---------- 10 partitions ---------- */
 (function(){
   var h0=FL, h1=LF-0.2;
@@ -434,7 +466,7 @@ function paintLabels(color){
 
 /* ---------- detail scenes ---------- */
 function mkMat(){return new THREE.MeshStandardMaterial({color:0x888888,roughness:.55,metalness:.35})}
-var DM={c1:mkMat(),c2:mkMat(),dark:mkMat(),rod:mkMat(),bolt:mkMat()};
+var DM={c1:mkMat(),c2:mkMat(),dark:mkMat(),rod:mkMat(),bolt:mkMat(),track:mkMat(),trim:mkMat(),mid:mkMat()};
 var DG={}, AX=V(1,0,0), AY=V(0,1,0), AZ=V(0,0,1);
 function VA(p,d,k){return p.clone().addScaledVector(d,k)}
 function sp(F,s,q,t){return F.o.clone().addScaledVector(F.a,s).addScaledVector(F.p,q).addScaledVector(F.x,t)}
@@ -470,12 +502,26 @@ function cSection(a0,a1,webDir,flangeDir,o){
   var D=0.150, F=0.045, LP=0.010, t=CT;
   var len=a0.distanceTo(a1), mid=a0.clone().add(a1).multiplyScalar(.5);
   var w=webDir.clone().normalize(), f=flangeDir.clone().normalize();
-  function part(u,v,su,sv){obox(o.group,o.mat,mid.clone().addScaledVector(w,u).addScaledVector(f,v),w,f,su,sv,len)}
+  var n0=o.n0||0, n1=o.n1||0, axn=a1.clone().sub(a0).normalize();
+  function part(u,v,su,sv,sh){
+    var c=mid.clone().addScaledVector(w,u).addScaledVector(f,v);
+    if(sh){c.addScaledVector(axn,(n0-n1)/2);obox(o.group,o.mat,c,w,f,su,sv,len-n0-n1)}
+    else obox(o.group,o.mat,c,w,f,su,sv,len);
+  }
   part(0,0,D,t);
   [1,-1].forEach(function(s){
-    part(s*(D/2-t/2),(F-t/2)/2,t,F+t/2);
-    part(s*(D/2-t-LP/2),F-t/2,LP,t);
+    part(s*(D/2-t/2),(F-t/2)/2,t,F+t/2,true);
+    part(s*(D/2-t-LP/2),F-t/2,LP,t,true);
   });
+}
+/* asymmetric track: web 0.153, upper flange 0.045, lower flange 0.070, both pointing along flangeDir */
+function track(a0,a1,webDir,flangeDir,o){
+  var D=0.153, t=CT, len=a0.distanceTo(a1), mid=a0.clone().add(a1).multiplyScalar(.5);
+  var w=webDir.clone().normalize(), f=flangeDir.clone().normalize();
+  function part(u,v,su,sv){obox(o.group,o.mat,mid.clone().addScaledVector(w,u).addScaledVector(f,v),w,f,su,sv,len)}
+  part(0,0,D,t);
+  part(D/2-t/2,(0.045-t/2)/2,t,0.045+t/2);
+  part(-(D/2-t/2),(0.070-t/2)/2,t,0.070+t/2);
 }
 /* back-to-back pair, 6 mm gap, flanges pointing away from each other */
 function pairC(a0,a1,webDir,sep,o){
@@ -539,10 +585,6 @@ function cleat(g,F,s0,xc){
   cyl(g,DM.rod,V(0,0,0.54),V(0,0,0.70),0.032);
   [1,-1].forEach(function(s){obox(g,DM.rod,V(s*0.007,0,0.21),AX,AY,0.008,0.05,0.18)});
   cyl(g,DM.rod,V(-0.017,0,0.17),V(0.017,0,0.17),0.020);
-  /* eaves purlin on cleat */
-  purlinC(g,DM.c1,F,0.65,-0.4,0.4);
-  cleat(g,F,0.65,0);
-  [0.11,0.18].forEach(function(q){[-0.05,0.05].forEach(function(x){screw(g,sp(F,0.65+CT/2,q,x),neg(F.a))})});
   addDetail('knee',g);
 })();
 
@@ -554,62 +596,72 @@ function cleat(g,F,s0,xc){
   pairC(sp(R,0.06,0,0),sp(R,1.26,0,0),R.p,AX,C1(g));
   pairC(sp(Lf,0.06,0,0),sp(Lf,1.26,0,0),Lf.p,AX,C2(g));
   var q=0.07, Yt=q/COS, ue=sp(R,0.4,q,0), le=sp(R,0.4,-q,0);
-  var pts=[[-0.04,Yt],[0.04,Yt],[0.04,Yt-0.04*TAN],[ue.z,ue.y],[le.z,le.y],[0,-Yt],[-le.z,le.y],[-ue.z,ue.y],[-0.04,Yt-0.04*TAN]];
+  var pts=[[0,Yt],[ue.z,ue.y],[le.z,le.y],[0,-Yt],[-le.z,le.y],[-ue.z,ue.y]];
   plate(g,DM.dark,pts,0.006,AZ,AY);
   [R,Lf].forEach(function(F){[0.15,0.25].forEach(function(s){[-0.035,0.035].forEach(function(qq){bolt(g,sp(F,s,qq,0),AX,0.011)})})});
-  obox(g,DM.dark,V(0,Yt+0.003,0),AX,AY,0.20,0.006,0.15);
-  var yc=Yt+0.006+0.075;
-  cSection(V(-0.4,yc,-0.0225),V(0.4,yc,-0.0225),AY,AZ,C2(g));
-  [-0.06,0.06].forEach(function(x){[-0.01,0.012].forEach(function(z){screw(g,V(x,Yt+0.006+CT,z),neg(AY))})});
   addDetail('apex',g);
 })();
 
-/* ---- detail 3: purlin cleat + sag strap ---- */
+/* ---- detail 3: roof panel on rafter (short cut section) ---- */
+function PSP(i){return 0.025+i*0.5557}
 (function(){
-  var g=new THREE.Group(), F=slopeF();
-  pairC(sp(F,-0.1,0,0),sp(F,1.3,0,0),F.p,AX,C2(g));
-  [0.30,1.15].forEach(function(s0){
-    purlinC(g,DM.c1,F,s0,-0.905,-0.005);
-    purlinC(g,DM.c1,F,s0,0.005,0.905);
-    cleat(g,F,s0,0);
-    [-1,1].forEach(function(sg){[0.02,0.05].forEach(function(dx){[0.11,0.18].forEach(function(q){
-      screw(g,sp(F,s0+CT/2,q,sg*(0.005+dx)),neg(F.a));
-    })})});
-    [-0.01,0.01].forEach(function(dx){screw(g,sp(F,s0+0.022,0.2265+0.0015,0.8+dx),neg(F.p))});
+  var g=new THREE.Group(), F=slopeF(), L3=0.75, s0=0.35;
+  pairC(sp(F,0,0,0),sp(F,L3,0,0),F.p,AX,C2(g));
+  [[0.003,1],[-0.003,-1]].forEach(function(t){
+    var xw=t[0], sg=t[1];
+    track(sp(F,0,0.15,xw),sp(F,L3,0,0).clone().add(F.p.clone().multiplyScalar(0.15)).addScaledVector(F.x,xw),F.p,F.x.clone().multiplyScalar(sg),{group:g,mat:DM.mid});
+    [0.12,0.62].forEach(function(s){screw(g,sp(F,s,0.076,xw+sg*0.03),neg(F.p))});
+    cSection(sp(F,s0,0.15,sg*0.00425),sp(F,s0,0.15,sg*0.45),F.p,F.a,C1(g));
+    screw(g,sp(F,s0+0.022,0.0775,sg*0.02),neg(F.p));
+    screw(g,sp(F,s0+0.022,0.226,sg*0.02),neg(F.p));
   });
-  obox(g,DM.rod,sp(F,0.675,0.2265,0.8),F.a,F.x,1.35,0.04,0.003);
-  addDetail('cleat',g);
+  addDetail('panel',g);
 })();
 
-/* ---- detail 4: skylight trimming ---- */
+/* ---- detail 4: blocking + bridging ---- */
 (function(){
-  var g=new THREE.Group(), F=slopeF(), a=F.a, hw=0.39, i;
-  cSection(sp(F,0,0,-1.2),sp(F,0,0,1.2),F.p,neg(a),C1(g));           /* P1, flanges down-slope */
-  cSection(sp(F,1.7,0,-1.2),sp(F,1.7,0,1.2),F.p,a,C1(g));            /* P3 */
-  cSection(sp(F,0.85,0,0.438),sp(F,0.85,0,1.2),F.p,a,C1(g));         /* P2 stubs */
-  cSection(sp(F,0.85,0,-1.2),sp(F,0.85,0,-0.438),F.p,a,C1(g));
+  var g=new THREE.Group(), F=slopeF(), i, S=[0,1,2,3,4,5,6].map(PSP);
+  S.forEach(function(s){cSection(sp(F,s,0.15,-0.5),sp(F,s,0.15,0.5),F.p,F.a,C1(g))});
+  var sm=(S[0]-0.1+S[6]+0.25)/2, ln=S[6]-S[0]+0.35;
+  obox(g,DM.rod,sp(F,sm,0.2265,0),F.a,F.x,ln,0.05,0.003);
+  obox(g,DM.rod,sp(F,sm,0.0735,0),F.a,F.x,ln,0.05,0.003);
+  S.forEach(function(s){
+    screw(g,sp(F,s+0.022,0.228,0),neg(F.p));
+    screw(g,sp(F,s+0.022,0.072,0),F.p);
+  });
+  [[0,1],[5,6]].forEach(function(b){
+    var s0=S[b[0]]+CT/2, s1=S[b[1]]-CT/2;
+    cSection(sp(F,s0,0.15,0),sp(F,s1,0.15,0),F.p,F.x,{group:g,mat:DM.c2,n0:0.05});
+    clip(g,sp(F,s0,0.15,CT/2),AX,F.a,0.03);
+    clip(g,sp(F,s1,0.15,CT/2),AX,neg(F.a),0.03);
+  });
+  addDetail('block',g);
+})();
+
+/* ---- detail 5: skylight opening in panel ---- */
+(function(){
+  var g=new THREE.Group(), F=slopeF(), hw=0.39, S2=PSP(2), S5=PSP(5), Q=0.15;
+  [2,5].forEach(function(i){cSection(sp(F,PSP(i),Q,-0.85),sp(F,PSP(i),Q,0.85),F.p,F.a,C1(g))});
+  [3,4].forEach(function(i){
+    cSection(sp(F,PSP(i),Q,0.438),sp(F,PSP(i),Q,0.85),F.p,F.a,C1(g));
+    cSection(sp(F,PSP(i),Q,-0.85),sp(F,PSP(i),Q,-0.438),F.p,F.a,C1(g));
+  });
   [1,-1].forEach(function(sg){
     var out=F.x.clone().multiplyScalar(sg), inn=neg(out);
-    cSection(sp(F,CT/2,0,sg*(hw+CT/2)),sp(F,1.7-CT/2,0,sg*(hw+CT/2)),F.p,out,C2(g)); /* side trimmers */
-    clip(g,sp(F,CT/2,0,sg*hw),inn,a,0.03);
-    clip(g,sp(F,1.7-CT/2,0,sg*hw),inn,neg(a),0.03);
-    clip(g,sp(F,0.26,0,sg*hw),inn,a,0.03);
-    clip(g,sp(F,1.44,0,sg*hw),inn,neg(a),0.03);
-    clip(g,sp(F,0.85+CT/2,0,sg*(hw+CT)),out,a,0.047);
+    cSection(sp(F,S2+CT/2,Q,sg*(hw+CT/2)),sp(F,S5-CT/2,Q,sg*(hw+CT/2)),F.p,out,{group:g,mat:DM.trim,n0:0.05});
+    clip(g,sp(F,S2+CT/2,Q,sg*hw),inn,F.a,0.03);
+    clip(g,sp(F,S5-CT/2,Q,sg*hw),inn,neg(F.a),0.03);
+    clip(g,sp(F,1.38,Q,sg*hw),inn,F.a,0.03);
+    clip(g,sp(F,2.56,Q,sg*hw),inn,neg(F.a),0.03);
+    [3,4].forEach(function(i){clip(g,sp(F,PSP(i)+CT/2,Q,sg*(hw+CT)),out,F.a,0.047)});
   });
-  cSection(sp(F,0.26-CT/2,0,-hw),sp(F,0.26-CT/2,0,hw),F.p,neg(a),C2(g)); /* headers */
-  cSection(sp(F,1.44+CT/2,0,-hw),sp(F,1.44+CT/2,0,hw),F.p,a,C2(g));
-  /* glass */
-  var gp=[sp(F,0.26,0,-hw),sp(F,0.26,0,hw),sp(F,1.44,0,hw),sp(F,1.44,0,-hw)];
-  var gg=new THREE.BufferGeometry(), arr=[];
+  cSection(sp(F,1.38-CT/2,Q,-hw),sp(F,1.38-CT/2,Q,hw),F.p,neg(F.a),{group:g,mat:DM.trim});
+  cSection(sp(F,2.56+CT/2,Q,-hw),sp(F,2.56+CT/2,Q,hw),F.p,F.a,{group:g,mat:DM.trim});
+  var gp=[sp(F,1.38,Q,-hw),sp(F,1.38,Q,hw),sp(F,2.56,Q,hw),sp(F,2.56,Q,-hw)], gg=new THREE.BufferGeometry(), arr=[];
   [0,1,2,0,2,3].forEach(function(k){arr.push(gp[k].x,gp[k].y,gp[k].z)});
   gg.setAttribute('position',new THREE.Float32BufferAttribute(arr,3)); gg.computeVertexNormals();
   var gm=new THREE.Mesh(gg,MAT.glass); gm.renderOrder=2; g.add(gm);
-  /* sag strap 0.15 m outside the +X trimmer */
-  var sx=hw+CT+0.15;
-  obox(g,DM.rod,sp(F,0.85,0.0765,sx),F.a,F.x,2.0,0.04,0.003);
-  [-0.02,0.87,1.72].forEach(function(s){[-0.01,0.01].forEach(function(dx){screw(g,sp(F,s,0.078,sx+dx),neg(F.p))})});
-  addDetail('sky',g);
+  addDetail('skyp',g);
 })();
 
 /* ---------- lights, renderer, camera ---------- */
@@ -634,8 +686,8 @@ function setView(name){
   if(mode!=='house'){
     if(!bounds[mode]) bounds[mode]=new THREE.Box3().setFromObject(DG[mode]);
     var bb=bounds[mode], ctr=bb.getCenter(new THREE.Vector3());
-    var slope=(mode==='cleat'||mode==='sky');
-    dir=({front:V(0,0.12,1),rear:V(0,0.12,-1),top:V(0,1,0.001)})[name]||(slope?V(0.55,0.54,-0.91):V(1,0.25,0.35));
+    var slope=(mode==='block'||mode==='skyp'), pan=(mode==='panel');
+    dir=({front:V(0,0.12,1),rear:V(0,0.12,-1),top:V(0,1,0.001)})[name]||(pan?V(0.25,-0.45,-0.93):slope?V(0.55,0.54,-0.91):V(1,0.25,0.35));
     dir.normalize();
     camera.position.copy(ctr).add(dir); camera.lookAt(ctr); camera.updateMatrixWorld();
     var rt=V(1,0,0).applyQuaternion(camera.quaternion), upv=V(0,1,0).applyQuaternion(camera.quaternion);
@@ -644,7 +696,7 @@ function setView(name){
       var cp=V(ci&1?bb.max.x:bb.min.x,ci&2?bb.max.y:bb.min.y,ci&4?bb.max.z:bb.min.z).sub(ctr);
       dh=Math.max(dh,cp.dot(dir)+Math.abs(cp.dot(rt))/th); dv=Math.max(dv,cp.dot(dir)+Math.abs(cp.dot(upv))/tv);
     }
-    d=slope?Math.max(dh,dv)*1.08:Math.max(dh*1.08,dv*0.98);
+    d=pan?Math.max(dh*1.08,dv*0.8):slope?Math.max(dh,dv)*1.08:Math.max(dh*1.08,dv*1.2);
     controls.target.copy(ctr);
     camera.position.copy(ctr).addScaledVector(dir,d);
     camera.lookAt(ctr); controls.update();
@@ -677,7 +729,7 @@ function applyTheme(){
   function c(n){return cs.getPropertyValue(n).trim()}
   scene.background.set(c('--scene'));
   LAYERS.forEach(function(l){MAT[l.id].color.set(c(l.tok))});
-  DM.c1.color.set(c('--d-c1')); DM.c2.color.set(c('--d-c2')); DM.dark.color.set(c('--d-dark')); DM.rod.color.set(c('--accent')); DM.bolt.color.set(c('--d-bolt'));
+  DM.c1.color.set(c('--d-c1')); DM.c2.color.set(c('--d-c2')); DM.dark.color.set(c('--d-dark')); DM.rod.color.set(c('--accent')); DM.bolt.color.set(c('--d-bolt')); DM.track.color.set(c('--c-track')); DM.trim.color.set(c('--c-trim')); DM.mid.color.set(c('--d-mid')); MAT.rptrack.color.set(c('--c-track')); MAT.rptrim.color.set(c('--c-trim'));
   edgeMat.color.set(c('--edge'));
   gridMat.color.set(c('--grid'));
   paintLabels(c('--muted'));
@@ -704,7 +756,7 @@ LAYERS.forEach(function(l){
 ['front','rear','top'].forEach(function(n){document.getElementById('v-'+n).addEventListener('click',function(){setView(n)})});
 document.getElementById('v-reset').addEventListener('click',function(){setView('reset')});
 var explode=document.getElementById('explode');
-var roofParts=[G.frames,G.rods,G.purlins,G.sky,roofStraps,G.sag];
+var roofParts=[G.rp,G.rb,G.rx,roofGlass];
 
 /* ---------- details selector ---------- */
 var detailsEl=$('details'), dBtns={}, notesEl=$('notes');
@@ -730,7 +782,7 @@ function showMode(k){
   controls.minDistance=house?3:0.2; controls.maxPolarAngle=house?Math.PI*0.52:Math.PI;
   renderNotes(k); setView('reset');
 }
-['house','knee','apex','cleat','sky'].forEach(function(k){
+['house','knee','apex','panel','block','skyp'].forEach(function(k){
   var b=document.createElement('button'); b.type='button'; b.id='d-'+k; b.textContent=T.details[k];
   b.setAttribute('aria-pressed',k==='house'?'true':'false');
   b.addEventListener('click',function(){showMode(k)});
@@ -740,7 +792,7 @@ function showMode(k){
 /* ---------- loop ---------- */
 (function loop(){
   requestAnimationFrame(loop);
-  var t=explode.checked?1.5:0;
+  var t=explode.checked?1.2:0;
   roofParts.forEach(function(g){
     var d=t-g.position.y;
     g.position.y=Math.abs(d)<0.002?t:g.position.y+d*0.15;
