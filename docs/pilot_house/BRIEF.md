@@ -84,7 +84,7 @@ is redrawn, their sheets are not reused.
 Order set by the owner: roof first. All numbers are first-pass hand estimates,
 PRELIMINARY, to make the parts plausible; they are not checks (STATE D-007).
 
-### 7.1 Roof (drafted 2026-11-10, owner has not yet commented)
+### 7.1 Roof - FIRST DRAFT, SUPERSEDED by 7.4 (kept for the record)
 
 Load path: standing seam -> purlins -> main frames (grids 2, 3, 4) and gable walls
 (grids 1, 5) -> legs and studs -> floor frame -> soil screws. Rafter thrust is closed by
@@ -129,3 +129,28 @@ module 400 / 600, subfloor as diaphragm (board, steel sheet or straps).
 Wall panels and openings; loft floor; bracing and hold-downs. Then work breakdown in
 hours (4 weeks) and the Hungarian offer letter. End products for FLINS are Hungarian;
 working versions stay English (owner, 2026-11-10).
+
+### 7.4 Roof - FINAL concept (owner instructions, 2026-11-11; shown in concept_viewer.html)
+
+Scope rule (owner): FLINS delivers the bare steel skeleton. Deck, covering and finishes
+are by others and are NOT relied on structurally. Figures are PRELIMINARY (STATE D-007).
+
+| item | decision |
+|---|---|
+| panels | 8 factory roof panels, one per bay and slope, sitting ON TOP of the frame rafters; 6 mm gap between panels at each frame |
+| purlins | C150x45x1.5 along the house, span = frame spacing, at about 556 mm on the slope (last spacing at the ridge about 630 mm), ending in the panel tracks like studs |
+| tracks | asymmetric U: upper flange 45, lower flange 70 lying on the rafter top; SDS to the rafter at 600 mm; about 5 kN sliding per track line, about 0.8 kN per screw against about 4.6 kN. New section for FLINS (open) |
+| frame rafters and legs | 2 x C150 back-to-back, 6 mm gap, gussets between the webs and kept below the rafter top; M16 tie rod at eaves |
+| blocking + bridging | one row at mid-bay per panel: solid C150 block in the first and last purlin space, 50 x 1.5 straps on both faces, ending straight on the ridge-edge member |
+| skylight | rear slope, bay 3-4, opening 780 x 1600: two boxed jambs (C150 + U150 cap) parallel to the purlins, full panel length, each midway between two purlin lines (s = 0.860 and 2.525 m from the eave); head and sill = one U150 track each down the slope; three cut purlins = six cripples ending in the head/sill tracks; jamb cap stopped 50 mm short at the ends; two bridging rows on the head/sill lines; no diagonal straps in this panel |
+| ridge | closed RIDGE BOX: panels extended to the ridge so the lower corners of the two ridge-edge members meet; folded cap on the top flanges; folded inner angle (45 mm legs) under the bottom flanges, stopping at each frame; ridge blocking plate (kite plate, 50 mm bent edge on all four sides for SDS) at every bridging row: 6 plates, three of them in bay 3-4. Carries the vertical resultant of the down-slope load, about 8 kN per bay, about 6.5 kNm against an estimated 9-10 kNm |
+| diagonal straps | roof-panel X-straps only in the two gable-end bays (4 panels) |
+
+Open for the calculation: wind on the long walls must reach the gables through the frames
+and the ridge box (no diagonals in the middle bays); ends of the ridge-edge members at the
+tracks about 4 kN, near the web crippling limit, may need a clip; eave framing still to be
+detailed.
+
+Owner's working rules for this thread: one item at a time (instruction -> comment ->
+approval -> implement -> check -> next); every sketch as an assembly view and an exploded
+view; few words, judge by pictures; end products Hungarian, working versions English.

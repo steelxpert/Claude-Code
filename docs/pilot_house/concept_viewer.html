@@ -189,7 +189,7 @@ const T = {
     ['Grid', '12\u00a0500 \u00d7 5\u00a0200 mm (3250 + 3000 + 3000 + 3250)'],
     ['Scope', 'Bare steel skeleton. Deck, covering and finishes by others, not relied on structurally.'],
     ['Ridge', 'Closed ridge box: the two ridge-edge members, a folded cap and an inner angle, with a blocking plate at every bridging row'],
-    ['Roof', '8 factory panels; purlins C150 at about 560 mm ending in asymmetric tracks (lower flange 70 mm); tracks screwed to the rafters at 600 mm; 6 mm gap between panels'],
+    ['Roof', '8 factory panels; purlins C150 at about 560 mm ending in asymmetric tracks (lower flange 70 mm); tracks screwed to the rafters at 600 mm; 6 mm gap between panels; diagonal straps in the gable-end bays only'],
     ['Main frames', 'Grids 2, 3, 4: back-to-back C150, steel tie rod at eaves'],
     ['Ground floor', 'Cross bearers on 15 soil screws, joists lengthwise'],
     ['Loft', 'Over bay 1\u20132, joists on a header at grid 2'],
@@ -198,11 +198,11 @@ const T = {
   ],
   openHead: 'Open points',
   open: [
+    'Roof diagonal straps only in the gable-end bays: wind on the long walls must reach the gables through the frames and the ridge box - to be shown in the calculation.',
     'Asymmetric track is a new section for FLINS.',
     'Eave framing: to be detailed.',
     'Ends of the ridge-edge members at the tracks: about 4 kN, near the web crippling limit, may need a clip (preliminary).',
     'Top purlin spacing at the ridge is about 630 mm, slightly over the 600 module.',
-    'Skylight panel has no X-bracing by design; the neighbouring panels carry the bracing (to be shown in the calculation).',
     'Little bracing length on the glazed wall B.',
     'Cross bearers probably need a deeper section.',
     'Bolt bearing in 1.5 mm webs at frame joints.',
@@ -472,7 +472,7 @@ function panel(F,xa,xb,sky,side,bi){
     [0,1,2,0,2,3].forEach(function(k){arr.push(gp[k].x,gp[k].y,gp[k].z)});
     gg.setAttribute('position',new THREE.Float32BufferAttribute(arr,3)); gg.computeVertexNormals();
     var gm=new THREE.Mesh(gg,MAT.glass); gm.renderOrder=2; gm.userData.nopick=true; roofGlass.add(gm); COUNT.glass++;
-  } else {
+  } else if(bi===0||bi===3){
     LBL('Roof strap bracing '+rs+' bay '+bn+' diagonal 1',function(){M('rx',P(0,0.2335,xa+0.003),P(LT,0.2335,xb-0.003),0.06,0.004,{ref:F.p})});
     LBL('Roof strap bracing '+rs+' bay '+bn+' diagonal 2',function(){M('rx',P(0,0.2375,xb-0.003),P(LT,0.2375,xa+0.003),0.06,0.004,{ref:F.p})});
   }
