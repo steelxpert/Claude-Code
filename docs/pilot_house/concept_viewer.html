@@ -124,7 +124,7 @@ const T = {
   },
   sel: {selected: 'Selected', hint: 'Click a member to highlight it. Click again to release.', clear: 'Clear selection', copy: 'Copy list', copied: 'Copied', manual: 'Press Ctrl+C to copy the selected text'},
   detailsLabel: 'Details',
-  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel'},
+  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridge1: 'Ridge option 1 (draft)', ridge2: 'Ridge option 2 (draft)'},
   notesLabels: {parts: 'Parts', governs: 'Governs', tag: 'CONCEPT \u2014 preliminary, not a check'},
   notes: {
     knee: {title: 'Knee and tie-rod end', parts: [
@@ -161,7 +161,18 @@ const T = {
       'Jamb cap track stopped 50 mm short at each end so the C enters the panel track',
       'Two bridging rows in line with the head and sill tracks, continuous from eave to ridge; the head and sill act as the blocking between the jambs',
       'Opening 780 \u00d7 1600 mm'],
-      governs: 'jamb about 2.3 kNm over the 3.0 m bay (preliminary); head and sill carry three stub ends of about 0.45 kN each.'}
+      governs: 'jamb about 2.3 kNm over the 3.0 m bay (preliminary); head and sill carry three stub ends of about 0.45 kN each.'},
+    ridge1: {title: 'Ridge option 1: ridge beam + cap (draft)', parts: [
+      'Ridge beam: 2 \u00d7 C150 back-to-back, frame to frame, on a seat plate on the apex gusset',
+      'Ridge cap: folded 1.5 mm plate over the beam, screwed to the top purlins of both panels',
+      'Bridging straps of both slopes run up to the beam',
+      'Bridging row shown nearer to the frame than in the real panel (mid-bay)'],
+      governs: 'The down-slope load of both slopes meets at the ridge as a VERTICAL force, about 8 kN per bay at mid-span (preliminary); the ridge beam carries it to the frames: about 6.5 kNm against about 10 kNm for the C150 pair (preliminary).'},
+    ridge2: {title: 'Ridge option 2: cap + strap splice (draft)', parts: [
+      'Ridge cap: folded 1.5 mm plate, one part, screwed to the top purlins of both panels',
+      'Bridging straps of the two slopes spliced over the ridge',
+      'Bridging row shown nearer to the frame than in the real panel (mid-bay)'],
+      governs: 'The two slopes balance each other horizontally, but the vertical force at the ridge, about 8 kN per bay (preliminary), has no support of its own: it loads the two top purlins sideways over the 3.0 to 3.25 m bay. Acceptable only with a structural roof deck by others.'}
   },
   factsHead: 'Key facts',
   facts: [
@@ -764,6 +775,81 @@ function uTrack0(a0,a1,webDir,flangeDir,o,D){
   addDetail('skyp',g);
 })();
 
+/* ---- ridge draft scenes ---- */
+function segBox(g,mat,p,q,wx,th){
+  var d=new THREE.Vector3().subVectors(q,p), len=d.length();
+  obox(g,mat,p.clone().add(q).multiplyScalar(.5),AX,d.normalize(),wx,len+0.002,th);
+}
+function ridgeScene(opt){
+  var g=new THREE.Group(), key='ridge'+opt, YC=0.2977, XL=[-0.75,-0.45,-0.15,0.15,0.45,0.75];
+  dprefix=T.details[key];
+  var Fk={'1':{o:V(0,0,0),a:V(0,-SIN,COS),p:V(0,COS,SIN),x:AX},'-1':{o:V(0,0,0),a:V(0,-SIN,-COS),p:V(0,COS,-SIN),x:AX}};
+  function nm(k){return k>0?'front':'rear'}
+  function plane(k,u,off){return V(0,YC-u*SIN+off*COS,k*(u*COS+off*SIN))}
+  var q=0.07, Yt=q/COS;
+  [1,-1].forEach(function(k){
+    var F=Fk[k], n=nm(k);
+    pairC(sp(F,0.06,0,0),sp(F,1.0,0,0),F.p,AX,k>0?C1(g,'Rafter '+n+' C'):C2(g,'Rafter '+n+' C'));
+    [0.15,0.25].forEach(function(s){[-0.035,0.035].forEach(function(qq){bolt(g,sp(F,s,qq,0),AX,0.011)})});
+    [1,-1].forEach(function(sx){
+      var xw=sx*(0.003+CT/2), xn=sx>0?'x+':'x-';
+      track(sp(F,0.010,0.1515,xw),sp(F,1.0,0.1515,xw),F.p,AX.clone().multiplyScalar(sx),{group:g,mat:DM.track,label:'Panel track '+n+' '+xn});
+      cSection(sp(F,0.0125,0.1515,sx*0.0055),sp(F,0.0125,0.1515,sx*0.8055),F.p,F.a,{group:g,mat:DM.c1,label:'Top purlin '+n+' '+xn});
+      cSection(sp(F,0.6135,0.1515,sx*0.0055),sp(F,0.6135,0.1515,sx*0.8055),F.p,neg(F.a),{group:g,mat:DM.c2,label:'Second purlin '+n+' '+xn});
+    });
+    LBL('Bridging strap '+n+' bottom',function(){obox(g,DM.rod,sp(F,(1.0+0.0125)/2,0.0735,0.6),F.a,AX,1.0-0.0125,0.05,0.003)});
+    if(opt===1){
+      var B=V(0,0.168,k*0.152), A=V(0,0.1965,k*0.048), nk=V(0,COS,k*SIN), ak=V(0,-SIN,k*COS), nl=V(0,0.9647,k*0.2644);
+      var T1=B.clone().addScaledVector(ak,0.070);
+      var P1=B.clone().addScaledVector(ak,0.99).addScaledVector(nk,0.0015), P2=T1.clone().addScaledVector(nk,0.0045), P3=B.clone().addScaledVector(nk,0.0045),
+          P4=A.clone().addScaledVector(nl,0.0045), P5=V(0,0.2010,k*0.010);
+      LBL('Bridging strap '+n+' top',function(){
+        [[P1,P2],[P2,P3],[P3,P4],[P4,P5]].forEach(function(sg){
+          segBox(g,DM.rod,V(0.6,sg[0].y,sg[0].z),V(0.6,sg[1].y,sg[1].z),0.05,0.003);
+        });
+      });
+      screw(g,V(0.6,0.2025,k*0.025),neg(AY));
+      XL.forEach(function(x){screw(g,V(x,B.y,B.z).addScaledVector(ak,0.035).addScaledVector(nk,0.003),neg(nk))});
+    } else {
+      var off=0.0075, hdl=0.009;
+      LBL('Ridge cap leg '+n,function(){segBox(g,DM.mid,plane(k,0,off),plane(k,0.27,off),1.6,0.003)});
+      LBL('Bridging strap '+n+' top',function(){
+        var a=plane(k,1.1914,0.0015), b=plane(k,0,0.0015);
+        segBox(g,DM.rod,V(0.6,a.y,a.z),V(0.6,b.y,b.z),0.05,0.003);
+        if(k>0){var c=plane(-1,0.08,0.0045);segBox(g,DM.rod,V(0.6,b.y,b.z),V(0.6,c.y,c.z),0.05,0.003)}
+      });
+      XL.forEach(function(x){screw(g,plane(k,0.2264,hdl).setX(x),neg(Fk[k].p))});
+    }
+  });
+  if(opt===2){
+    [0.02,0.06].forEach(function(u){[-0.012,0.012].forEach(function(dx){screw(g,plane(-1,u,0.0075).setX(0.6+dx),neg(Fk[-1].p))})});
+  }
+  var ue=sp(Fk[1],0.4,q,0), le=sp(Fk[1],0.4,-q,0), pts;
+  if(opt===1){
+    var sc=(COS*q-0.039)/SIN, zc=COS*sc+SIN*q;
+    pts=[[-zc,0.039],[zc,0.039],[ue.z,ue.y],[le.z,le.y],[0,-Yt],[-le.z,le.y],[-ue.z,ue.y]];
+  } else pts=[[0,Yt],[ue.z,ue.y],[le.z,le.y],[0,-Yt],[-le.z,le.y],[-ue.z,ue.y]];
+  LBL('Apex gusset',function(){plate(g,DM.dark,pts,0.006,AZ,AY)});
+  if(opt===1){
+    LBL('Seat plate',function(){obox(g,DM.dark,V(0,0.042,0),AX,AY,0.20,0.006,0.12)});
+    [1,-1].forEach(function(sx){
+      pairC(V(sx*0.005,0.12,0),V(sx*0.8,0.12,0),AY,AZ,sx>0?C1(g,'Ridge beam x+ C'):C2(g,'Ridge beam x- C'));
+      [-0.03,0.03].forEach(function(z){bolt(g,V(sx*0.06,0.0425,z),AY,0.0085)});
+    });
+    LBL('Ridge cap',function(){
+      segBox(g,DM.mid,V(0,0.1965,-0.048),V(0,0.1965,0.048),1.6,0.003);
+      [1,-1].forEach(function(k){
+        var B=V(0,0.168,k*0.152);
+        segBox(g,DM.mid,V(0,0.1965,k*0.048),B,1.6,0.003);
+        segBox(g,DM.mid,B,B.clone().addScaledVector(V(0,-SIN,k*COS),0.070),1.6,0.003);
+      });
+    });
+    XL.forEach(function(x){[-0.03,0.03].forEach(function(z){screw(g,V(x,0.198,z),neg(AY))})});
+  }
+  addDetail(key,g);
+}
+ridgeScene(1); ridgeScene(2);
+
 /* ---------- lights, renderer, camera ---------- */
 scene.add(new THREE.HemisphereLight(0xffffff,0x7d8896,0.85));
 var sun=new THREE.DirectionalLight(0xffffff,0.75); sun.position.set(8,14,12); scene.add(sun);
@@ -781,13 +867,14 @@ function fitDist(halfW,halfH){
   return 1.15*Math.max(halfW/(t*camera.aspect),halfH/t)+3;
 }
 var mode='house', bounds={};
-function setView(name){
+function setView(name,cdir){
   var d,dir;
   if(mode!=='house'){
-    if(!bounds[mode]) bounds[mode]=new THREE.Box3().setFromObject(DG[mode]);
+    var rdg=mode.indexOf('ridge')===0;
+    if(!bounds[mode]) bounds[mode]=rdg?new THREE.Box3(V(-0.1,-0.4,-0.6),V(0.1,0.35,0.6)):new THREE.Box3().setFromObject(DG[mode]);
     var bb=bounds[mode], ctr=bb.getCenter(new THREE.Vector3());
     var slope=(mode==='block'||mode==='skyp'), pan=(mode==='panel');
-    dir=({front:V(0,0.12,1),rear:V(0,0.12,-1),top:V(0,1,0.001)})[name]||(pan?V(0.25,-0.45,-0.93):slope?V(0.55,0.54,-0.91):V(1,0.25,0.35));
+    dir=cdir?cdir.clone():({front:V(0,0.12,1),rear:V(0,0.12,-1),top:V(0,1,0.001)})[name]||(rdg?V(1,0.2,0.15):pan?V(0.25,-0.45,-0.93):slope?V(0.55,0.54,-0.91):V(1,0.25,0.35));
     dir.normalize();
     camera.position.copy(ctr).add(dir); camera.lookAt(ctr); camera.updateMatrixWorld();
     var rt=V(1,0,0).applyQuaternion(camera.quaternion), upv=V(0,1,0).applyQuaternion(camera.quaternion);
@@ -796,7 +883,7 @@ function setView(name){
       var cp=V(ci&1?bb.max.x:bb.min.x,ci&2?bb.max.y:bb.min.y,ci&4?bb.max.z:bb.min.z).sub(ctr);
       dh=Math.max(dh,cp.dot(dir)+Math.abs(cp.dot(rt))/th); dv=Math.max(dv,cp.dot(dir)+Math.abs(cp.dot(upv))/tv);
     }
-    d=pan?Math.max(dh*1.08,dv*0.8):slope?Math.max(dh,dv)*1.08:Math.max(dh*1.08,dv*1.2);
+    d=rdg?Math.max(dh,dv)*1.7:pan?Math.max(dh*1.08,dv*0.8):slope?Math.max(dh,dv)*1.08:Math.max(dh*1.08,dv*1.2);
     controls.target.copy(ctr);
     camera.position.copy(ctr).addScaledVector(dir,d);
     camera.lookAt(ctr); controls.update();
@@ -882,7 +969,8 @@ function showMode(k){
   controls.minDistance=house?3:0.2; controls.maxPolarAngle=house?Math.PI*0.52:Math.PI;
   renderNotes(k); setView('reset');
 }
-['house','knee','apex','panel','block','skyp'].forEach(function(k){
+window.__view=function(x,y,z){setView('custom',V(x,y,z))};
+['house','knee','apex','panel','block','skyp','ridge1','ridge2'].forEach(function(k){
   var b=document.createElement('button'); b.type='button'; b.id='d-'+k; b.textContent=T.details[k];
   b.setAttribute('aria-pressed',k==='house'?'true':'false');
   b.addEventListener('click',function(){showMode(k)});
