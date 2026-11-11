@@ -140,17 +140,18 @@ const T = {
       'Solid C150 blocks between the first and second and between the sixth and seventh purlin, with clip angles to the purlin webs'],
       governs: 'the straps collect about 1.1 kN per purlin, about 8 kN at the row end (preliminary); the row needs an anchor, decided with the ridge detail.'},
     skyp: {title: 'Skylight opening in panel', parts: [
-      'Purlins C150; the two purlins at the opening are cut into stubs',
-      'Opening 780 \u00d7 1180 mm',
-      'Two trimmers C150 down the slope, from the third to the sixth purlin from the eave',
-      'Two short members C150 across the opening (head and sill)',
-      'Clip angles 50 \u00d7 50 \u00d7 120 \u00d7 3 mm, 4 screws at every member end',
-      'Glazing in the opening'],
-      governs: 'the trimmers carry the cut purlins to the third and sixth purlins; clip-angle screws in shear.'}
+      'Jambs: C150 + U150 track boxed, parallel to the purlins, full panel length; the lower jamb replaces the third purlin from the eave',
+      'Head and sill: one U150 track each, down the slope between the jambs, web facing the window',
+      'Cut purlins end as cripples inside the head and sill tracks',
+      'Jamb cap track stopped 50 mm short at each end so the C enters the panel track',
+      'Two bridging rows beside the opening instead of the mid-bay row',
+      'Opening 780 \u00d7 1180 mm'],
+      governs: 'jamb about 1.8 kNm over the 3.0 m bay (preliminary); head and sill carry two stub ends of about 0.45 kN each.'}
   },
   factsHead: 'Key facts',
   facts: [
     ['Grid', '12\u00a0500 \u00d7 5\u00a0200 mm (3250 + 3000 + 3000 + 3250)'],
+    ['Scope', 'Bare steel skeleton. Deck, covering and finishes by others, not relied on structurally.'],
     ['Roof', '8 factory panels; purlins C150 at about 560 mm ending in asymmetric tracks (lower flange 70 mm); tracks screwed to the rafters at 600 mm; 6 mm gap between panels'],
     ['Main frames', 'Grids 2, 3, 4: back-to-back C150, steel tie rod at eaves'],
     ['Ground floor', 'Cross bearers on 15 soil screws, joists lengthwise'],
@@ -160,10 +161,10 @@ const T = {
   ],
   openHead: 'Open points',
   open: [
-    'Bridging row needs an anchor for the down-slope load (with the ridge detail).',
+    'Bridging rows to be spliced over the ridge to carry the down-slope load (with the ridge detail).',
     'Asymmetric track is a new section for FLINS.',
     'Eave and ridge framing: to be detailed.',
-    'Skylight panel has no X-bracing.',
+    'Skylight panel has no X-bracing by design; the neighbouring panels carry the bracing (to be shown in the calculation).',
     'Little bracing length on the glazed wall B.',
     'Cross bearers probably need a deeper section.',
     'Bolt bearing in 1.5 mm webs at frame joints.',
@@ -371,29 +372,35 @@ function panel(F,xa,xb,sky){
   });
   var xl=xa+0.0043, xr=xb-0.0043;
   for(i=0;i<7;i++){
-    if(sky&&(i===3||i===4)){
-      M('rp',P(PS[i],PQ,xl),P(PS[i],PQ,7.315),0.045,0.15,{ref:F.p});
-      M('rp',P(PS[i],PQ,8.185),P(PS[i],PQ,xr),0.045,0.15,{ref:F.p});
+    if(sky&&i===2) continue;               /* replaced by the lower jamb */
+    if(sky&&(i===3||i===4)){               /* cripples, ending inside the head/sill tracks */
+      M('rp',P(PS[i],PQ,xl),P(PS[i],PQ,7.3575),0.045,0.15,{ref:F.p});
+      M('rp',P(PS[i],PQ,8.1425),P(PS[i],PQ,xr),0.045,0.15,{ref:F.p});
     } else M('rp',P(PS[i],PQ,xl),P(PS[i],PQ,xr),0.045,0.15,{ref:F.p});
   }
-  /* blocking + bridging */
-  [[0,1],[5,6]].forEach(function(b){
-    M('rb',P(PS[b[0]]+0.0225,PQ,xm),P(PS[b[1]]-0.0225,PQ,xm),0.045,0.15,{ref:F.p});
-  });
-  (sky?[[0,1.38],[2.56,LT]]:[[0,LT]]).forEach(function(r){
-    M('rb',P(r[0],0.227,xm),P(r[1],0.227,xm),0.05,0.004,{ref:F.p});
-    M('rb',P(r[0],0.073,xm),P(r[1],0.073,xm),0.05,0.004,{ref:F.p});
+  /* blocking + bridging: mid-bay row, or two rows beside the skylight */
+  (sky?[7.15,8.35]:[xm]).forEach(function(xr0){
+    [[0,1],[5,6]].forEach(function(b){
+      M('rb',P(PS[b[0]]+0.0225,PQ,xr0),P(PS[b[1]]-0.0225,PQ,xr0),0.045,0.15,{ref:F.p});
+    });
+    M('rb',P(0,0.2285,xr0),P(LT,0.2285,xr0),0.05,0.004,{ref:F.p});
+    M('rb',P(0,0.0715,xr0),P(LT,0.0715,xr0),0.05,0.004,{ref:F.p});
   });
   if(sky){
-    [7.3375,8.1625].forEach(function(x){M('rp',P(PS[2]+0.0225,PQ,x),P(PS[5]-0.0225,PQ,x),0.045,0.15,{ref:F.p,mat:MAT.rptrim})});
-    [1.3575,2.5825].forEach(function(s){M('rp',P(s,PQ,7.36),P(s,PQ,8.14),0.045,0.15,{ref:F.p,mat:MAT.rptrim})});
-    var gp=[P(1.38,PQ,7.36),P(1.38,PQ,8.14),P(2.56,PQ,8.14),P(2.56,PQ,7.36)], gg=new THREE.BufferGeometry(), arr=[];
+    [PS[2],2.366].forEach(function(s0){M('rp',P(s0,PQ,xl),P(s0,PQ,xr),0.05,0.153,{ref:F.p,mat:MAT.rptrim})});
+    [[7.36,-1],[8.14,1]].forEach(function(h){
+      var xw=h[0]+h[1]*0.00125, mt=MAT.rptrack, qu=PQ+0.079-0.00125, ql=PQ-0.079+0.00125;
+      M('rp',P(1.161,PQ,xw),P(2.341,PQ,xw),0.0025,0.158,{ref:F.p,mat:mt});
+      M('rp',P(1.161,qu,xw+h[1]*0.0225),P(2.341,qu,xw+h[1]*0.0225),0.045,0.0025,{ref:F.p,mat:mt,nocount:true});
+      M('rp',P(1.161,ql,xw+h[1]*0.0225),P(2.341,ql,xw+h[1]*0.0225),0.045,0.0025,{ref:F.p,mat:mt,nocount:true});
+    });
+    var gp=[P(1.161,PQ,7.36),P(1.161,PQ,8.14),P(2.341,PQ,8.14),P(2.341,PQ,7.36)], gg=new THREE.BufferGeometry(), arr=[];
     [0,1,2,0,2,3].forEach(function(k){arr.push(gp[k].x,gp[k].y,gp[k].z)});
     gg.setAttribute('position',new THREE.Float32BufferAttribute(arr,3)); gg.computeVertexNormals();
     var gm=new THREE.Mesh(gg,MAT.glass); gm.renderOrder=2; roofGlass.add(gm); COUNT.glass++;
   } else {
-    M('rx',P(0,0.231,xa+0.003),P(LT,0.231,xb-0.003),0.06,0.004,{ref:F.p});
-    M('rx',P(0,0.235,xb-0.003),P(LT,0.235,xa+0.003),0.06,0.004,{ref:F.p});
+    M('rx',P(0,0.2335,xa+0.003),P(LT,0.2335,xb-0.003),0.06,0.004,{ref:F.p});
+    M('rx',P(0,0.2375,xb-0.003),P(LT,0.2375,xa+0.003),0.06,0.004,{ref:F.p});
   }
 }
 [-1,1].forEach(function(side){
@@ -638,26 +645,58 @@ function PSP(i){return 0.025+i*0.5557}
   addDetail('block',g);
 })();
 
-/* ---- detail 5: skylight opening in panel ---- */
+/* ---- detail 5: skylight opening in panel (full bay) ---- */
+function uTrack(a0,a1,webDir,flangeDir,o,D){
+  var t=CT, len=a0.distanceTo(a1), mid=a0.clone().add(a1).multiplyScalar(.5);
+  var w=webDir.clone().normalize(), f=flangeDir.clone().normalize();
+  function part(u,v,su,sv){obox(o.group,o.mat,mid.clone().addScaledVector(w,u).addScaledVector(f,v),w,f,su,sv,len)}
+  part(0,0,D,t);
+  [1,-1].forEach(function(s){part(s*(D/2-t/2),(0.045-t/2)/2,t,0.045+t/2)});
+}
 (function(){
-  var g=new THREE.Group(), F=slopeF(), hw=0.39, S2=PSP(2), S5=PSP(5), Q=0.15;
-  [2,5].forEach(function(i){cSection(sp(F,PSP(i),Q,-0.85),sp(F,PSP(i),Q,0.85),F.p,F.a,C1(g))});
-  [3,4].forEach(function(i){
-    cSection(sp(F,PSP(i),Q,0.438),sp(F,PSP(i),Q,0.85),F.p,F.a,C1(g));
-    cSection(sp(F,PSP(i),Q,-0.85),sp(F,PSP(i),Q,-0.438),F.p,F.a,C1(g));
+  var g=new THREE.Group(), F=slopeF(), Q=0.15, hw=0.39, HX=1.5, XI=HX-0.00425, D=0.158;
+  var S0=0.40, S1=3.10, i;
+  /* asymmetric panel tracks */
+  [[-(HX-0.003),1],[HX-0.003,-1]].forEach(function(t){
+    track(sp(F,S0,Q,t[0]),sp(F,S1,Q,t[0]),F.p,F.x.clone().multiplyScalar(t[1]),{group:g,mat:DM.track});
   });
+  /* purlins 1 and 5 */
+  [1,5].forEach(function(k){cSection(sp(F,PSP(k),Q,-XI),sp(F,PSP(k),Q,XI),F.p,F.a,C1(g))});
+  /* boxed jambs: C150 + cap track, cap stopped 0.05 short at each end */
+  [PSP(2),2.366].forEach(function(s0){
+    var sc=s0-0.024;
+    cSection(sp(F,sc,Q,-XI),sp(F,sc,Q,XI),F.p,F.a,{group:g,mat:DM.trim});
+    uTrack(sp(F,sc+0.0463,Q,-(XI-0.05)),sp(F,sc+0.0463,Q,XI-0.05),F.p,neg(F.a),{group:g,mat:DM.mid},D);
+    [-1.2,-0.9,-0.6,-0.3,0,0.3,0.6,0.9,1.2].forEach(function(x){
+      screw(g,sp(F,sc+0.025,Q+0.079,x),neg(F.p));
+      screw(g,sp(F,sc+0.025,Q-0.079,x),F.p);
+    });
+  });
+  /* head and sill U tracks: web facing the window, flanges away from it */
   [1,-1].forEach(function(sg){
-    var out=F.x.clone().multiplyScalar(sg), inn=neg(out);
-    cSection(sp(F,S2+CT/2,Q,sg*(hw+CT/2)),sp(F,S5-CT/2,Q,sg*(hw+CT/2)),F.p,out,{group:g,mat:DM.trim,n0:0.05});
-    clip(g,sp(F,S2+CT/2,Q,sg*hw),inn,F.a,0.03);
-    clip(g,sp(F,S5-CT/2,Q,sg*hw),inn,neg(F.a),0.03);
-    clip(g,sp(F,1.38,Q,sg*hw),inn,F.a,0.03);
-    clip(g,sp(F,2.56,Q,sg*hw),inn,neg(F.a),0.03);
-    [3,4].forEach(function(i){clip(g,sp(F,PSP(i)+CT/2,Q,sg*(hw+CT)),out,F.a,0.047)});
+    var out=F.x.clone().multiplyScalar(sg), xw=sg*(hw+CT/2);
+    uTrack(sp(F,1.161,Q,xw),sp(F,2.341,Q,xw),F.p,out,{group:g,mat:DM.dark},D);
+    clip(g,sp(F,1.161,Q,sg*hw),neg(out),F.a,0.03);
+    clip(g,sp(F,2.341,Q,sg*hw),neg(out),neg(F.a),0.03);
+    [3,4].forEach(function(k){
+      var sk=PSP(k);
+      cSection(sp(F,sk,Q,sg*(hw+CT)),sp(F,sk,Q,sg*XI),F.p,F.a,C1(g));
+      [Q+0.0795+0.00125,Q-0.0795-0.00125].forEach(function(q,qi){
+        screw(g,sp(F,sk+0.02,q,sg*(hw+CT+0.025)),qi?F.p:neg(F.p));
+      });
+    });
   });
-  cSection(sp(F,1.38-CT/2,Q,-hw),sp(F,1.38-CT/2,Q,hw),F.p,neg(F.a),{group:g,mat:DM.trim});
-  cSection(sp(F,2.56+CT/2,Q,-hw),sp(F,2.56+CT/2,Q,hw),F.p,F.a,{group:g,mat:DM.trim});
-  var gp=[sp(F,1.38,Q,-hw),sp(F,1.38,Q,hw),sp(F,2.56,Q,hw),sp(F,2.56,Q,-hw)], gg=new THREE.BufferGeometry(), arr=[];
+  /* two bridging rows beside the opening */
+  [-0.6,0.6].forEach(function(x){
+    var sm=(S0+S1)/2, ln=S1-S0;
+    obox(g,DM.rod,sp(F,sm,0.2305,x),F.a,F.x,ln,0.05,0.003);
+    obox(g,DM.rod,sp(F,sm,0.0695,x),F.a,F.x,ln,0.05,0.003);
+    [PSP(1),PSP(5)].forEach(function(s){
+      screw(g,sp(F,s+0.022,0.232,x),neg(F.p));
+      screw(g,sp(F,s+0.022,0.068,x),F.p);
+    });
+  });
+  var gp=[sp(F,1.161,Q,-hw),sp(F,1.161,Q,hw),sp(F,2.341,Q,hw),sp(F,2.341,Q,-hw)], gg=new THREE.BufferGeometry(), arr=[];
   [0,1,2,0,2,3].forEach(function(k){arr.push(gp[k].x,gp[k].y,gp[k].z)});
   gg.setAttribute('position',new THREE.Float32BufferAttribute(arr,3)); gg.computeVertexNormals();
   var gm=new THREE.Mesh(gg,MAT.glass); gm.renderOrder=2; g.add(gm);
