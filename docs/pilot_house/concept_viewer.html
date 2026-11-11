@@ -137,7 +137,7 @@ const T = {
   sel: {selected: 'Selected', hint: 'Click a member to highlight it. Click again to release.', clear: 'Clear selection', copy: 'Copy list', copied: 'Copied', manual: 'Press Ctrl+C to copy the selected text', hidden: 'Hidden', showAll: 'Show all', help: 'Right-click for the menu \u00b7 H hide \u00b7 I isolate \u00b7 G ghost others \u00b7 F zoom \u00b7 S same kind \u00b7 V invert visibility \u00b7 A show all \u00b7 Esc clear'},
   menu: {hide: ['Hide selected','H'], isolate: ['Isolate selected','I'], ghost: ['Ghost others','G'], zoom: ['Zoom to selected','F'], same: ['Select same kind','S'], invsel: ['Invert selection','Shift+I'], invvis: ['Invert visibility','V'], showall: ['Show all','A'], clear: ['Clear selection','Esc']},
   detailsLabel: 'Details',
-  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridgebox: 'Ridge box', eave: 'Eave contact', wpanel: 'Wall panel (draft)'},
+  details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridgebox: 'Ridge box', eave: 'Eave contact', wpanel: 'Wall panel'},
   hideCap: 'Hide ridge cap',
   showNb: 'Show neighbouring panels\' end studs',
   explodeView: 'Exploded view',
@@ -187,7 +187,7 @@ const T = {
       'Eave cap: folded 1.5 mm plate on the roof panel top and the wall\'s outer face, bent where the two planes meet; screwed to the eave-edge purlin and to the wall top track',
       'Eave closure and fixings: to be detailed'],
       governs: 'to be detailed with the eave framing.'},
-    wpanel: {title: 'Wall panel (draft)', parts: [
+    wpanel: {title: 'Wall panel', parts: [
       'Panel: bay length less 6 mm, height about 2760 mm, 150 mm thick; bottom track and top track U150; top and bottom tracks run the full panel length and cover the end studs',
       'End studs C150 with the web on the panel end, flanges into the panel; at the joints they stand back-to-back with the neighbouring panel, 6 mm gap, and act as the frame leg',
       'Intermediate studs C150 at 600 mm with slotted webs, open side toward higher X',
@@ -558,15 +558,15 @@ M('loft',V(2.3,LF-0.075,3.6),V(2.3,LF-0.075,4.8),0.045,0.15);
 
 /* ---------- 9 strap bracing ---------- */
 function strap(p1,p2,n,grp){M('straps',p1,p2,0.06,0.012,{ref:n,group:grp})}
-function xbrace(fn,u0,u1,n,top){
+function xbrace(fn,u0,u1,n,top,single){
   top=top||EV;
-  SEQ('Wall brace strap',function(){strap(fn(u0,FL),fn(u1,top),n); strap(fn(u0,top),fn(u1,FL),n)});
+  SEQ('Wall brace strap',function(){strap(fn(u0,FL),fn(u1,top),n); if(!single) strap(fn(u0,top),fn(u1,FL),n)});
   SEQ('Hold-down',function(){[u0,u1].forEach(function(u){var p=fn(u,FL+0.125);B('straps',p.x,p.y,p.z,0.1,0.25,0.1,{nocount:true})})});
 }
 var OFS=0.095;
 var fA=function(u,y){return V(u,y,-OFS)}, fB=function(u,y){return V(u,y,W+OFS)};
 var f1=function(u,y){return V(-OFS,y,u)}, f5=function(u,y){return V(L+OFS,y,u)};
-xbrace(fA,3.25,6.25,NZ,EV+DY); xbrace(fA,9.25,12.5,NZ,EV+DY);
+xbrace(fA,3.25,6.25,NZ,EV+DY,true); xbrace(fA,9.25,12.5,NZ,EV+DY);
 xbrace(fB,0,3.25,NZ,EV+DY); xbrace(fB,11.0,12.5,NZ,EV+DY);
 xbrace(f1,3.0,5.2,NX); xbrace(f5,0,2.6,NX);
 /* ---------- 10 partitions ---------- */
