@@ -96,8 +96,7 @@ button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-
       <button type="button" id="v-top"></button>
       <button type="button" id="v-reset"></button>
     </div>
-    <label class="chip" id="explodeChip"><input type="checkbox" id="explode"> <span id="t-explode"></span></label>
-    <label class="chip" id="dexChip" hidden><input type="checkbox" id="dexplode"> <span id="t-dex"></span></label>
+    <label class="chip" id="explodeChip"><span id="t-explode"></span> <input type="range" id="explode" min="0" max="100" step="1" value="0" style="width:140px"> <span id="explodeVal" style="min-width:3.2em;text-align:right">0%</span></label>
     <label class="chip" id="nbChip" hidden><input type="checkbox" id="nbcheck" checked> <span id="t-nb"></span></label>
     <label class="chip" id="capChip" hidden><input type="checkbox" id="hidecap"> <span id="t-hidecap"></span></label>
   </div>
@@ -126,7 +125,7 @@ const T = {
   badge: 'CONCEPT \u2014 sizes schematic, not verified',
   hint: 'Drag to rotate, wheel or pinch to zoom, right-drag to pan',
   buttons: {front: 'Front', rear: 'Rear', top: 'Top', reset: 'Reset view'},
-  explode: 'Explode roof',
+  explode: 'Explode',
   layersLabel: 'Layers',
   layers: {
     screws: 'Soil screws', floor: 'Ground floor frame', walls: 'Wall panels (load-bearing)',
@@ -140,7 +139,6 @@ const T = {
   details: {house: 'Whole house', knee: 'Knee + tie rod', apex: 'Apex', panel: 'Roof panel on rafter', block: 'Blocking + bridging', skyp: 'Skylight opening in panel', ridgebox: 'Ridge box', eave: 'Eave contact', wpanel: 'Wall panel', dheader: 'Door header', gable5: 'Gable 5 panels', gable1: 'Gable 1 panels', cornerA5: 'Corner A/5', loft: 'Loft floor'},
   hideCap: 'Hide ridge cap',
   showNb: 'Show neighbouring panels\' end studs',
-  explodeView: 'Exploded view',
   notesLabels: {parts: 'Parts', governs: 'Governs', tag: 'CONCEPT \u2014 preliminary, not a check'},
   notes: {
     knee: {title: 'Knee + tie rod', parts: [
@@ -285,7 +283,7 @@ const T = {
 function $(id){return document.getElementById(id)}
 document.title = T.docTitle;
 $('t-title').textContent = T.title; $('t-badge').textContent = T.badge; $('t-hint').textContent = T.hint;
-$('t-explode').textContent = T.explode; $('t-hidecap').textContent = T.hideCap; $('t-nb').textContent = T.showNb; $('t-dex').textContent = T.explodeView; $('layers').setAttribute('aria-label', T.layersLabel);
+$('t-explode').textContent = T.explode; $('t-hidecap').textContent = T.hideCap; $('t-nb').textContent = T.showNb; $('layers').setAttribute('aria-label', T.layersLabel);
 ['front','rear','top'].forEach(function(n){$('v-'+n).textContent = T.buttons[n]});
 $('v-reset').textContent = T.buttons.reset;
 $('t-h-facts').textContent = T.factsHead; $('t-h-open').textContent = T.openHead; $('t-foot').textContent = T.foot;
@@ -943,13 +941,17 @@ function addDetail(key,g){
     }
   });
 }
-function applyExplode(on){
-  var g=DG[mode]; if(!g) return;
-  g.traverse(function(o){
+var explodeS=0;
+function applyExplode(v){
+  var s=(v===true)?1:(v===false||v==null)?0:Math.max(0,Math.min(1,+v||0));
+  explodeS=s;
+  var g=DG[mode];
+  if(g) g.traverse(function(o){
     if(!o.isMesh||!o.userData.p0) return;
     o.position.copy(o.userData.p0);
-    if(on&&o.userData.ex) o.position.add(o.userData.ex);
+    if(s&&o.userData.ex) o.position.addScaledVector(o.userData.ex,s);
   });
+  if(mode==='house'&&window.__houseExplode) window.__houseExplode(s);
   refreshVis();
 }
 var CO={};
@@ -1714,7 +1716,7 @@ var mode='house', bounds={};
 function setView(name,cdir){
   var d,dir;
   if(mode!=='house'){
-    var rdg=(mode==='ridgebox'||mode==='eave'), dx=$('dexplode').checked, bkey=mode+(dx?'x':'');
+    var rdg=(mode==='ridgebox'||mode==='eave'), dx=false, bkey=mode;
     if(!bounds[bkey]) bounds[bkey]=mode==='eave'?(dx?new THREE.Box3(V(-0.6,-0.8,-0.85),V(0.6,1.2,0.95)):new THREE.Box3(V(-0.6,-0.8,-0.55),V(0.6,0.85,0.9))):rdg?(dx?new THREE.Box3(V(-0.4,-0.45,-0.95),V(1.6,1.1,0.95)):new THREE.Box3(V(-0.4,-0.4,-0.6),V(1.6,0.35,0.6))):new THREE.Box3().setFromObject(DG[mode]);
     var bb=bounds[bkey], ctr=bb.getCenter(new THREE.Vector3());
     var slope=(mode==='block'||mode==='skyp'), pan=(mode==='panel');
@@ -1786,11 +1788,65 @@ LAYERS.forEach(function(l){
 });
 ['front','rear','top'].forEach(function(n){document.getElementById('v-'+n).addEventListener('click',function(){setView(n)})});
 document.getElementById('v-reset').addEventListener('click',function(){setView('reset')});
-var explode=document.getElementById('explode');
-$('dexplode').addEventListener('change',function(){applyExplode($('dexplode').checked);setView('reset')});
 $('nbcheck').addEventListener('change',function(){if(WP_NB)WP_NB.visible=$('nbcheck').checked});
 $('hidecap').addEventListener('change',function(){if(RIDGE_CAP)RIDGE_CAP.visible=!$('hidecap').checked});
 var roofParts=[G.rp,G.rb,G.rx,G.rbox,roofGlass,capGrp,ecapA,ecapC,iangA,iangC];
+
+/* ---------- explode slider ---------- */
+var exSlider=$('explode'), exVal=$('explodeVal');
+function setSlider(s){exSlider.value=Math.round(s*100);exVal.textContent=Math.round(s*100)+'%'}
+exSlider.addEventListener('input',function(){var s=exSlider.value/100;exVal.textContent=exSlider.value+'%';applyExplode(s)});
+/* house: panels move as rigid units; per-mesh offset hx (at s=1) from the original position hp0 */
+(function(){
+  scene.updateMatrixWorld(true);
+  var HX=[], unclassified=[];
+  var roofSet=roofParts;
+  function inRoof(o){var ex=null;for(var p=o.parent;p;p=p.parent){if(roofSet.indexOf(p)>=0){if(ex===null)ex=p.userData.extra||0;}}return ex}
+  function sideZ(o,lab){
+    if(lab&&/rear/.test(lab)) return -1; if(lab&&/front/.test(lab)) return 1;
+    if(lab&&/wall A/.test(lab)) return -1; if(lab&&/wall C/.test(lab)) return 1;
+    var c=new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3()).z;
+    return c<2.55?-1:c>2.65?1:0;
+  }
+  function classify(o,layer){
+    var mem=o.userData.member, lab=mem?mem.label:'', bb=new THREE.Box3().setFromObject(o), c=bb.getCenter(new THREE.Vector3()), m;
+    var rx=inRoof(o);
+    if(rx!==null){
+      var sz=(lab&&/Ridge cap|Ridge blocking/.test(lab))?0:sideZ(o,lab);
+      /* eave caps / inner angles are per wall: wall A = rear, wall C = front */
+      if(/Eave (cap|inner angle) wall A/.test(lab)) sz=-1; else if(/Eave (cap|inner angle) wall C/.test(lab)) sz=1;
+      return V(0,1.5+rx,0.3*sz);
+    }
+    if(layer==='loft') return /^Loft floor/.test(lab)?V(0,0.8,0):null;
+    if(layer!=='walls'&&layer!=='wbb'&&layer!=='straps'&&layer!=='glass') return null;
+    var g=0, apex=false;
+    if((m=/^Gable (\d)/.exec(lab))) g=+m[1]; else if(/^Window/.test(lab)) g=5;
+    else if(!lab){ if(c.x>12.2) g=5; else if(c.x<0.3) g=1; }
+    if(g){
+      apex=/apex panel/.test(lab)||(!lab&&c.y>3.25);
+      var dx=g===5?1:-1;
+      return V(dx,apex?0.5:0,0);
+    }
+    var wz=lab?(/Wall A|Door|Hold-down|Wall brace/.test(lab)?-1:/Wall C/.test(lab)?1:0):(c.z<0.5?-1:c.z>4.7?1:0);
+    if(wz===0&&lab) wz=c.z<2.6?-1:1;
+    if(wz) return V(0,0,wz);
+    return null;
+  }
+  var STATIC={screws:1,floor:1,frames:1,rods:1,parts:1};
+  LAYERS.forEach(function(l){
+    if(l.id==='grid') return;
+    l.group.traverse(function(o){
+      if(!o.isMesh) return;
+      var hx=classify(o,l.id);
+      if(hx){o.userData.hp0=o.position.clone();o.userData.hx=hx;HX.push(o)}
+      else if(!STATIC[l.id]&&!(l.id==='loft')) unclassified.push(l.id+': '+(o.userData.member?o.userData.member.label:'(no member)'));
+    });
+  });
+  if(unclassified.length) console.warn('explode: unclassified house meshes (static):',unclassified);
+  window.__houseExplode=function(s){
+    for(var i=0;i<HX.length;i++){var o=HX[i];o.position.copy(o.userData.hp0).addScaledVector(o.userData.hx,s)}
+  };
+})();
 
 /* ---------- details selector ---------- */
 var detailsEl=$('details'), dBtns={}, notesEl=$('notes');
@@ -1808,14 +1864,14 @@ function renderNotes(k){
 }
 function showMode(k){
   clearSel(); showAll();
-  if(mode!=='house'){$('dexplode').checked=false;applyExplode(false)}
-  mode=k; $('dexChip').hidden=(k==='house');
+  applyExplode(0); setSlider(0);
+  mode=k;
   camera.fov=(k==='ridgebox'||k==='eave'||k==='wpanel'||k==='dheader'||k==='gable5'||k==='gable1'||k==='cornerA5'||k==='loft')?12:40; camera.updateProjectionMatrix();
   $('nbcheck').checked=true; if(WP_NB) WP_NB.visible=true; $('nbChip').hidden=(k!=='wpanel');
   $('hidecap').checked=false; if(RIDGE_CAP) RIDGE_CAP.visible=true; $('capChip').hidden=(k!=='ridgebox'); var house=k==='house';
   LAYERS.forEach(function(l){l.group.visible=house&&cbs[l.id].checked});
   gridLines.visible=house; labels.forEach(function(l){l.sp.visible=house});
-  layersEl.style.display=house?'':'none'; $('explodeChip').style.display=house?'':'none';
+  layersEl.style.display=house?'':'none';
   Object.keys(DG).forEach(function(d){DG[d].visible=(d===k)});
   Object.keys(dBtns).forEach(function(d){dBtns[d].setAttribute('aria-pressed',d===k?'true':'false')});
   controls.minDistance=house?0.3:0.2; controls.maxPolarAngle=house?Math.PI*0.52:Math.PI;
@@ -1852,7 +1908,7 @@ function applyMat(m){var mem=m.userData.member;if(!mem)return;ensureState(m,mem.
 function refreshMats(){for(var i=0;i<MEMBERS.length;i++){var ms=MEMBERS[i].meshes;for(var j=0;j<ms.length;j++)applyMat(ms[j])}}
 function repaintSel(){refreshMats()}
 function refreshVis(){
-  var dx=$('dexplode').checked, i, j, ms;
+  var dx=explodeS>0, i, j, ms;
   for(i=0;i<MEMBERS.length;i++){ms=MEMBERS[i].meshes;for(j=0;j<ms.length;j++)ms[j].visible=!MEMBERS[i].hidden&&!(ms[j].userData.fast&&dx)}
 }
 function layerOf(mem){
@@ -2031,6 +2087,7 @@ cv.addEventListener('pointerup',function(e){
   if(d.b===2){contextAt(e.clientX,e.clientY);return}
   if(d.b===0&&performance.now()-d.t<400){var mem=hitAt(e.clientX,e.clientY);if(mem){toggleMember(mem);showTip(mem)}}
 });
+cv.addEventListener('dblclick',function(e){if(!hitAt(e.clientX,e.clientY))setView('reset')});
 cv.addEventListener('contextmenu',function(e){e.preventDefault()});
 cv.addEventListener('pointerenter',function(){overCv=true});
 cv.addEventListener('pointerleave',function(){overCv=false});
@@ -2060,18 +2117,10 @@ updateSel();
 /* ---------- loop ---------- */
 (function loop(){
   requestAnimationFrame(loop);
-  var t0=explode.checked?1.2:0;
-  roofParts.forEach(function(g){
-    var t=t0?t0+(g.userData.extra||0):0;
-    var d=t-g.position.y;
-    g.position.y=Math.abs(d)<0.002?t:g.position.y+d*0.15;
-    var tz=t0?(g.userData.dz||0):0, dz=tz-g.position.z;
-    g.position.z=Math.abs(dz)<0.002?tz:g.position.z+dz*0.15;
-  });
   controls.update();
   renderer.render(scene,camera);
 })();
 window.__counts=COUNT;
-window.__dbg={camera:camera,controls:controls,showMode:showMode,applyExplode:applyExplode};
+window.__dbg={camera:camera,controls:controls,showMode:showMode,applyExplode:applyExplode,setExplode:function(v){v=Math.max(0,Math.min(1,+v||0));setSlider(v);applyExplode(v)}};
 })();
 </script>
