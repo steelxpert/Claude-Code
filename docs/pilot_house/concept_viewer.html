@@ -1325,7 +1325,10 @@ function wallsHouse(){
       var yr=FL+0.92*r, yb=yr+0.0225;
       [['outside',sg],['inside',-sg]].forEach(function(f){
         LBL(pn+' '+MD+' bridging strap row '+r+' '+f[0],function(){
-          segs.forEach(function(sq){M('wbb',V(sq[0],yr,z+f[1]*0.0765),V(sq[1],yr,z+f[1]*0.0765),0.04,0.003,{ref:NZv})});
+          segs.forEach(function(sq){var a=sq[0], b=sq[1];
+            /* inside straps stop 2 mm short of the frame columns (column outer face = wall inner face) */
+            if(f[0]==='inside') [3.25,6.25,9.25].forEach(function(gx){if(Math.abs(a-gx)<0.08) a=gx+0.077; if(Math.abs(b-gx)<0.08) b=gx-0.077;});
+            M('wbb',V(a,yr,z+f[1]*0.0765),V(b,yr,z+f[1]*0.0765),0.04,0.003,{ref:NZv})});
         });
       });
       if(!c4) LBL(pn+' '+MD+' block row '+r+' first space',function(){CM('wbb',V(cpost?0.124:xa2+(wpost?0.095:0.0475),yb,z),V(xs[0]-0.0238,yb,z),NZv,MY,{mid:true,D:0.150})});
