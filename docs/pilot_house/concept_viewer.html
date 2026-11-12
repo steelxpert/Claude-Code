@@ -197,11 +197,14 @@ const T = {
       governs: 'to be checked: header bending and the jamb studs under the header reaction.'},
     gable5: {title: 'Gable 5 as two shop panels', parts: [
       'Lower panel 5.05 x 2.76 m between the long walls, horizontal panel joint on the eave line (top of wall)',
-      'Apex panel on top: bottom track on the lower top track, raking U150 tracks with their top face in the rafter-top plane, the end roof panels bear on them',
+      'Apex top build-up under the roof panel, top to bottom: U150 cap track open down (top face in the rafter-top plane, the end roof-panel tracks lie on it) + C150 lying inside it web down, lips up = capped box, the weak-axis header (roof-panel tracks and gable studs are on different modules) + the normal raking top track; studs end in that track',
+      'Corner cut square 0.22 m from the long wall: the stack bears on the apex bottom track, which runs the full 5.05 m; the 145 x 120 mm corner sliver stays open inside the eave box',
+      'Apex studs at 600 only (0.6 to 4.8), no ridge stud; the ridge point is carried by the mitred stack',
+      'Bridging 0.92 m above the joint: straps stack to stack on both faces, one solid block at each end against the stack',
       'Window 1.5 x 1.5: door detail reused - boxed header, capped box jambs, sill track, cripples',
       'Bridging rows at 0.92 / 1.84 m and 0.92 m above the joint',
       'X-straps corner to window jamb',
-      'OPEN: hidden header in the apex top track (owner), corner detail, hold-downs, straps in the apex panel'],
+      'OPEN: fixing of the stack end at the corner (clip angle or track flanges), hold-downs, bracing in the apex panel, gable 1 mirror'],
       governs: 'half of bay 4-5 roof load into the apex studs; wind on the gable; preliminary.'},
     wpanel: {title: 'Wall panel', parts: [
       'Panel: bay length less 6 mm, height about 2760 mm, 150 mm thick; bottom track and top track U150; top and bottom tracks run the full panel length and cover the end studs',
@@ -766,8 +769,10 @@ function exOffset(key,label){
   } else if(key==='gable5'){
     var ex=V(0,0,0);
     if(/apex panel/.test(label)) ex.y+=0.45;
-    if(/raking track rear/.test(label)) ex.add(V(SIN,COS,0).multiplyScalar(0.25));
-    if(/raking track front/.test(label)) ex.add(V(-SIN,COS,0).multiplyScalar(0.25));
+    if(/raking header rear .* cap track/.test(label)) ex.add(V(SIN,COS,0).multiplyScalar(0.30));
+    if(/raking header front .* cap track/.test(label)) ex.add(V(-SIN,COS,0).multiplyScalar(0.30));
+    if(/raking header rear .* stud/.test(label)) ex.add(V(SIN,COS,0).multiplyScalar(0.15));
+    if(/raking header front .* stud/.test(label)) ex.add(V(-SIN,COS,0).multiplyScalar(0.15));
     if(/wall panel .* top track/.test(label)) ex.y+=0.15;
     if(/wall panel .* bottom track/.test(label)) ex.y-=0.15;
     if(/strap.*outside/.test(label)) ex.z+=0.3;
@@ -1244,22 +1249,21 @@ function gable5Panels(E){
   });
   /* apex panel */
   E.trk('dark',P(XG,top+t/2,ZA),P(XG,top+t/2,ZB),AXd,PYd,an+' '+MD+' bottom track',0.150);
-  [['rear',-1,0.15,2.6],['front',1,2.6,5.05]].forEach(function(r){
-    var p=V(0,COS,r[1]*SIN);
-    function pt(z){return V(XG,yR(z)+0.0979,z).addScaledVector(p,-t/2)}
-    var a0=pt(r[2]), a1=pt(r[3]);
-    E.trk('dark',P(a0.x,a0.y,a0.z),P(a1.x,a1.y,a1.z),AXd,Dm(-p.x,-p.y,-p.z),an+' '+MD+' raking track '+r[0],0.150);
+  [['rear',-1,0.222,2.6],['front',1,2.6,4.978]].forEach(function(r){
+    var p=V(0,COS,r[1]*SIN), np=Dm(-p.x,-p.y,-p.z), pp=Dm(p.x,p.y,p.z);
+    function pt(z,d){var q=V(XG,yR(z)+0.0979,z).addScaledVector(p,d); return P(q.x,q.y,q.z)}
+    E.trk('dark',pt(r[2],-t/2),pt(r[3],-t/2),AXd,np,an+' '+MD+' raking header '+r[0]+' '+MD+' cap track',0.150);
+    E.cst('c2',pt(r[2],-0.04625),pt(r[3],-0.04625),AXd,pp,an+' '+MD+' raking header '+r[0]+' '+MD+' stud',true);
+    E.trk('dark',pt(r[2],-0.04875),pt(r[3],-0.04875),AXd,np,an+' '+MD+' raking track '+r[0],0.150);
   });
-  var k=0;
-  [0.6,1.2,1.8,2.4,2.6,3.0,3.6,4.2,4.8].forEach(function(z){
-    stud('c1',an+' '+MD+(z===2.6?' ridge stud':' stud '+(++k)),z,top+t,yR(z)+0.0757);
+  [0.6,1.2,1.8,2.4,3.0,3.6,4.2,4.8].forEach(function(z,k){
+    stud('c1',an+' '+MD+' stud '+(k+1),z,top+t,yR(z)+0.0137);
   });
   var yra=top+0.92, yba=yra+0.0225;
-  strapRow(an+' '+MD+' bridging strap outside',1,[[1.8-0.0225,3.6+0.0225]],yra);
-  strapRow(an+' '+MD+' bridging strap inside',-1,[[1.8-0.0225,3.6+0.0225]],yra);
-  [[1.8,2.4,1],[3.0,3.6,2]].forEach(function(b){
-    E.cst('blk',P(XG,yba,b[0]+0.0275),P(XG,yba,b[1]-0.0238),AXd,MYd,an+' '+MD+' block '+b[2],true);
-  });
+  strapRow(an+' '+MD+' bridging strap outside',1,[[1.316,3.884]],yra);
+  strapRow(an+' '+MD+' bridging strap inside',-1,[[1.316,3.884]],yra);
+  E.cst('blk',P(XG,yba,1.342),P(XG,yba,1.8-0.0238),AXd,MYd,an+' '+MD+' block rear end',true);
+  E.cst('blk',P(XG,yba,3.6+0.0275),P(XG,yba,3.858),AXd,MYd,an+' '+MD+' block front end',true);
 }
 gable5Panels({
   P:V, D:V,
