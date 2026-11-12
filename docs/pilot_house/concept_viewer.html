@@ -147,7 +147,7 @@ const T = {
       'Rafter top in the roof plane, plumb cut at the wall inner face; roof panels bear on the rafter and the wall top',
       'Knee and apex: gusset plate in the 26 mm gap',
       'Tie rod between the columns below the knee',
-      'Frame and wall are separate: wall studs carry wind to the floor and the roof; OPEN: gusset thickness/packing, column base on the bearer top (150-280 mm inside the pile line)'],
+      'Frame and wall are separate: wall studs carry wind to the floor and the roof; OPEN: gusset thickness/packing, column base 5 mm above the floor top, bolted to the extended T web on the screw'],
       governs: 'to be checked: knee gusset and the C webs in bolt bearing; column and rafter as built-up members; tie force; preliminary.'},
     apex: {title: 'Apex', parts: [
       'Rafters: 2 \u00d7 C200\u00d760\u00d715\u00d72.0 back to back (26 mm gap) + U150\u00d740\u00d72.0 tracks on both edges, 40\u00b0 each side, plumb cut at the ridge',
@@ -278,7 +278,7 @@ const T = {
   open: [
     'Roof diagonal straps only in the gable-end bays: wind on the long walls must reach the gables through the frames and the ridge box - to be shown in the calculation.',
     'Asymmetric track is a new section for FLINS.',
-    'Frame knee and column base to be detailed: gusset thickness and packing, column base on the bearer top (150-280 mm inside the pile line); the loft floor and the grid-2 header stop at the frame columns (header clipped to the column faces, detail to be drawn).',
+    'Frame knee and column base to be detailed: gusset thickness and packing, column base 5 mm above the floor top, bolted to the extended T web on the screw; the loft floor and the grid-2 header stop at the frame columns (header clipped to the column faces, detail to be drawn).',
     'Glazed bays of wall C: panel build-up to be decided.',
     'Eave: the roof panel bears on the inner edge of the wall track, 75 mm off the wall centre line - eccentric load on the wall top to be checked.',
     'Perforation size and end distance to be confirmed against shear and web crippling at supports.',
@@ -513,7 +513,7 @@ function groundFloor(E){
     /* screws under the frame columns (grids 2-4, A and C): the T web continues up through the bearer gap into the 26 mm gap between the two column C webs (planes x = GX -/+ 0.013), with 2 x 10 mm packing and 4 x M12 column bolts */
     if(xi>=1&&xi<=3&&sc[1]!=='B'){
       LBL(nm+'web extension into column',function(){E.box('pl',x,0.655,zc,0.005,0.49,0.185)});
-      [-1,1].forEach(function(s,pi){ LBL(nm+'packing '+(pi+1),function(){E.box('blk',x+s*0.0075,0.675,zc,0.010,0.45,0.185)}) });
+      [-1,1].forEach(function(s,pi){ LBL(nm+'packing '+(pi+1),function(){E.box('blk',x+s*0.0075,(FL+0.005+0.90)/2,zc,0.010,0.90-(FL+0.005),0.185)}) });
       [[0.70,-0.05],[0.70,0.05],[0.82,-0.05],[0.82,0.05]].forEach(function(b,bi){ var zb=zc+b[1];
         LBL(nm+'column bolt '+(bi+1),function(){
           E.cylx('bolt',V(x-0.032,b[0],zb),V(x+0.032,b[0],zb),0.012);
@@ -633,7 +633,7 @@ function apexGussetPts(){
   var fn=fi+2, ff='Frame '+fn, MD='·', mt={c:MAT.frames,t:MAT.frames};
   [['rear',false],['front',true]].forEach(function(sd){
     var sn=sd[0], mir=sd[1];
-    fmember(G.frames,mt,x,0,mir,fcolumn(FL-0.15),{c1:ff+' column '+sn+' '+MD+' C stud 1',c2:ff+' column '+sn+' '+MD+' C stud 2',tp:ff+' column '+sn+' '+MD+' inner track',tm:ff+' column '+sn+' '+MD+' outer track'},true);
+    fmember(G.frames,mt,x,0,mir,fcolumn(FL+0.005),{c1:ff+' column '+sn+' '+MD+' C stud 1',c2:ff+' column '+sn+' '+MD+' C stud 2',tp:ff+' column '+sn+' '+MD+' inner track',tm:ff+' column '+sn+' '+MD+' outer track'},true);
     fmember(G.frames,mt,x,0,mir,frafter(2.6),{c1:ff+' rafter '+sn+' '+MD+' C 1',c2:ff+' rafter '+sn+' '+MD+' C 2',tp:ff+' rafter '+sn+' '+MD+' top track',tm:ff+' rafter '+sn+' '+MD+' bottom track'},true);
     LBL(ff+' knee gusset '+sn,function(){
       plate(G.frames,MAT.frames,kneeGussetPts().map(function(P){return [mir?W-P[0]:P[0],P[1]]}),0.01,V(0,0,1),V(0,1,0),V(x,0,0));
@@ -1811,7 +1811,7 @@ function floorScene(){
     strap:function(p1,p2){ var s=cl(p1,p2); if(!s) return; var d=s[1].clone().sub(s[0]), len=d.length(); obox(g,DM.rod,Pf(s[0].clone().add(s[1]).multiplyScalar(.5)),d.normalize(),ex1,len,0.04,0.0015) }
   });
   /* stub of the grid-2 frame column on the C side (z 4.92 .. 5.125), standing on the bearer top, cut through the end tracks */
-  var cs=fcolumn(FL-0.15), MDf='\u00b7'; cs.s1=FL-0.15+0.55;
+  var cs=fcolumn(FL+0.005), MDf='\u00b7'; cs.s1=FL+0.40;
   FDZ=2.6;
   fmember(g,{c:DM.c1,t:DM.mid},0,-0.35,true,cs,{c1:'Frame column stub '+MDf+' C stud 1',c2:'Frame column stub '+MDf+' C stud 2',tp:'Frame column stub '+MDf+' inner track',tm:'Frame column stub '+MDf+' outer track'});
   FDZ=0;
