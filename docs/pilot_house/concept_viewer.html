@@ -143,14 +143,14 @@ const T = {
   explodeView: 'Exploded view',
   notesLabels: {parts: 'Parts', governs: 'Governs', tag: 'CONCEPT \u2014 preliminary, not a check'},
   notes: {
-    knee: {title: 'Knee and tie-rod end', parts: [
-      'Leg and rafter: 2 \u00d7 C150\u00d745\u00d71.5 back-to-back with 6 mm gap',
-      'Gusset: 6 mm plate between the webs',
-      'Bolts: 4 \u00d7 M12 per member, double shear',
-      'Tie rod M16 with fork end pinned to the gusset, and turnbuckle',
-      'Packer plates in the rafter gap at about 600 mm',
-      'Eave edge of the roof panel: to be detailed'],
-      governs: 'bolt bearing in the 2 \u00d7 1.5 mm webs (about 30 kN per bolt, preliminary); tie force about 9 kN.'},
+    knee: {title: 'Knee + tie rod', parts: [
+      'Frame inside the long walls: column outer face on the wall inner face, span 4.85 m c/c',
+      'Columns and rafters: 2 \u00d7 C200\u00d760\u00d715\u00d72.0 back to back (26 mm gap) + U150\u00d740\u00d72.0 tracks on both edges',
+      'Rafter top in the roof plane, plumb cut at the wall inner face; roof panels bear on the rafter and the wall top',
+      'Knee and apex: gusset plate in the 26 mm gap',
+      'Tie rod between the columns below the knee',
+      'Frame and wall are separate: wall studs carry wind to the floor and the roof; OPEN: gusset thickness/packing, column base on the floor frame (150-280 mm inside the pile line)'],
+      governs: 'to be checked: knee gusset and the C webs in bolt bearing; column and rafter as built-up members; tie force; preliminary.'},
     apex: {title: 'Apex', parts: [
       'Rafters: 2 \u00d7 C150\u00d745\u00d71.5 back-to-back with 6 mm gap, 40\u00b0 each side',
       'Gusset: 6 mm kite plate between the webs, covering 400 mm of each rafter',
@@ -228,11 +228,11 @@ const T = {
       governs: 'to be checked: wind post under wind on the gable and the X-strap end force; preliminary.'},
     wpanel: {title: 'Wall panel', parts: [
       'Panel: bay length less 6 mm, height about 2760 mm, 150 mm thick; bottom track and top track U150; top and bottom tracks run the full panel length and cover the end studs',
-      'End studs C150 with the web on the panel end, flanges into the panel; at the joints they stand back-to-back with the neighbouring panel, 6 mm gap, and act as the frame leg',
+      'End studs C150 with the web on the panel end, flanges into the panel; at the joints they stand back-to-back with the neighbouring panel, 6 mm gap; they carry wall loads only: the main frames have their own columns inside the walls',
       'Intermediate studs C150 at 600 mm with slotted webs, open side toward higher X',
       'Each panel has one end stud per end. The pale studs belong to the neighbouring panels: placed side by side, the last stud of one panel and the first stud of the next stand back-to-back',
       'Two rows of solid blocking + strap bridging at 920 and 1840 mm: 50 x 1.5 mm straps on both faces, solid C150 blocks with one slot in the first and last stud space'],
-      governs: 'to be checked: end studs as frame leg under the rafter reaction; stud buckling length between bridging rows about 920 mm.'},
+      governs: 'to be checked: end studs under the roof panel reaction (the frame columns stand inside the wall, not in it); stud buckling length between bridging rows about 920 mm.'},
     ridgebox: {title: 'Ridge box', parts: [
       'Panels extended to the ridge: the lower corners of the two ridge-edge members meet on the ridge line',
       'Ridge cap: folded 1.5 mm plate on the top flanges of both panels',
@@ -248,7 +248,7 @@ const T = {
     ['Eave', 'Roof panel\'s lowest edge on the inner top edge of the wall track; folded eave cap outside and folded angle inside; no blocking plates'],
     ['Ridge', 'Closed ridge box: the two ridge-edge members, a folded cap and an inner angle, with a blocking plate at every bridging row'],
     ['Roof', '8 factory panels; purlins C150 at about 560 mm ending in asymmetric tracks (lower flange 70 mm); tracks screwed to the rafters at 600 mm; 6 mm gap between panels; diagonal straps in the gable-end bays only'],
-    ['Main frames', 'Grids 2, 3, 4: rafters 2 \u00d7 C150 back-to-back with a steel tie rod at eaves; the legs are the back-to-back end studs of the neighbouring wall panels'],
+    ['Main frames', 'Grids 2, 3, 4: portal frames inside the long walls, columns and rafters 2 \u00d7 C200\u00d760\u00d715\u00d72.0 back to back (26 mm gap) with U150 tracks on both edges, gusset plates in the gap, steel tie rod below the knees; own columns, separate from the wall studs'],
     ['Long walls', 'Shop panels, one per bay like the roof panels; end studs back-to-back at the panel joints; two rows of solid blocking + strap bridging'],
     ['Ground floor', 'Cross bearers on 15 soil screws, joists lengthwise'],
     ['Loft', 'Over bay 1\u20132, joists on a header at grid 2'],
@@ -260,7 +260,7 @@ const T = {
   open: [
     'Roof diagonal straps only in the gable-end bays: wind on the long walls must reach the gables through the frames and the ridge box - to be shown in the calculation.',
     'Asymmetric track is a new section for FLINS.',
-    'Knee joint to be re-detailed: the frame leg is now two end studs belonging to two wall panels: the rafter foot must stop at the wall\'s inside face.',
+    'Frame knee and column base to be detailed: gusset thickness and packing, column base on the floor frame (150-280 mm inside the pile line); the loft header at grid 2 runs through the frame column.',
     'Glazed bays of wall C: panel build-up to be decided.',
     'Eave: the roof panel bears on the inner edge of the wall track, 75 mm off the wall centre line - eccentric load on the wall top to be checked.',
     'Perforation size and end distance to be confirmed against shear and web crippling at supports.',
@@ -295,6 +295,7 @@ var XE=L+0.075; /* gable 5 outer face */
 var XS=-0.075, XC=(XE+XS)/2, XLEN=XE-XS; /* gable 1 outer face, span centre, span length */
 function yR(z){return EV+(2.6-Math.abs(z-2.6))*TAN}
 var RIDGE=yR(2.6);
+var CT=0.0025; /* drawn thickness of C walls (real 0.0015) */
 function r3(v){return Math.round(v*1000)/1000}
 function steps(a,b,s){var o=[],i;for(i=0;a+i*s<=b+1e-9;i++)o.push(r3(a+i*s));return o}
 function uniq(a){return a.filter(function(v,i){return a.indexOf(v)===i}).sort(function(p,q){return p-q})}
@@ -408,9 +409,9 @@ function mergeGeos(list){
   out.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
   return out;
 }
-function buildC(a0,a1,webDir,flangeDir,slotted,n0,Dov){
+function buildC(a0,a1,webDir,flangeDir,slotted,n0,Dov,Fov,LPov){
   n0=n0||0;
-  var D=Dov||(0.150-2*0.0025), F=0.045, LP=0.010, t=0.0025, r=0.019, hs=0.031;
+  var D=Dov||(0.150-2*0.0025), F=Fov||0.045, LP=LPov||0.010, t=0.0025, r=0.019, hs=0.031;
   var ax=new THREE.Vector3().subVectors(a1,a0), len=ax.length(), axn=ax.clone().normalize();
   var w=webDir.clone().normalize(), f=flangeDir.clone().normalize(), ez=new THREE.Vector3().crossVectors(w,f);
   var sgn=ez.dot(axn)>=0?1:-1;
@@ -473,25 +474,83 @@ for(var bi=0;bi<4;bi++){
 
 /* ---------- 3 walls ---------- */
 var NZ=V(0,0,1), NX=V(1,0,0);
-/* ---------- 4 main frames, 5 tie rods ---------- */
-function kp(s,q){return [COS*s-SIN*q, SIN*s+COS*q]}
-[3.25,6.25,9.25].forEach(function(x,fi){
-  var fn=fi+2, ff='Frame '+fn;
-  LBL(ff+' rafter rear',function(){M('frames',V(x,EV,0),V(x,RIDGE,2.6),0.096,0.15)});
-  LBL(ff+' rafter front',function(){M('frames',V(x,EV,W),V(x,RIDGE,2.6),0.096,0.15)});
-  /* knee gussets (below the rafter top plane) */
-  [[0,1],[W,-1]].forEach(function(k){
-    var u=kp(0,0.07), pts=[[-0.07,-0.325],[0.07,-0.325],[0.07,-0.07],[0.24,0],kp(0.45,-0.07),kp(0.45,0.07),u,[-0.07,u[1]]]
-      .map(function(p){return [k[1]*p[0],p[1]]});
-    LBL(ff+' knee gusset '+(k[1]>0?'rear':'front'),function(){plate(G.frames,MAT.frames,pts,0.01,V(0,0,1),V(0,1,0),V(x+0.055,EV,k[0]))});
+/* ---------- 4 main frames (single-span portal frames inside the long walls), 5 tie rods ---------- */
+/* Column and rafter section: 2 x C200x60x15x2.0 back to back, 26 mm gap, + U150x40x2.0 track on both edges.
+   Drawn as prisms extruded along x from outlines in the frame (z,y) plane, so the ends get a true plumb / underside cut.
+   Rear (wall A) coordinates; the front frame half is the mirror about z = W/2. */
+var FHW=0.1, FGAP=0.013, FCF=0.060, FCLIP=0.015, FTW=0.075, FTL=0.040;
+var FZ0=0.075;                      /* wall inner face */
+var FQC=-0.0275;                    /* rafter centreline offset (along the slope normal) from the old centreline: top track outer face stays on the old rafter top plane q = 0.075 */
+var FZC=FZ0+FHW+CT;                 /* column centreline z */
+function fpoly(P,a,p,s0,s1,q0,q1){
+  function pt(s,q){return [P[0]+a[0]*s+p[0]*q, P[1]+a[1]*s+p[1]*q]}
+  return [pt(s0,q0),pt(s1,q0),pt(s1,q1),pt(s0,q1)];
+}
+function fclip(poly,h){ /* keep h[0]*z+h[1]*y <= h[2] */
+  var out=[], n=poly.length, i;
+  for(i=0;i<n;i++){
+    var A=poly[i], B=poly[(i+1)%n], da=h[0]*A[0]+h[1]*A[1]-h[2], db=h[0]*B[0]+h[1]*B[1]-h[2];
+    if(da<=0) out.push(A);
+    if((da<0&&db>0)||(da>0&&db<0)){var u=da/(da-db); out.push([A[0]+u*(B[0]-A[0]),A[1]+u*(B[1]-A[1])])}
+  }
+  return out;
+}
+/* member m = {P,a,p,qc,s0,s1,hp}: axis origin, axis dir, in-plane normal (all (z,y)), centreline offset, extent, clip half-planes */
+function fmember(g,mt,x,dy,mir,m,L,cnt){
+  function strip(q0,q1){
+    var p=fpoly(m.P,m.a,m.p,m.s0,m.s1,m.qc+q0,m.qc+q1);
+    m.hp.forEach(function(h){p=fclip(p,h)});
+    return p;
+  }
+  function pl(mat,poly,xa,xb){
+    if(poly.length<3) return;
+    plate(g,mat,poly.map(function(P){return [mir?W-P[0]:P[0], P[1]+dy]}),Math.abs(xb-xa),V(0,0,1),V(0,1,0),V(x+(xa+xb)/2,0,0));
+  }
+  var t=CT;
+  [[-1,L.c1],[1,L.c2]].forEach(function(c){
+    var sx=c[0], xg=sx*FGAP, xt=sx*(FGAP+FCF);
+    LBL(c[1],function(){
+      pl(mt.c,strip(-FHW+t,FHW-t),xg,xg+sx*t);                       /* web */
+      pl(mt.c,strip(FHW-t,FHW),xg,xt); pl(mt.c,strip(-FHW,-FHW+t),xg,xt);   /* flanges */
+      pl(mt.c,strip(FHW-t-FCLIP,FHW-t),xt-sx*t,xt); pl(mt.c,strip(-FHW+t,-FHW+t+FCLIP),xt-sx*t,xt); /* lips */
+      if(cnt) COUNT.frames++;
+    });
   });
-  /* apex gusset */
-  (function(){
-    var q=0.07, Yt=q/COS, ue=[COS*0.4+SIN*q,-SIN*0.4+COS*q], le=[COS*0.4-SIN*q,-SIN*0.4-COS*q];
-    var pts=[[0,Yt],ue,le,[0,-Yt],[-le[0],le[1]],[-ue[0],ue[1]]];
-    LBL(ff+' apex gusset',function(){plate(G.frames,MAT.frames,pts,0.01,V(0,0,1),V(0,1,0),V(x+0.055,RIDGE,2.6))});
-  })();
-  LBL('Tie rod '+fn,function(){CYL('rods',V(x,EV,0),V(x,EV,W),0.03)});
+  [[1,L.tp],[-1,L.tm]].forEach(function(e){
+    var q0=e[0]>0?FHW:-FHW-t, q1=e[0]>0?FHW+t:-FHW, l0=e[0]>0?FHW-FTL:-FHW, l1=e[0]>0?FHW:-FHW+FTL;
+    LBL(e[1],function(){
+      pl(mt.t,strip(q0,q1),-FTW,FTW);                                /* web across the width */
+      pl(mt.t,strip(l0,l1),FTW-t,FTW); pl(mt.t,strip(l0,l1),-FTW,-FTW+t);  /* legs lapping the C flanges */
+      if(cnt) COUNT.frames++;
+    });
+  });
+}
+function fcolumn(s0){return {P:[FZC,0],a:[0,1],p:[1,0],qc:0,s0:s0,s1:EV+0.8,hp:[[-SIN,COS,COS*EV+FQC-FHW-CT]]}} /* top cut on the rafter underside */
+function frafter(zmax){return {P:[0,EV],a:[COS,SIN],p:[-SIN,COS],qc:FQC,s0:-0.5,s1:4.5,hp:[[-1,0,-FZ0],[1,0,zmax]]}} /* plumb cuts at the wall inner face and at zmax */
+function fL(s,q){return [s*COS-q*SIN, EV+s*SIN+q*COS]}      /* (z,y) of rafter coordinates (s along the slope, q along the normal) from the old centreline */
+function fsAt(z,q){return (z+q*SIN)/COS}
+var GM=0.015, GQ0=FQC-FHW+GM, GQ1=FQC+FHW-GM, GZ0=FZ0+CT+GM, GZ1=FZ0+CT+2*FHW-GM; /* gusset outline margins inside the C webs */
+function kneeGussetPts(){
+  var sK=fsAt(GZ1,GQ0), K1=fL(sK,GQ0), se=sK+0.6, K2=fL(fsAt(GZ0,GQ1),GQ1), yl=K1[1]-0.45;
+  return [[GZ0,yl],[GZ1,yl],K1,fL(se,GQ0),fL(se,GQ1),K2];
+}
+function apexGussetPts(){
+  var sT=fsAt(2.6,GQ1), sB=fsAt(2.6,GQ0), d=0.4, Tt=fL(sT,GQ1), Tb=fL(sT-d,GQ1), Bb=fL(sB-d,GQ0), Bt=fL(sB,GQ0);
+  function mr(P){return [W-P[0],P[1]]}
+  return [Tb,Tt,mr(Tb),mr(Bb),Bt,Bb];
+}
+[3.25,6.25,9.25].forEach(function(x,fi){
+  var fn=fi+2, ff='Frame '+fn, MD='·', mt={c:MAT.frames,t:MAT.frames};
+  [['rear',false],['front',true]].forEach(function(sd){
+    var sn=sd[0], mir=sd[1];
+    fmember(G.frames,mt,x,0,mir,fcolumn(FL),{c1:ff+' column '+sn+' '+MD+' C stud 1',c2:ff+' column '+sn+' '+MD+' C stud 2',tp:ff+' column '+sn+' '+MD+' inner track',tm:ff+' column '+sn+' '+MD+' outer track'},true);
+    fmember(G.frames,mt,x,0,mir,frafter(2.6),{c1:ff+' rafter '+sn+' '+MD+' C 1',c2:ff+' rafter '+sn+' '+MD+' C 2',tp:ff+' rafter '+sn+' '+MD+' top track',tm:ff+' rafter '+sn+' '+MD+' bottom track'},true);
+    LBL(ff+' knee gusset '+sn,function(){
+      plate(G.frames,MAT.frames,kneeGussetPts().map(function(P){return [mir?W-P[0]:P[0],P[1]]}),0.01,V(0,0,1),V(0,1,0),V(x,0,0));
+    });
+  });
+  LBL(ff+' apex gusset',function(){plate(G.frames,MAT.frames,apexGussetPts(),0.01,V(0,0,1),V(0,1,0),V(x,0,0))});
+  LBL('Tie rod '+fn,function(){CYL('rods',V(x,EV-0.15,FZ0+2*(FHW+CT)),V(x,EV-0.15,W-FZ0-2*(FHW+CT)),0.03)});
 });
 
 /* ---------- 6 roof panels (8 factory panels on top of the rafters) ---------- */
@@ -566,8 +625,8 @@ function panel(F,xa,xb,sky,side,bi){
 
 /* ---------- 8 loft ---------- */
 SEQ('Loft member',function(){
-M('loft',V(3.25,LF-0.1,0),V(3.25,LF-0.1,W),0.09,0.2);
-[0,1.5,3.2,5.2].forEach(function(z){M('loft',V(3.25,FL,z),V(3.25,LF-0.2,z),0.09,0.15)});
+M('loft',V(3.25,LF-0.1,0.28),V(3.25,LF-0.1,W-0.28),0.09,0.2);
+[1.5,3.2].forEach(function(z){M('loft',V(3.25,FL,z),V(3.25,LF-0.2,z),0.09,0.15)});
 M('loft',V(0.05,LF-0.075,0),V(0.05,LF-0.075,W),0.045,0.15);
 SEQ('Loft joist',function(){[0.4,1.0,1.6,2.2,3.0,3.6,4.2,4.8].forEach(function(z){
   M('loft',V(0.05,LF-0.075,z),V(z===4.2?2.3:3.25,LF-0.075,z),0.045,0.15);
@@ -676,11 +735,10 @@ function plate(g,mat,pts,th,ex,ey,origin){
   m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat));
   reg(m,null,'Gusset plate'); g.add(m);
 }
-var CT=0.0025; /* drawn thickness of C walls (real 0.0015) */
 function cSection(a0,a1,webDir,flangeDir,o){ LBL((o&&o.label)||dn('C section'),function(){ cSection0(a0,a1,webDir,flangeDir,o) }); }
 function cSection0(a0,a1,webDir,flangeDir,o){
-  if(o.slots){var sm=buildC(a0,a1,webDir,flangeDir,o.slots==='mid'?'mid':true,o.n0,o.D);sm.material=o.mat;o.group.add(sm);reg(sm,null,'C section');return}
-  var D=o.D||(0.150-2*CT), F=0.045, LP=0.010, t=CT;
+  if(o.slots){var sm=buildC(a0,a1,webDir,flangeDir,o.slots==='mid'?'mid':true,o.n0,o.D,o.F,o.LP);sm.material=o.mat;o.group.add(sm);reg(sm,null,'C section');return}
+  var D=o.D||(0.150-2*CT), F=o.F||0.045, LP=o.LP||0.010, t=CT;
   var len=a0.distanceTo(a1), mid=a0.clone().add(a1).multiplyScalar(.5);
   var w=webDir.clone().normalize(), f=flangeDir.clone().normalize();
   var n0=o.n0||0, n1=o.n1||0, axn=a1.clone().sub(a0).normalize();
@@ -742,8 +800,15 @@ function clip(g,c,dA,nA,sA){
 function exOffset(key,label){
   var P=V(0,COS,-SIN), sgn=/left|x\+/.test(label)?1:-1;
   if(key==='knee'){
-    if(/Knee gusset|Packer/.test(label)) return V(0.25,0,0);
-    if(/Tie rod|Turnbuckle|Fork|Pin/.test(label)) return V(0,0,0.3);
+    if(/Knee gusset/.test(label)) return V(0.25,0,0);
+    if(/C stud 1|C 1$/.test(label)) return V(-0.12,0,0);
+    if(/C stud 2|C 2$/.test(label)) return V(0.12,0,0);
+    if(/column .* outer track/.test(label)) return V(0,0,-0.15);
+    if(/column .* inner track/.test(label)) return V(0,0,0.15);
+    if(/rafter .* top track/.test(label)) return P.clone().multiplyScalar(0.15);
+    if(/rafter .* bottom track/.test(label)) return P.clone().multiplyScalar(-0.15);
+    if(/Tie rod/.test(label)) return V(0,0,0.3);
+    if(/^Wall A panel/.test(label)) return /top track/.test(label)?V(0,0.2,-0.35):V(0,0,-0.35);
   } else if(key==='apex'){
     if(/Apex gusset/.test(label)) return V(0.25,0,0);
   } else if(key==='panel'){
@@ -882,22 +947,17 @@ function cleat(g,F,s0,xc){
   })});
 }
 
-/* ---- detail 1: knee + tie rod ---- */
+/* ---- detail 1: knee + tie rod (frame column and rafter foot inside the wall, wall A panel top beside it) ---- */
 (function(){
-  var g=new THREE.Group(), F=slopeF(); dprefix=T.details.knee;
-  pairC(V(0,-0.65,0),V(0,0.075,0),AZ,AX,C1(g,'Leg C'));
-  pairC(sp(F,0.14,0,0),sp(F,0.95,0,0),F.p,AX,C2(g,'Rafter C'));
-  function yz(s,q){var v=sp(F,s,q,0);return [v.z,v.y]}
-  var top=yz(0,0.07);
-  LBL('Knee gusset',function(){plate(g,DM.dark,[[-0.07,-0.325],[0.07,-0.325],[0.07,-0.07],[0.24,0],yz(0.45,-0.07),yz(0.45,0.07),top,[-0.07,top[1]]],0.006,AZ,AY)});
-  [-0.12,-0.22].forEach(function(y){[-0.035,0.035].forEach(function(z){bolt(g,V(0,y,z),AX,0.011)})});
-  [0.2,0.3].forEach(function(s){[-0.035,0.035].forEach(function(q){bolt(g,sp(F,s,q,0),AX,0.011)})});
-  LBL('Packer plate',function(){obox(g,DM.dark,sp(F,0.7,0,0),F.a,F.p,0.10,0.10,0.006)});
-  /* tie rod, fork, pin, turnbuckle */
-  LBL('Tie rod M16',function(){cyl(g,DM.rod,V(0,0,0.30),V(0,0,0.95),0.016)});
-  LBL('Turnbuckle',function(){cyl(g,DM.rod,V(0,0,0.54),V(0,0,0.70),0.032)});
-  [1,-1].forEach(function(s){LBL('Fork plate '+(s>0?1:2),function(){obox(g,DM.rod,V(s*0.007,0,0.21),AX,AY,0.008,0.05,0.18)})});
-  LBL('Pin '+'\u00d8'+'20',function(){cyl(g,DM.rod,V(-0.017,0,0.17),V(0.017,0,0.17),0.020)});
+  var g=new THREE.Group(), MD='\u00b7', mt={c:DM.c1,t:DM.mid}, dy=-EV, t=CT, top=DY, y1=top-0.0025, y0=top-0.65; dprefix=T.details.knee;
+  fmember(g,mt,0,dy,false,fcolumn(EV-0.9),{c1:'Frame column '+MD+' C stud 1',c2:'Frame column '+MD+' C stud 2',tp:'Frame column '+MD+' inner track',tm:'Frame column '+MD+' outer track'});
+  fmember(g,mt,0,dy,false,frafter(1.0),{c1:'Frame rafter '+MD+' C 1',c2:'Frame rafter '+MD+' C 2',tp:'Frame rafter '+MD+' top track',tm:'Frame rafter '+MD+' bottom track'});
+  LBL('Knee gusset',function(){plate(g,DM.dark,kneeGussetPts().map(function(P){return [P[0],P[1]+dy]}),0.01,AZ,AY,V(0,0,0))});
+  LBL('Tie rod',function(){cyl(g,DM.rod,V(0,-0.15,FZ0+2*(FHW+CT)),V(0,-0.15,0.85),0.03)});
+  /* wall A panel top at grid 2 (context): top track, end stud, next stud */
+  uTrack(V(-0.70,top-t/2,0),V(-0.003,top-t/2,0),AZ,V(0,-1,0),{group:g,mat:DM.c2,label:'Wall A panel '+MD+' top track'},0.150);
+  cSection(V(-0.003-t/2,y0,0),V(-0.003-t/2,y1,0),AZ,V(-1,0,0),{group:g,mat:DM.c2,label:'Wall A panel '+MD+' end stud'});
+  cSection(V(-0.6225,y0,0),V(-0.6225,y1,0),AZ,AX,{group:g,mat:DM.c2,label:'Wall A panel '+MD+' stud'});
   addDetail('knee',g);
 })();
 
@@ -957,8 +1017,9 @@ function uTrack0(a0,a1,webDir,flangeDir,o,D){
   var t=CT, len=a0.distanceTo(a1), mid=a0.clone().add(a1).multiplyScalar(.5);
   var w=webDir.clone().normalize(), f=flangeDir.clone().normalize();
   function part(u,v,su,sv){obox(o.group,o.mat,mid.clone().addScaledVector(w,u).addScaledVector(f,v),w,f,su,sv,len)}
+  var LG=(o&&o.leg)||0.045;
   part(0,0,D,t);
-  [1,-1].forEach(function(s){part(s*(D/2-t/2),(0.045-t/2)/2,t,0.045+t/2)});
+  [1,-1].forEach(function(s){part(s*(D/2-t/2),(LG-t/2)/2,t,LG+t/2)});
 }
 (function(){
   var g=new THREE.Group(), F=slopeF(), Q=0.15, hw=0.39, HX=1.5, XI=HX-0.00425, D=0.158, MD='\u00b7'; dprefix=T.details.skyp;
@@ -1724,6 +1785,29 @@ function hitAt(cx,cy){
   var hit=rc.intersectObjects(list,false)[0];
   return hit?hit.object.userData.member:null;
 }
+/* zoom toward / away from the point under the cursor (wheel); OrbitControls' own zoom is off */
+controls.enableZoom=false;
+cv.addEventListener('wheel',function(e){
+  e.preventDefault();
+  if(!e.deltaY) return;
+  var r=cv.getBoundingClientRect();
+  rc.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height*2-1)),camera);
+  var list=[];
+  if(mode==='house') LAYERS.forEach(function(l){collect(l.group,list)}); else if(DG[mode]) collect(DG[mode],list);
+  scene.updateMatrixWorld(true);
+  var hit=rc.intersectObjects(list,false)[0], P;
+  if(hit) P=hit.point.clone();
+  else {
+    var n=new THREE.Vector3(); camera.getWorldDirection(n);
+    P=new THREE.Vector3(); if(!rc.ray.intersectPlane(new THREE.Plane().setFromNormalAndCoplanarPoint(n,controls.target),P)) return;
+  }
+  var s=Math.pow(1.0015,Math.max(-200,Math.min(200,e.deltaY)));
+  var d=camera.position.distanceTo(controls.target)*s;
+  if(d<controls.minDistance||d>controls.maxDistance) return;
+  camera.position.sub(P).multiplyScalar(s).add(P);
+  controls.target.sub(P).multiplyScalar(s).add(P);
+  controls.update();
+},{passive:false});
 function showTip(mem){tipEl.textContent=mem.label;tipEl.hidden=false;clearTimeout(tipTimer);tipTimer=setTimeout(function(){tipEl.hidden=true},2000)}
 /* context menu */
 var menuEl=document.createElement('div'); menuEl.className='ctxmenu'; menuEl.setAttribute('role','menu'); menuEl.hidden=true; stage.appendChild(menuEl);
