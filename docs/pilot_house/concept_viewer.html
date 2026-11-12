@@ -781,8 +781,10 @@ function exOffset(key,label){
       else if(/stud inside/.test(label)){ex.y+=0.16; ex.z-=0.15}
       else if(/top track/.test(label)) ex.y+=0.30;
     } else if(/wall panel .* bottom track/.test(label)) ex.y-=0.15;
-    if(/jack stud at wall A/.test(label)) ex.x-=0.12;
-    if(/jack stud at wall C/.test(label)) ex.x+=0.12;
+    if(/end post at wall A .* cap track/.test(label)) ex.x+=0.15;
+    if(/end post at wall A .* stud B/.test(label)) ex.x-=0.15;
+    if(/end post at wall C .* cap track/.test(label)) ex.x-=0.15;
+    if(/end post at wall C .* stud B/.test(label)) ex.x+=0.15;
     if(/strap.*outside/.test(label)) ex.z+=0.3;
     if(/strap.*inside/.test(label)) ex.z-=0.3;
     if(/block/.test(label)) ex.z+=0.15;
@@ -791,10 +793,12 @@ function exOffset(key,label){
     if(/Window header .* stud outside/.test(label)) ex.z+=0.12;
     if(/Window header .* stud inside/.test(label)) ex.z-=0.12;
     if(/Window sill/.test(label)) ex.y-=0.12;
-    if(/wall-A side .* second stud/.test(label)) ex.x+=0.15;
-    if(/wall-C side .* second stud/.test(label)) ex.x-=0.15;
+    if(/Window jamb wall-A side .* cap track/.test(label)) ex.x-=0.15;
+    if(/Window jamb wall-A side .* second stud/.test(label)) ex.x+=0.15;
+    if(/Window jamb wall-C side .* cap track/.test(label)) ex.x+=0.15;
+    if(/Window jamb wall-C side .* second stud/.test(label)) ex.x-=0.15;
     if(/X-strap/.test(label)) ex.z+=0.45;
-    if(/hold-down/.test(label)) ex.z+=0.45;
+    if(/hold-down/.test(label)) ex.z+=0.25;
     return ex.lengthSq()>0?ex:null;
   } else if(key==='wpanel'){
     if(/strap.*outside/.test(label)) return V(0,0,-0.3);
@@ -1222,7 +1226,7 @@ wallsHouse();
 /* ---- gable 5 as two shop panels: lower wall panel + apex panel (one builder for house and detail scene) ---- */
 function gable5Panels(E){
   var P=E.P, Dm=E.D, t=CT, MD='·', top=EV+DY, y0=FL+t, y1=top-t, ZA=0.075, ZB=5.125, XG=12.5;
-  var yJ=top-3*t-0.145, zA2=ZA+0.046, zB2=ZB-0.046, yc=top-t-0.0725;
+  var yJ=top-3*t-0.145, yc=top-t-0.0725;
   var AXd=Dm(1,0,0), PYd=Dm(0,1,0), MYd=Dm(0,-1,0), PZd=Dm(0,0,1), MZd=Dm(0,0,-1), MXd=Dm(-1,0,0);
   var pn='Gable 5 wall panel', an='Gable 5 apex panel';
   function stud(role,label,z,ya,yb){E.cst(role,P(XG,ya,z-0.0225),P(XG,yb,z-0.0225),AXd,PZd,label)}
@@ -1231,22 +1235,30 @@ function gable5Panels(E){
   }
   /* lower panel */
   E.trk('dark',P(XG,FL+t/2,ZA),P(XG,FL+t/2,ZB),AXd,PYd,pn+' '+MD+' bottom track',0.150);
-  E.trk('dark',P(XG,top-2*t-0.145-t/2,zA2),P(XG,top-2*t-0.145-t/2,zB2),AXd,MYd,pn+' '+MD+' top track',0.150);
-  E.trk('dark',P(XG,top-t-0.145-t/2,zA2),P(XG,top-t-0.145-t/2,zB2),AXd,PYd,pn+' '+MD+' girt '+MD+' bottom track',0.150);
-  E.cst('c2',P(XG+0.07125,yc,zA2),P(XG+0.07125,yc,zB2),PYd,MXd,pn+' '+MD+' girt '+MD+' stud outside',true);
-  E.cst('c2',P(XG-0.07125,yc,zA2),P(XG-0.07125,yc,zB2),PYd,AXd,pn+' '+MD+' girt '+MD+' stud inside',true);
+  E.trk('dark',P(XG,top-2*t-0.145-t/2,ZA),P(XG,top-2*t-0.145-t/2,ZB),AXd,MYd,pn+' '+MD+' top track',0.150);
+  E.trk('dark',P(XG,top-t-0.145-t/2,ZA),P(XG,top-t-0.145-t/2,ZB),AXd,PYd,pn+' '+MD+' girt '+MD+' bottom track',0.150);
+  E.cst('c2',P(XG+0.07125,yc,ZA),P(XG+0.07125,yc,ZB),PYd,MXd,pn+' '+MD+' girt '+MD+' stud outside',true);
+  E.cst('c2',P(XG-0.07125,yc,ZA),P(XG-0.07125,yc,ZB),PYd,AXd,pn+' '+MD+' girt '+MD+' stud inside',true);
   E.trk('dark',P(XG,top-t/2,ZA),P(XG,top-t/2,ZB),AXd,MYd,pn+' '+MD+' girt '+MD+' top track',0.150);
-  E.cst('c1',P(XG,y0,ZA+t/2),P(XG,y1,ZA+t/2),AXd,PZd,pn+' '+MD+' end stud at wall A');
-  E.cst('c1',P(XG,y0,ZB-t/2),P(XG,y1,ZB-t/2),AXd,MZd,pn+' '+MD+' end stud at wall C');
-  E.cst('c1',P(XG,y0,ZA+0.045+t/2),P(XG,yJ,ZA+0.045+t/2),AXd,PZd,pn+' '+MD+' jack stud at wall A');
-  E.cst('c1',P(XG,y0,ZB-0.045-t/2),P(XG,yJ,ZB-0.045-t/2),AXd,MZd,pn+' '+MD+' jack stud at wall C');
+  function post(label,zc,sg){ /* sg=+1: opening/end at low z, panel toward +z; cap track flanges into panel */
+    var fl=sg>0?PZd:MZd, ofl=sg>0?MZd:PZd;
+    E.trk('mid',P(XG,y0,zc),P(XG,yJ,zc),AXd,fl,label+' '+MD+' cap track',0.150);
+    E.cst('c1',P(XG,y0,zc+sg*0.04625),P(XG,yJ,zc+sg*0.04625),AXd,ofl,label+' '+MD+' stud A');
+    E.cst('c1',P(XG,y0,zc+sg*0.04875),P(XG,yJ,zc+sg*0.04875),AXd,fl,label+' '+MD+' stud B');
+  }
+  post(pn+' '+MD+' end post at wall A',ZA+t/2,1);
+  post(pn+' '+MD+' end post at wall C',ZB-t/2,-1);
   [0.6,1.2,1.8,2.4,4.8].forEach(function(z,k){stud('c1',pn+' '+MD+' stud '+(k+1),z,y0,yJ)});
   /* window 3.0..4.5 x FL+0.4..FL+1.9 */
   var wz0=3.0, wz1=4.5, ysill=FL+0.4, yb=FL+1.9, ys=yb+t+0.0725, yt=yb+t+0.145;
-  E.cst('c1',P(XG,y0,wz0-t/2),P(XG,yJ,wz0-t/2),AXd,MZd,'Window jamb wall-A side '+MD+' stud');
-  E.cst('c1',P(XG,y0,wz0-0.090+t/2),P(XG,yJ,wz0-0.090+t/2),AXd,PZd,'Window jamb wall-A side '+MD+' second stud');
-  E.cst('c1',P(XG,y0,wz1+t/2),P(XG,yJ,wz1+t/2),AXd,PZd,'Window jamb wall-C side '+MD+' stud');
-  E.cst('c1',P(XG,y0,wz1+0.090-t/2),P(XG,yJ,wz1+0.090-t/2),AXd,MZd,'Window jamb wall-C side '+MD+' second stud');
+  function jamb(side,zc,sg){
+    var l='Window jamb '+side+' side '+MD, fl=sg>0?PZd:MZd, ofl=sg>0?MZd:PZd;
+    E.trk('mid',P(XG,y0,zc),P(XG,yJ,zc),AXd,fl,l+' cap track',0.150);
+    E.cst('c1',P(XG,y0,zc+sg*0.04625),P(XG,yJ,zc+sg*0.04625),AXd,ofl,l+' stud');
+    E.cst('c1',P(XG,y0,zc+sg*0.04875),P(XG,yJ,zc+sg*0.04875),AXd,fl,l+' second stud');
+  }
+  jamb('wall-A',wz0-t/2,-1);
+  jamb('wall-C',wz1+t/2,1);
   E.trk('dark',P(XG,yb+t/2,wz0),P(XG,yb+t/2,wz1),AXd,PYd,'Window header '+MD+' bottom track',0.150);
   E.cst('c2',P(XG+0.07125,ys,wz0+0.001),P(XG+0.07125,ys,wz1-0.001),PYd,MXd,'Window header '+MD+' stud outside',true);
   E.cst('c2',P(XG-0.07125,ys,wz0+0.001),P(XG-0.07125,ys,wz1-0.001),PYd,AXd,'Window header '+MD+' stud inside',true);
@@ -1259,15 +1271,16 @@ function gable5Panels(E){
   var xo=XG+0.0795;
   LBL(pn+' '+MD+' X-strap 1',function(){E.xstrap(P(xo,FL+0.05,ZA+0.05),P(xo,top-0.05,2.955))});
   LBL(pn+' '+MD+' X-strap 2',function(){E.xstrap(P(xo,top-0.05,ZA+0.05),P(xo,FL+0.05,2.955))});
-  LBL(pn+' '+MD+' hold-down at wall A',function(){E.hd(P(xo,FL+0.125,ZA))});
-  LBL(pn+' '+MD+' hold-down at window jamb',function(){E.hd(P(xo,FL+0.125,2.955))});
+  [['at wall A',ZA+0.0700],['at wall C',ZB-0.0700],['at window jamb wall-A side',3.0-0.0700],['at window jamb wall-C side',4.5+0.0700]].forEach(function(h){
+    LBL(pn+' '+MD+' hold-down '+h[0],function(){E.hd(P(XG,FL+t+0.125,h[1]),0.12,0.25,0.035)});
+  });
   /* bridging rows, interrupted by the window */
   [1,2].forEach(function(r){
     var yr=FL+0.92*r, ybk=yr+0.0225;
     strapRow(pn+' '+MD+' bridging strap row '+r+' outside',1,[[ZA,2.9525],[4.5475,ZB]],yr);
     strapRow(pn+' '+MD+' bridging strap row '+r+' inside',-1,[[ZA,2.9525],[4.5475,ZB]],yr);
-    E.cst('blk',P(XG,ybk,ZA+0.0925),P(XG,ybk,0.6-0.0238),AXd,MYd,pn+' '+MD+' block row '+r+' first space',true);
-    E.cst('blk',P(XG,ybk,4.8+0.0275),P(XG,ybk,ZB-0.0925),AXd,MYd,pn+' '+MD+' block row '+r+' last space',true);
+    E.cst('blk',P(XG,ybk,ZA+0.095),P(XG,ybk,0.6-0.0238),AXd,MYd,pn+' '+MD+' block row '+r+' first space',true);
+    E.cst('blk',P(XG,ybk,4.8+0.0275),P(XG,ybk,ZB-0.095),AXd,MYd,pn+' '+MD+' block row '+r+' last space',true);
   });
   /* apex panel */
   E.trk('dark',P(XG,top+t/2,ZA),P(XG,top+t/2,ZB),AXd,PYd,an+' '+MD+' bottom track',0.150);
@@ -1295,7 +1308,7 @@ gable5Panels({
   cst:function(role,a0,a1,w,f,label,mid){LBL(label,function(){CM(role==='blk'?'wbb':'walls',a0,a1,w,f,role==='blk'?{mid:true,D:0.150}:(mid?{mid:true}:undefined))})},
   strap:function(p1,p2){M('wbb',p1,p2,0.10,0.003,{ref:V(1,0,0)})},
   xstrap:function(p1,p2){M('straps',p1,p2,0.10,0.003,{ref:V(1,0,0)})},
-  hd:function(p){B('straps',p.x,p.y,p.z,0.1,0.25,0.1,{nocount:true})},
+  hd:function(p,sx,sy,sz){B('straps',p.x,p.y,p.z,sx,sy,sz,{nocount:true})},
   glass:function(pts){QUAD('glass',pts)}
 });
 
@@ -1359,7 +1372,7 @@ function gable5Scene(){
     cst:function(role,a0,a1,w,f,label,mid){cSection(a0,a1,w,f,{D:role==='blk'?0.150:undefined,group:g,mat:role==='blk'?DM.c2:DM[role],slots:mid?'mid':true,label:label})},
     strap:function(p1,p2){var d=p2.clone().sub(p1), len=d.length(); obox(g,DM.rod,p1.clone().add(p2).multiplyScalar(.5),d.normalize(),AY,len,0.10,0.003)},
     xstrap:function(p1,p2){var d=p2.clone().sub(p1), len=d.length(); d.normalize(); obox(g,DM.rod,p1.clone().add(p2).multiplyScalar(.5),d,new THREE.Vector3(0,0,1).cross(d),len,0.10,0.003)},
-    hd:function(p){obox(g,DM.rod,p,V(1,0,0),V(0,1,0),0.1,0.25,0.1)}
+    hd:function(p,sx,sy,sz){obox(g,DM.rod,p,V(1,0,0),V(0,1,0),sx,sy,sz)}
   });
   addDetail('gable5',g);
 }
