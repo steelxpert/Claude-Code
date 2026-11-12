@@ -233,8 +233,9 @@ const T = {
       'Kitchen partition in the grid-2 plane, z 0.28 - 3.90: U150 tracks, C150 studs at 600 mm or less, built-up posts (2 C) at z 1.95 and the end post (cap track + 2 C) under the header; one bridging row'],
       governs: 'PRELIMINARY: joists about 1.9 kNm ULS vs about 3.3 kNm, deflection about L/560 (0.5 + 2.0 kN/m2 assumed); header spans <= 1.95 m; posts about 5 kN each to the ground floor.'},
     floor: {title: 'Ground floor: bearers + floor panels', parts: [
-      'Soil screw: shaft with a 200 x 200 x 10 head plate, top at y 0.24, 10 mm below the bearers',
+      'Soil screw: shaft with a 200 x 200 x 10 head plate, top at y 0.24, 10 mm below the bearers; the outer screws (lines A and C) stand under the frame-column centreline (z 0.1775 / 5.0225), line B at z 2.6',
       'T gusset (welded): 200 x 200 x 10 flange on the head plate, 5 mm web 250 x 160 standing in the 6 mm gap of the cross bearer; two M12 through-bolts (C1 web, T web, C2 web) with washers and nuts',
+      'Column base on the screw (grids 2, 3, 4, lines A and C): the T web is extended 300 mm above the floor (to y 0.90) through the bearer gap into the 26 mm gap between the two column C webs, with 2 x 10 mm packing plates and 4 x M12 bolts (2 rows) through C web, packing, T web, packing, C web = bolted column base on the screw',
       'Cross bearer: 2 x C200x60x15x2.5 back to back, 6 mm gap, continuous over the three screws of a grid line, y 0.25 - 0.45 (primary beam, like the rafters of the roof)',
       'Floor panels (shop-built, one per bay, like the roof panels): y 0.45 - 0.60 on the bearer tops; ends at the bearer centrelines with a 3 mm joint, gable panels to the bearer outer face',
       'End tracks U150, web in the panel end plane, open toward the panel interior; cut around the frame columns at grids 2, 3, 4 with 3 mm clearance (the columns stand on the bearer top)',
@@ -267,7 +268,7 @@ const T = {
     ['Roof', '8 factory panels; purlins C150 at about 560 mm ending in asymmetric tracks (lower flange 70 mm); tracks screwed to the rafters at 600 mm; 6 mm gap between panels; diagonal straps in the gable-end bays only'],
     ['Main frames', 'Grids 2, 3, 4: portal frames inside the long walls, columns and rafters 2 \u00d7 C200\u00d760\u00d715\u00d72.0 back to back (26 mm gap) with U150 tracks on both edges, gusset plates in the gap, steel tie rod below the knees; own columns, separate from the wall studs'],
     ['Long walls', 'Shop panels, one per bay like the roof panels; end studs back-to-back at the panel joints; two rows of solid blocking + strap bridging'],
-    ['Ground floor', 'Built-up cross bearers (2 \u00d7 C200\u00d760\u00d715\u00d72.5 back to back, 6 mm gap) on welded T gussets on 15 soil screws, y 0.25\u20130.45; four shop floor panels (y 0.45\u20130.60) stacked on the bearers, one per bay: U150 end tracks, boxed C150 rims under the long walls, C150 joists at about 400 mm, 2 strap bridging rows; floor top at +0.60'],
+    ['Ground floor', 'Built-up cross bearers (2 \u00d7 C200\u00d760\u00d715\u00d72.5 back to back, 6 mm gap) on welded T gussets on 15 soil screws (outer screws under the frame-column centrelines; at the 6 column screws the T web runs 300 mm above the floor into the column gap, 2 \u00d7 10 mm packing + 4 \u00d7 M12 = bolted column base), y 0.25\u20130.45; four shop floor panels (y 0.45\u20130.60) stacked on the bearers, one per bay: U150 end tracks, boxed C150 rims under the long walls, C150 joists at about 400 mm, 2 strap bridging rows; floor top at +0.60'],
     ['Loft', 'Over bay 1\u20132: 14 C150 joists at 385 mm between a U150 rim track on the gable 1 inner face and a rim track at grid 2, on a built-up header (2 C + 2 U) in the frame plane; ladder opening with doubled trimmers; 2 rows of solid blocking + straps; kitchen partition under the header at grid 2 (posts carry the header)'],
     ['Bracing', 'Flat-strap X with hold-downs'],
     ['Web perforations', 'Slotted holes 38 \u00d7 100 mm at 600 mm in the webs of wall studs and roof purlins; none within 250 mm of a member end; one slot in each solid block'],
@@ -284,7 +285,7 @@ const T = {
     'Ends of the ridge-edge members at the tracks: about 4 kN, near the web crippling limit, may need a clip (preliminary).',
     'Top purlin spacing at the ridge is about 630 mm, slightly over the 600 module.',
     'Little bracing length on the glazed wall C.',
-    'Ground floor connections to be detailed after contract: floor panel to bearer fixings, panel joint, T gusset to screw head, column base on the bearer top, hold-downs; preliminary member checks in the Ground floor detail.',
+    'Ground floor connections to be detailed after contract: floor panel to bearer fixings, panel joint, T gusset to screw head, column base bolt design (T web, packing, M12), hold-downs; preliminary member checks in the Ground floor detail.',
     'Bolt bearing in 1.5 mm webs at frame joints.',
     'Uplift on the soil screws.'
   ],
@@ -471,7 +472,8 @@ function STUD(z,x,y0,y1){CM('walls',V(x-0.0225,y0,z),V(x-0.0225,y1,z),V(0,0,1),V
 function GSTUD(x,z,y0,y1){CM('walls',V(x,y0,z-0.0225),V(x,y1,z-0.0225),V(1,0,0),V(0,0,1))}
 
 /* ---------- 1 soil screws ---------- */
-GX.forEach(function(x,xi){[0,2.6,5.2].forEach(function(z,zi){
+/* outer screws (lines A and C) stand on the frame-column centreline z 0.1775 / 5.0225 (not under the wall line); line B stays at z 2.6 */
+GX.forEach(function(x,xi){[0.1775,2.6,5.0225].forEach(function(z,zi){
   LBL('Soil screw '+(xi+1)+'/'+['A','B','C'][zi],function(){
     CYL('screws',V(x,-1.6,z),V(x,0.24,z),0.09);
     B('screws',x,0.235,z,0.2,0.01,0.2,{nocount:true});
@@ -495,8 +497,8 @@ function groundFloor(E){
   /* cross bearers, continuous over the three screws */
   GX.forEach(function(x,xi){ pairB(P+'cross bearer grid '+(xi+1),V(x,yB,-hw),V(x,yB,W+hw)) });
   /* welded T gussets on the screw heads: flange plate on the head, web in the 6 mm gap of the bearer, two M12 through-bolts (absolute heights: the screws do not move) */
-  GX.forEach(function(x,xi){ [[0,'A',1],[2.6,'B',0],[W,'C',-1]].forEach(function(sc){
-    var zs=sc[0], sh=sc[2]*0.07, zc=zs+sh, nm=P+'T gusset '+(xi+1)+'/'+sc[1]+' '+MD+' ';
+  GX.forEach(function(x,xi){ [[0.1775,'A'],[2.6,'B'],[W-0.1775,'C']].forEach(function(sc){
+    var zs=sc[0], zc=zs, nm=P+'T gusset '+(xi+1)+'/'+sc[1]+' '+MD+' ';
     LBL(nm+'flange',function(){E.box('pl',x,0.245,zs,0.2,0.01,0.2)});
     LBL(nm+'web',function(){E.box('pl',x,0.33,zc,0.005,0.16,0.25)});
     [-0.07,0.07].forEach(function(dz,bi){ var zb=zc+dz;
@@ -508,6 +510,20 @@ function groundFloor(E){
         });
       });
     });
+    /* screws under the frame columns (grids 2-4, A and C): the T web continues up through the bearer gap into the 26 mm gap between the two column C webs (planes x = GX -/+ 0.013), with 2 x 10 mm packing and 4 x M12 column bolts */
+    if(xi>=1&&xi<=3&&sc[1]!=='B'){
+      LBL(nm+'web extension into column',function(){E.box('pl',x,0.655,zc,0.005,0.49,0.185)});
+      [-1,1].forEach(function(s,pi){ LBL(nm+'packing '+(pi+1),function(){E.box('blk',x+s*0.0075,0.675,zc,0.010,0.45,0.185)}) });
+      [[0.70,-0.05],[0.70,0.05],[0.82,-0.05],[0.82,0.05]].forEach(function(b,bi){ var zb=zc+b[1];
+        LBL(nm+'column bolt '+(bi+1),function(){
+          E.cylx('bolt',V(x-0.032,b[0],zb),V(x+0.032,b[0],zb),0.012);
+          [-1,1].forEach(function(s){
+            E.box('bolt',x+s*0.017,b[0],zb,0.003,0.024,0.024);
+            E.box('bolt',x+s*(s<0?0.0215:0.0225),b[0],zb,s<0?0.008:0.010,0.019,0.019);
+          });
+        });
+      });
+    }
   });});
   /* floor panels: ends at the bearer centrelines with a 3 mm joint (gable panels to the bearer outer face) */
   var zA0=-hw+0.09, zC0=W+hw-0.09, sp=(zC0-zA0)/13, zj=[]; for(k=1;k<=12;k++) zj.push(zA0+k*sp);
@@ -972,6 +988,8 @@ function exOffset(key,label){
     if(/Ridge cap/.test(label)) return V(0,0.55,0);
   } else if(key==='floor'){
     if(/bolt/.test(label)) return V(0.25,0,0);
+    if(/packing 1$/.test(label)) return V(-0.12,0,0);
+    if(/packing 2$/.test(label)) return V(0.12,0,0);
     if(/T gusset/.test(label)) return V(0,-0.30,0);
     if(/cross bearer .* C1$/.test(label)) return V(-0.15,0,0);
     if(/cross bearer .* C2$/.test(label)) return V(0.15,0,0);
@@ -1778,7 +1796,7 @@ function floorScene(){
     }
     return [V(A[0],A[1],A[2]),V(B2[0],B2[1],B2[2])];
   }
-  GX.forEach(function(x){ [2.6,W].forEach(function(z){
+  GX.forEach(function(x){ [2.6,W-0.1775].forEach(function(z){
     if(x<X0||x>X1||z<Z0||z>Z1) return;
     LBL('Soil screw 2/'+(z<3?'B':'C'),function(){
       cyl(g,MT.scr,Pf(V(x,-0.6,z)),Pf(V(x,0.24,z)),0.09);
@@ -1793,7 +1811,7 @@ function floorScene(){
     strap:function(p1,p2){ var s=cl(p1,p2); if(!s) return; var d=s[1].clone().sub(s[0]), len=d.length(); obox(g,DM.rod,Pf(s[0].clone().add(s[1]).multiplyScalar(.5)),d.normalize(),ex1,len,0.04,0.0015) }
   });
   /* stub of the grid-2 frame column on the C side (z 4.92 .. 5.125), standing on the bearer top, cut through the end tracks */
-  var cs=fcolumn(FL-0.15), MDf='\u00b7'; cs.s1=FL-0.15+0.4;
+  var cs=fcolumn(FL-0.15), MDf='\u00b7'; cs.s1=FL-0.15+0.55;
   FDZ=2.6;
   fmember(g,{c:DM.c1,t:DM.mid},0,-0.35,true,cs,{c1:'Frame column stub '+MDf+' C stud 1',c2:'Frame column stub '+MDf+' C stud 2',tp:'Frame column stub '+MDf+' inner track',tm:'Frame column stub '+MDf+' outer track'});
   FDZ=0;
