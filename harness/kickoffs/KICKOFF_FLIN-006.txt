@@ -1,0 +1,34 @@
+SESSION: FLIN-006 | Pilot house corners, frames, loft | Opus 5.5 + Sonnet 5.5 sub-agent
+
+STEP 0: Claude Code CLOUD. Attach steelxpert/Claude-Code WITH WRITE ACCESS first (add_repo, access push). Ledger through the Google Drive connector (G:\Saját meghajtó\ledger): the connector can create and trash files but cannot edit an existing file's content; never open SESSIONS.csv in Excel. Load the SKILLS: flins-sdr, cfs-load-introduction, cfs-gmnia-virtual-testing, structural-proposal-letter, hu-technical-doc-workflow, correspondence-drafting, 3w-cp. Then:
+
+TIER RULE (owner, D-019): Opus 5.5 for planning, comment and judgement, Sonnet 5.5 sub-agents for the viewer edits. Fable only when the owner explicitly asks.
+
+FLIN-006 (project flins, FlexInSheet 2026.032a): continue the pilot house framing with the owner, one item at a time, in the 3D viewer; when the framing is settled, the work breakdown and the Hungarian fixed-price offer.
+
+Verify context first:
+- Repo steelxpert/Claude-Code, branch claude/dazzling-faraday-qwyw0k at the FLIN-005 wrap-up commit or later (docs/pilot_house/BRIEF.md ends with the "Wall C glazed bays" paragraph; harness/kickoffs/KICKOFF_FLIN-006.txt exists). `pip install -e ".[dev]"` then `python -m pytest` = 12 passed. If not, stop and ask. If the harness gives a new session branch, base it on this one: `git fetch origin claude/dazzling-faraday-qwyw0k && git checkout -B <new branch> origin/claude/dazzling-faraday-qwyw0k`.
+- Ledger: if PENDING_ROW_FLIN-003_final.txt, PENDING_ROW_FLIN-004.txt or PENDING_ROW_FLIN-005.txt is still in the ledger root, say so (rows not merged) and carry on.
+- Viewer artifact https://claude.ai/artifact/L1tciwmmzfTdrcQBtG8tcN at version 31 (republish the same file docs/pilot_house/concept_viewer.html to keep the link; the first publish of a session is refused with a diff of the live page, retry the identical call until it goes through, gotcha 14).
+
+Read first: harness/README.md, harness/STATE_FLINS.md (section 3 D-020..D-027, section 4 O-013, section 7), harness/gotchas.md newest section (20-25), docs/pilot_house/BRIEF.md from "Gable 5 wind girt" to the end.
+
+OWNER'S WORKING RULES (non-negotiable, D-016):
+1. One item at a time: he instructs -> you comment / verify (build nothing) -> he approves -> you implement -> he checks -> next item. Do not run ahead; when he writes "wait", stop the running sub-agent (TaskStop) and restore the file (git checkout) at once.
+2. Few words, judge by pictures. Every sketch as assembly + exploded, or a plan / vertical cut where the nesting order matters (gotcha 21). Draft first (not published); commit the draft as "draft, owner check pending" when the stop hook asks (never in the middle of a sub-agent edit); republish only after his yes. "Implement without screenshots" = verify numerically and publish.
+3. He marks members in the viewer and sends screenshots; read them literally, render the candidate views to confirm which corner / member he means.
+4. FLINS delivers the bare steel skeleton: deck, covering, finishes by others, never relied on structurally. Panels C150x45x1.5 / U150, nothing thicker than 1.5 mm EXCEPT the main frames: 2 x C200x60x15x2.0 + U150x40x2.0 (D-026, owner exception). Screws and rivets in the panels, bolts only at primary joints.
+5. Every figure is PRELIMINARY (D-007); working language English, end products Hungarian (EN-HU glossary; "panel joint", not "splice").
+6. Token rule: the main session plans, checks and judges; viewer edits go to a Sonnet sub-agent with an exact geometry brief (per-member coordinates); for small edits (a few lines) the main session may edit directly. Every brief asks for a Box3 baseline dump before and a compare after (cmp.js pattern), so untouched members are proven unchanged.
+
+Scope, in the order the owner chooses (ask him which first):
+a. Corner connections: gable end post / wind post / girt end (girt reaction about 5 kN ULS each, preliminary), hold-down type (placeholders now), raking-stack ends at the corners.
+b. Main frames: gusset plate and packing in the 26 mm gap (knee, apex), column base on the floor frame (column 75-280 mm inside the pile line).
+c. Apex-panel bracing of both gables.
+d. Loft floor (bay 1-2; loft rim joist still drawn at x 0.05 inside the gable 1 wall; loft header at grid 2 now stops at the frame columns), ground floor frame on the soil screws (BRIEF 7.2, parked), partitions.
+e. Then: work breakdown in hours for about 4 weeks, fixed price by the owner, Hungarian offer letter (.docx) with the viewer (Hungarian version: all UI text sits in the T dictionary) as attachment.
+
+Viewer practice: three.js cannot be fetched from the CDN in the container; `npm i three@0.128.0` in the scratchpad and Playwright page.route for the two script URLs (gotcha 11); append `;(function(R){THREE.WebGLRenderer=function(o){var r=new R(o);window.__R=r;return r}})(THREE.WebGLRenderer);` to the served three.min.js to get the renderer for clipping-plane cuts (gotcha 21). window.__dbg exposes camera / controls / showMode / applyExplode, window.__members the member list. Gables are built by gablePanels(E, GCFG5 / GCFG1); detail scenes gable5, gable1, cornerA5, knee, apex, eave, ridgebox. Wheel zoom is about the cursor (custom handler near hitAt).
+
+Exit gates: STATE sections 3/4/6/7 and BRIEF updated for every approved item; viewer republished; pytest green; committed and pushed; 3w+cp with the ledger row (PENDING_ROW file when cloud-only) and KICKOFF_NEXT_FLIN.txt replaced on Drive (create + trash).
+Machine: cloud. Where: Claude Code cloud on cloud. Which: Opus 5.5, medium effort, with Sonnet 5.5 sub-agents for the viewer edits.

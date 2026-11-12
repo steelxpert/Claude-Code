@@ -76,3 +76,30 @@ Tags: [MEASURED] seen and reproduced in the session · [DOC] from documentation 
 19. [PROCESS, FLIN-004] Terminology: the line where two wall panels meet is a horizontal
    "panel joint" (track-to-track connection), not a "splice" (EN 1993-1-8 6.2.7 keeps that
    word for one member). Tier: Fable is not needed for this item-by-item work (D-019).
+
+## — 2026-11-12 (FLIN-005)
+
+20. [MEASURED, FLIN-005] Gotcha 14 held again: first Artifact publish of the session refused with
+   the diff, the identical retry refused ("resent unchanged"), the third call went through; every
+   later publish in the session went straight. Small changes go best as `edits` on the publish call.
+21. [MEASURED, FLIN-005] Plan / vertical cuts of the whole house settle nesting order where
+   oblique views fail: append a wrapper to the served three.min.js that stores the renderer in
+   window.__R, then set window.__R.clippingPlanes = [new THREE.Plane(normal, c)] and look straight
+   down (fov 1.4-2.2 from 20 m = near-orthographic). Close obliques at a frame grid are blocked by
+   the frame columns; cut instead.
+22. [PROCESS, FLIN-005] Regression proof for viewer edits: dump Box3 of every member before the
+   edit (dumpall.js -> base.json) and compare after (cmp.js); 1000 members, only the intended ones
+   may change. It caught nothing wrong this session but made the frame rebuild safe to publish
+   without screenshots.
+23. [PROCESS, FLIN-005] The stop hook asks to commit while a sub-agent is still editing the file:
+   do not commit a half-edited file; answer "agent still running" and commit after verification.
+   When the owner writes "wait", TaskStop the agent and `git checkout --` the file at once.
+24. [MEASURED, FLIN-005] OrbitControls r128 has no zoom-to-cursor: disable enableZoom and handle
+   the wheel yourself - raycast the cursor (fallback: plane through the target), then scale camera
+   and target about that point by 1.0015^deltaY; the point under the cursor stays within 0.3 px.
+25. [PROCESS, FLIN-005] Owner's framing grammar, now consistent across the house: posts for
+   hold-downs = cap track + stud A + stud B open to the braced field; long-wall X-strap ends =
+   wind post (end stud, gap, two C back to back on the gable inner face plane) or a doubled end
+   stud; tops of openings / gables = boxed girt with king + jack posts. Apply the same rule to
+   every analogous place without being asked to list them one by one, but show it as a draft.
+

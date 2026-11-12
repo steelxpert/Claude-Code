@@ -79,7 +79,7 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | O-010 | Pilot house (D-013): FLINS acceptance; fixed price and end date; brief (footprint, storeys, roof pitch, site / snow / wind zone, cladding and build-ups, profile set FLINS can roll today, preferred joints); 3D model format FLINS can open; one written proposal letter (structural-proposal-letter skill) | owner + FLINS, open |
 | O-011 | Project number / Drive folder: does the pilot house stay under 2026.032a or get its own number; O-001 rename stays blocked until an order exists | owner |
 | O-012 | The meeting note file is named 2026-11-11 but the kick-off Tuesday was 2026-11-10; file not renamed (no restructuring without say-so) | owner |
-| O-013 | Pilot house, still to instruct (owner): main frames: gusset thickness / packing, column base on the floor frame; gable 5 / gable 1 stack-end fixing, hold-down details, apex bracing, girt end / gable post / wind post connection at the corners (about 5 kN ULS each, wall C end unbraced at gable 5), remaining wall bracing (wall A has one braced bay); loft; ground floor; partitions. For the calculation: wind on the long walls with roof diagonals only in the end bays; ridge-edge member ends about 4 kN; eccentric bearing at the eave; asymmetric track is a new section for FLINS | open |
+| O-013 | Pilot house, still to instruct (owner): main frames: gusset thickness / packing, column base on the floor frame; gable 5 / gable 1 stack-end fixing, hold-down details, apex bracing, girt end / gable post / wind post connection at the corners (about 5 kN ULS each); wall bracing: wall A one X (bay 4-5), wall C two X (bay 1-2, bay 4-5 short) - more only if the calculation asks; loft; ground floor; partitions. For the calculation: frames separate from the walls (long-wall studs span floor to roof, wall top held by the roof); girts on gables and wall C glazing; wind on the long walls with roof diagonals only in the end bays; ridge-edge member ends about 4 kN; eccentric bearing at the eave; asymmetric track is a new section for FLINS | open |
 | O-008 | FLiBess EN-HU glossary (`research/glossary_EN-HU_Eurocode.md`) and its use rules: copy into this repo or keep the Drive copy as the single source | open |
 
 ## 5. Standing rules (non-negotiables)
@@ -105,14 +105,16 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | FLIN-003 | 2026-11-10..11 | cloud (model in the ledger row) | context verified (1382e5e, 12 passed, ledger FLIN-003); kick-off outcome logged: D-012 programme on hold, D-013 pilot house proposed, D-014 catalogue / case matrix not run; then, at the owner's lead, the pilot house concept: brief by Q&A (D-015), interactive 3D viewer with detail scenes and member picking, roof / ridge / eave / long wall panels / door decided item by item (D-016, D-017); branch at 5ccf1cc; kickoff FLIN-004 rewritten |
 | FLIN-004 | 2026-11-11..12 | cloud, Fable 5.1 high + Sonnet 5.5 sub-agents | context verified (branch rebased onto the FLIN-003 branch, 12 passed, FLIN-003 ledger row still pending); gable 5 as two shop panels with a horizontal panel joint on the eave line (D-018, viewer v19), apex panel with the raking stack = cap track + nested C150 header + raking track, studs at 600 only, stack members run individually to the bottom track (viewer v20); long-wall end panels and end roof panels to the gable outer face; tier rule D-019; branch at 3ab69af + wrap-up commit; kickoff FLIN-005 written |
 
+| FLIN-005 | 2026-11-12 | cloud, Opus 5.5 medium + Sonnet 5.5 sub-agents | context verified (based on the FLIN-004 branch, 12 passed, FLIN-003/004 ledger rows still pending); item by item with the owner, viewer v21-v31: gable 5 wind girt (D-020), C depth in tracks + 100/40 mm straps (D-021, D-022), posts and jambs for hold-downs (D-022), gable 1 mirror (D-023), corner A/5 wind post (D-024), wind posts at all long-wall X-strap ends (D-025), main frames inside the walls 2 x C200x60x15x2.0 + U150x40x2.0 (D-026) with knee / apex / eave / ridge-box scenes, wheel zoom about the cursor, wall C glazed bays (D-027); gotchas 20-25; kickoff FLIN-006 written |
+
 ## 7. Queue
 
-1. **FLIN-005** — pilot house framing, continued one item at a time (O-013): gable 5
-   leftovers (stack-end fixing, hold-downs, apex bracing), gable 1, remaining wall
-   bracing, glazed bays of wall C, knee joint, loft, ground floor, partitions; then the
+1. **FLIN-006** — pilot house framing, continued one item at a time (O-013): corner
+   connections (gable post / wind post / girt end, hold-down type, raking-stack ends), main
+   frame gussets and column base, apex bracing, loft, ground floor, partitions; then the
    work breakdown in hours and the Hungarian fixed-price offer with the viewer as
    attachment (O-010). Opus 5.5 + Sonnet sub-agents (D-019). Kickoff:
-   `harness/kickoffs/KICKOFF_FLIN-005.txt`.
+   `harness/kickoffs/KICKOFF_FLIN-006.txt`.
 2. Parked by D-012, resume only on a FLINS decision on superstructure + market: catalogue
    freeze v0, GMNIA campaign case matrix, test programme, app (`KICKOFF_FLIN-003.txt` keeps
    that scope text).
