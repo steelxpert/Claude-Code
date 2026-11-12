@@ -4,7 +4,7 @@ Purpose: session handoff. A new session reads `harness/README.md` (how the home 
 this file (where we are) and the newest `gotchas.md` section, then the kickoff it was
 given. Method comes from the skills named in the README skill map, never from here.
 
-Last updated: 2026-11-11 (FLIN-003, cloud). Register and queue in §6–§7.
+Last updated: 2026-11-12 (FLIN-007, cloud). Register and queue in §6–§7.
 
 **Direction change (kick-off, Tuesday 2026-11-10, D-012…D-014):** the floor-system
 development programme (catalogue, GMNIA campaign, T-series, app) is ON HOLD; the owner
@@ -66,6 +66,7 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | D-029 | Viewer v32: loft floor bay 1-2 = 14 C150 joists at 385 mm between a U150 rim on the gable 1 inner face and a grid-2 rim, on a grid-2 header below the floor (U + 2 C toes facing + U, 2.50-2.65 m) between the frame columns, carried by two posts of the grid-2 kitchen partition (inner post 2 C back to back at z 1.95, end post cap track + 2 C at z 3.90); ladder notch 1.2 x 1.06 m with doubled, capped trimmers and a capped header joist; 2 bridging rows (40 mm straps top + bottom flanges) with solid blocking only at the ends of each strap run; no web holes in joists; gable 1 window lowered 0.15 m (sill 1.15, head 2.15 m) under the loft (BRIEF 7.4, last paragraph) | FLIN-006 |
 | D-030 | Viewer v32: one Explode slider 0-100 % replaces both explode checkboxes; house = shop panels as rigid units (walls 1.0 m out, gables 1.0 m out, apex panels also 0.5 m up, roof 1.5 m up + slopes 0.3 m apart, loft floor 0.8 m up; frames, partitions, header, floor stay); detail scenes proportional to the old exploded offsets; camera fixed, double-click on background refits, scene change resets to 0 | FLIN-006 |
 | D-031 | Viewer v33, ground floor (supersedes BRIEF 7.2): floor top +0.60 (house up 150 mm); 5 cross bearers 2 x C200x60x15x2.5 back to back, 6 mm gap, continuous over 3 soil screws; outer screws moved to the frame-column centreline (z 0.1775 / 5.0225), all 15 screws carry a welded T gusset (flange on the screw head, 5 mm web in the bearer gap, 2 x M12 through-bolts); 4 shop floor panels on the bearers (roof grammar): U150 end tracks continuous, boxed C150 rims under the long walls, C150 joists at about 400, 2 bridging rows with end blocks; panel joint 3 mm, 9 mm at grids 2-4; at the 6 frame columns the T web runs on to +0.90 into the 26 mm column gap with 2 x 10 mm packing and 4 x M12 (bolted column base on the screw), column starts 5 mm above the floor top; no floor X-bracing; architectural partitions removed (frame only, grid-2 kitchen partition kept) (BRIEF 7.4, last paragraph) | FLIN-006 |
+| D-032 | Pilot house work breakdown rev 0 (`docs/pilot_house/WORK_BREAKDOWN.md`): 17 lines, 163 h (about 4 weeks); connection checks INCLUDED in the job (owner: the contract is where D-028 connection work happens); model deliverable = STEP + general-arrangement PDF views (closes the format part of O-010) | FLIN-007 |
 | D-010 | Tuesday 2026-11-11 kick-off: live at FLINS, Dunaújváros; decisions first (the six items of deck slide 17), then workstreams; no new client material is prepared for it; the agenda is the owner's internal chair notes (`harness/meetings/2026-11-11_kickoff_Dunaujvaros.md`) | FLIN-002 |
 
 ## 4. Open owner items (O-nnn)
@@ -80,10 +81,11 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | O-006 | Test laboratory partner for T0–T6 and the certification body for T6 | parked (D-012) |
 | O-007 | Geotechnics lead Szecsey Márton: screw-pile catalogue, acceptance route (MSZ EN 1997-1), test loading | carried: the pilot house needs pile design resistances for one real site/soil assumption |
 | O-009 | Upload the patched 3w-cp skill (`harness/skills-proposed/3w-cp.zip`): Where = venue on machine, smart token rule; until then the harness README copy is the stop-gap | owner, tonight |
-| O-010 | Pilot house (D-013): FLINS acceptance; fixed price and end date; brief (footprint, storeys, roof pitch, site / snow / wind zone, cladding and build-ups, profile set FLINS can roll today, preferred joints); 3D model format FLINS can open; one written proposal letter (structural-proposal-letter skill) | owner + FLINS, open |
+| O-010 | Pilot house (D-013): FLINS acceptance; fixed price and end date; brief (footprint, storeys, roof pitch, site / snow / wind zone, cladding and build-ups, profile set FLINS can roll today, preferred joints); 3D model format FLINS can open = STEP + PDF views (D-032); hours 163 h (D-032); one written proposal letter (structural-proposal-letter skill) | owner + FLINS, open |
 | O-011 | Project number / Drive folder: does the pilot house stay under 2026.032a or get its own number; O-001 rename stays blocked until an order exists | owner |
 | O-012 | The meeting note file is named 2026-11-11 but the kick-off Tuesday was 2026-11-10; file not renamed (no restructuring without say-so) | owner |
 | O-013 | Pilot house, still to instruct (owner): main frames: gusset thickness / packing, column base on the floor frame; gable 5 / gable 1 stack-end fixing, hold-down details, apex bracing, girt end / gable post / wind post connection at the corners (about 5 kN ULS each) - DEFERRED to the contract stage (D-028); wall bracing: wall A one X (bay 4-5), wall C two X (bay 1-2, bay 4-5 short) - more only if the calculation asks; loft DONE (D-029); ground floor DONE (D-031); other partitions dropped (frame only). For the calculation: frames separate from the walls (long-wall studs span floor to roof, wall top held by the roof); girts on gables and wall C glazing; wind on the long walls with roof diagonals only in the end bays; ridge-edge member ends about 4 kN; eccentric bearing at the eave; asymmetric track is a new section for FLINS | open |
+| O-014 | Member-check software for the CFS checks (Consteel or ANSYS; AxisVM for actions + global model): owner answers in FLIN-008, after an assessment he asks for first | owner, FLIN-008 |
 | O-008 | FLiBess EN-HU glossary (`research/glossary_EN-HU_Eurocode.md`) and its use rules: copy into this repo or keep the Drive copy as the single source | open |
 
 ## 5. Standing rules (non-negotiables)
@@ -116,13 +118,11 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 
 | FLIN-006 | 2026-11-12 | cloud, Opus 5.5 medium + Sonnet 5.5 sub-agents | context verified (based on the FLIN-005 branch, 12 passed, FLIN-003/004/005 ledger rows still pending); corner A/5 girt-end angle proposed, connection details deferred to the contract (D-028); loft floor + grid-2 header + kitchen partition posts, gable 1 window lowered (D-029); explode slider (D-030); ground floor: floor top +0.60, 2 x C200x60x15x2.5 cross bearers with T gussets on 15 screws, outer screws under the frame columns with bolted column bases, shop floor panels on the bearers (D-031); architectural partitions removed; viewer v32, v33; sketch rules (ortho iso, outlines); gotchas 26-28; viewer tools in harness/recipes/viewer_tools; kickoff FLIN-007 written |
 
+| FLIN-007 | 2026-11-12 | cloud, Opus 5.5 medium | context verified (9b63da4, 12 passed, FLIN-003/004/005/006 ledger rows still pending); work breakdown proposed and reviewed: 163 h, connections included, STEP + PDF (D-032, `docs/pilot_house/WORK_BREAKDOWN.md`); software question deferred (O-014); price, offer letter and HU viewer NOT started; kickoff FLIN-008 written |
+
 ## 7. Queue
 
-1. **FLIN-007** - pilot house work breakdown in hours (about 4 weeks, items as built in
-   viewer v33) for the owner's fixed price, then the Hungarian offer letter (.docx) to FLINS with
-   the viewer (Hungarian UI text) as attachment (O-010). Framing details (apex bracing, frame
-   gussets, corner and floor connections, hold-downs) after a contract (D-028). Opus 5.5
-   (D-019). Kickoff: `harness/kickoffs/KICKOFF_FLIN-007.txt`.
+1. **FLIN-008** - first the assessment the owner asks for (topic named at the session start), then O-014 (member-check software; adjust WORK_BREAKDOWN lines 4-5 if needed), then the FLIN-007 items still open: (b) owner sets the fixed price and end date (O-010), (c) Hungarian offer letter (.docx) to FLINS with the viewer as attachment, (d) Hungarian viewer (T dictionary, Sonnet sub-agent, own artifact). Opus 5.5 (D-019). Kickoff: `harness/kickoffs/KICKOFF_FLIN-008.txt`.
 2. Parked by D-012, resume only on a FLINS decision on superstructure + market: catalogue
    freeze v0, GMNIA campaign case matrix, test programme, app (`KICKOFF_FLIN-003.txt` keeps
    that scope text).
