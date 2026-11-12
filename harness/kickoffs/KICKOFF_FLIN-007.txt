@@ -1,0 +1,30 @@
+SESSION: FLIN-007 | Pilot house hours and offer | Opus 5.5
+
+STEP 0: Claude Code CLOUD. Attach steelxpert/Claude-Code WITH WRITE ACCESS first (add_repo, access push). Ledger through the Google Drive connector (G:\Saját meghajtó\ledger): the connector can create and trash files but cannot edit an existing file's content; never open SESSIONS.csv in Excel. Load the SKILLS: flins-sdr, structural-proposal-letter, correspondence-drafting, hu-technical-doc-workflow, steelxpert-hu-report, docx, 3w-cp. Then:
+
+TIER RULE (owner, D-019): Opus 5.5 for planning, estimating, judgement and the Hungarian text; Sonnet 5.5 sub-agents only for mechanical edits (e.g. the Hungarian T dictionary of the viewer). Fable only when the owner explicitly asks.
+
+FLIN-007 (project flins, FlexInSheet 2026.032a): the pilot house framing is settled for the offer stage (viewer v33). Now (1) the work breakdown in hours for about 4 weeks of engineering, (2) the owner sets the fixed price, (3) the Hungarian offer letter (.docx) to FLINS with the viewer as attachment (Hungarian viewer version: all UI text sits in the T dictionary). One item at a time with the owner.
+
+Verify context first:
+- Repo steelxpert/Claude-Code, branch claude/relaxed-cerf-jn4d6p at the FLIN-006 wrap-up commit or later (harness/kickoffs/KICKOFF_FLIN-007.txt exists; STATE has D-028..D-031). `pip install -e ".[dev]"` then `python -m pytest` = 12 passed. If not, stop and ask. If the harness gives a new session branch, base it on this one: `git fetch origin claude/relaxed-cerf-jn4d6p && git checkout -B <new branch> origin/claude/relaxed-cerf-jn4d6p`.
+- Ledger: if PENDING_ROW_FLIN-003_final.txt, PENDING_ROW_FLIN-004.txt, PENDING_ROW_FLIN-005.txt or PENDING_ROW_FLIN-006.txt is still in the ledger root, say so (rows not merged) and carry on.
+- Viewer artifact https://claude.ai/artifact/L1tciwmmzfTdrcQBtG8tcN at version 33 (republish the same file docs/pilot_house/concept_viewer.html to keep the link; a Hungarian version is a SEPARATE file/artifact unless the owner says otherwise; the first publish of a session may be refused with a diff of the live page, retry the identical call, gotcha 14/27).
+
+Read first: harness/README.md, harness/STATE_FLINS.md (section 3 D-013..D-031, section 4 O-010, O-011, O-013, section 7), harness/gotchas.md newest section (26-28), docs/pilot_house/BRIEF.md (sections 1-6 and 7.4 to the end), harness/recipes/viewer_tools/README.md.
+
+OWNER'S WORKING RULES (non-negotiable, D-016):
+1. One item at a time: he instructs -> you comment / verify -> he approves -> you implement -> he checks -> next item. When he writes "wait", stop the running sub-agent (TaskStop) and restore the file (git checkout) at once.
+2. Few words, judge by pictures. Sketches: orthographic ISO only, sections in iso, black outlines (STATE section 5, gotcha 26; tools in harness/recipes/viewer_tools).
+3. FLINS delivers the bare steel skeleton (deck, covering, finishes by others, never relied on). We are not the architect: frame only (D-031). Purpose (D-028): show FLINS a whole house can be built from their CFS portfolio; connection details only after a contract.
+4. Every figure is PRELIMINARY (D-007); working language English, end products Hungarian (EN-HU glossary, D-008; "panel joint", not "splice").
+5. The price and the end date are the owner's; propose hours, never a price.
+
+Scope:
+a. Work breakdown: list the engineering deliverables of the pilot house (3D framing model, EC-compliant calculation package: loads, roof / walls / gables / loft / ground floor / frames / bracing / soil-screw reactions, connection design after award, drawings or model export FLINS can open, Hungarian report + tervezői nyilatkozat per flins-sdr), with hours per item, a total for about 4 weeks, assumptions and exclusions (geotechnics by FLINS / Szecsey Márton, O-007; tests; architecture). Owner reviews line by line.
+b. Owner sets the fixed price and end date (O-010).
+c. Hungarian offer letter (.docx) to FlexInSheet Kft. (2400 Dunaújváros, Előd utca 4.; Szabó András, cc Kalászi Balázs) per structural-proposal-letter + correspondence-drafting + steelxpert-hu-report; attachment: the viewer link (Hungarian UI version). Draft, owner check, then final.
+d. Hungarian viewer: translate the T dictionary (Sonnet sub-agent, glossary terms verbatim), publish as its own artifact, owner check.
+
+Exit gates: STATE sections 3/4/6/7 updated; offer .docx and the work breakdown committed under docs/pilot_house/ (and the issued copy on Drive 2026.032a only when the owner says so); pytest green; committed and pushed; 3w+cp with the ledger row (PENDING_ROW file when cloud-only) and KICKOFF_NEXT_FLIN.txt replaced on Drive (create + trash).
+Machine: cloud. Where: Claude Code cloud on cloud. Which: Opus 5.5, medium effort; Sonnet 5.5 sub-agent for the T-dictionary translation.

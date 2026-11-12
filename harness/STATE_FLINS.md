@@ -114,14 +114,15 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 
 | FLIN-005 | 2026-11-12 | cloud, Opus 5.5 medium + Sonnet 5.5 sub-agents | context verified (based on the FLIN-004 branch, 12 passed, FLIN-003/004 ledger rows still pending); item by item with the owner, viewer v21-v31: gable 5 wind girt (D-020), C depth in tracks + 100/40 mm straps (D-021, D-022), posts and jambs for hold-downs (D-022), gable 1 mirror (D-023), corner A/5 wind post (D-024), wind posts at all long-wall X-strap ends (D-025), main frames inside the walls 2 x C200x60x15x2.0 + U150x40x2.0 (D-026) with knee / apex / eave / ridge-box scenes, wheel zoom about the cursor, wall C glazed bays (D-027); gotchas 20-25; kickoff FLIN-006 written |
 
+| FLIN-006 | 2026-11-12 | cloud, Opus 5.5 medium + Sonnet 5.5 sub-agents | context verified (based on the FLIN-005 branch, 12 passed, FLIN-003/004/005 ledger rows still pending); corner A/5 girt-end angle proposed, connection details deferred to the contract (D-028); loft floor + grid-2 header + kitchen partition posts, gable 1 window lowered (D-029); explode slider (D-030); ground floor: floor top +0.60, 2 x C200x60x15x2.5 cross bearers with T gussets on 15 screws, outer screws under the frame columns with bolted column bases, shop floor panels on the bearers (D-031); architectural partitions removed; viewer v32, v33; sketch rules (ortho iso, outlines); gotchas 26-28; viewer tools in harness/recipes/viewer_tools; kickoff FLIN-007 written |
+
 ## 7. Queue
 
-1. **FLIN-006** — pilot house framing, continued one item at a time (O-013): corner
-   connections (gable post / wind post / girt end, hold-down type, raking-stack ends), main
-   frame gussets and column base, apex bracing, loft, ground floor, partitions; then the
-   work breakdown in hours and the Hungarian fixed-price offer with the viewer as
-   attachment (O-010). Opus 5.5 + Sonnet sub-agents (D-019). Kickoff:
-   `harness/kickoffs/KICKOFF_FLIN-006.txt`.
+1. **FLIN-007** - pilot house work breakdown in hours (about 4 weeks, items as built in
+   viewer v33) for the owner's fixed price, then the Hungarian offer letter (.docx) to FLINS with
+   the viewer (Hungarian UI text) as attachment (O-010). Framing details (apex bracing, frame
+   gussets, corner and floor connections, hold-downs) after a contract (D-028). Opus 5.5
+   (D-019). Kickoff: `harness/kickoffs/KICKOFF_FLIN-007.txt`.
 2. Parked by D-012, resume only on a FLINS decision on superstructure + market: catalogue
    freeze v0, GMNIA campaign case matrix, test programme, app (`KICKOFF_FLIN-003.txt` keeps
    that scope text).
