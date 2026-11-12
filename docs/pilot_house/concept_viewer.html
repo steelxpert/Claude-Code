@@ -1516,7 +1516,7 @@ function loftFloor(E){
   /* ---- solid blocking + bridging, 2 rows ---- */
   [[1,1.10,14],[2,2.125,0]].forEach(function(R){
     var r=R[0], xrw=R[1], n=0, pairs=[], j;
-    for(j=0;j<13;j++){ if(r===2 && !(j<=8||j===12)) continue; pairs.push(j) }
+    pairs=r===1?[0,12]:[0,8,12]; /* solid blocking only at the ends of each strap run (owner) */
     pairs.forEach(function(j){
       n++;
       E.cst('blk',P(xrw+0.0225,yc,ext[j][1]+0.001),P(xrw+0.0225,yc,ext[j+1][0]-0.001),YA,nX,'Loft floor '+MD+' block row '+r+' space '+n,{D:0.150,mid:true});
