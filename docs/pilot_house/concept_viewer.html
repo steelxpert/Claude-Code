@@ -214,7 +214,7 @@ const T = {
       'End posts and window jambs, from the opening / panel end inward: U150 cap track (web on the opening) + stud A capped by it + stud B back to back, open to the field for the hold-down; all end in the panel top track',
       'Apex top build-up under the roof panel as gable 5: U150 cap track + C150 header (capped box) + the normal raking top track; studs end in that track; bottom track runs the full 5.05 m',
       'Apex studs at 600 only (0.6 to 4.8), no ridge stud; bridging 0.92 m above the joint, straps stack to stack on both faces, one solid block at each end',
-      'Window 1.0 x 1.0, z 1.5 - 2.5, sill 1.3 m above the floor frame: boxed header as the door, sill track, cripples; jambs as the end posts (cap track + back-to-back studs)',
+      'Window 1.0 x 1.0, z 1.5 - 2.5, sill 1.15 m above the floor frame, head 0.15 m below the loft floor joists: boxed header as the door, sill track, cripples; jambs as the end posts (cap track + back-to-back studs)',
       'Bridging rows at 0.92 / 1.84 m: row 1 full width (passes under the sill), row 2 interrupted by the window',
       'X-straps 100 x 1.5 on the outside face, wall C corner to the wall-C-side jamb box (the wide field), hold-downs inside stud B at the posts and jambs',
       'Loft floor at gable 1: own detail (Loft floor); its rim track lies against the gable 1 inner face, x 0.075'],
@@ -1457,7 +1457,7 @@ function gablePanels(E,C){
 }
 var GCFG5={XG:12.5,so:1,pn:'Gable 5 wall panel',an:'Gable 5 apex panel',wp:'Window',win:{z0:3.0,z1:4.5,ys:FL+0.4,yb:FL+1.9},
   xs:[0.6,1.2,1.8,2.4,4.8],cr:[3.6,4.2],rows:[[[0.075,2.9525],[4.5475,5.125]],[[0.075,2.9525],[4.5475,5.125]]],xstrapSide:'A',xz:2.955};
-var GCFG1={XG:0,so:-1,pn:'Gable 1 wall panel',an:'Gable 1 apex panel',wp:'Gable 1 window',win:{z0:1.5,z1:2.5,ys:FL+1.3,yb:FL+2.3},
+var GCFG1={XG:0,so:-1,pn:'Gable 1 wall panel',an:'Gable 1 apex panel',wp:'Gable 1 window',win:{z0:1.5,z1:2.5,ys:FL+1.15,yb:FL+2.15},
   xs:[0.6,1.2,3.0,3.6,4.2,4.8],cr:[1.8,2.4],rows:[[[0.075,5.125]],[[0.075,1.4525],[2.5475,5.125]]],xstrapSide:'C',xz:2.545};
 var GHOUSE_E={
   P:V, D:V,
