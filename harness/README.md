@@ -81,7 +81,11 @@ which tier does what:
 | Mechanical implementation against an existing pattern, reruns, figure and note regeneration, refactors with tests as the net | **Opus 5.5** (large or long) or **Sonnet 5.5** (well-scoped) | a sub-agent of the Fable session, or a separate session whose kickoff names the tier |
 | Scripted chores: file moves, format conversions, batch renames, index rebuilds | **Haiku** | sub-agent |
 
-Rules: the Fable session plans, delegates with a complete brief, and judges the result;
+Amendment (owner, FLIN-004, D-019): for the pilot house framing thread the planning tier is
+Opus 5.5 from FLIN-005 on, Sonnet 5.5 sub-agents for the viewer edits; Fable only when the
+owner explicitly asks for a new session on it.
+
+Rules: the planning session plans, delegates with a complete brief, and judges the result;
 it does not grind. A delegated session's kickoff carries the tier in its "Which" line;
 its ledger row records the model actually served (sub-agents appended with `+`). When a
 delegated task hits an unexplained failure it stops and hands back, it does not debug

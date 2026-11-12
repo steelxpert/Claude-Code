@@ -53,6 +53,7 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | D-016 | Owner's working rules for the pilot house: one item at a time (instruct -> comment -> approve -> implement -> check); few words, judge by pictures; every sketch as assembly + exploded view; draft before publishing; FLINS delivers the bare steel skeleton, deck and finishes by others and never relied on structurally; end products Hungarian, working versions English | FLIN-003 |
 | D-017 | Framing decided so far (owner-approved, shown in `docs/pilot_house/concept_viewer.html`, recorded in BRIEF 7.4 onward): roof = 8 shop panels on the frame rafters, purlins ending in asymmetric tracks, blocking + strap bridging, framed skylight 780 x 1600 with boxed jambs, closed ridge box with blocking plates, diagonal straps in the gable-end bays only; cross grids A / B / C on the soil screw lines (front wall = wall C); slotted web perforations 38 x 100 at 600; eave: roof panel's lowest edge on the inner top edge of the wall track, folded cap outside and angle inside; long walls = shop panels per bay, single end studs back-to-back with the neighbour (they are the frame leg), two bridging rows; door with boxed header and capped jambs, bottom track cut out on site | FLIN-003 |
 | D-018 | Gable 5 (first approximation, viewer v19): two shop panels with a horizontal panel joint on the eave line (wall panel 5.05 x 2.76 m + apex panel); long-wall end panels, end roof panels, eave and ridge caps run to the gable outer face; raking tracks in the rafter-top plane carry the end roof panels; window framed as the door plus a sill track; X-straps corner to window jamb. Apex panel accepted 2026-11-12 (viewer v20): raking top build-up = cap track open down + nested C150 header lips up + normal raking track, studs at 600 only, stack members run individually to 3 mm above the apex bottom track web, straps stack to stack with end blocks. Open: stack-end fixing, hold-downs, apex bracing (BRIEF 7.4, last two paragraphs) | FLIN-004 |
+| D-019 | Tier change: this item-by-item framing work does not need Fable. From FLIN-005 the default is Opus 5.5 for planning, comment and judgement with Sonnet 5.5 sub-agents for the viewer edits; Fable only when the owner explicitly asks for a new session on it (owner, 2026-11-12) | FLIN-004 |
 | D-010 | Tuesday 2026-11-11 kick-off: live at FLINS, Dunaújváros; decisions first (the six items of deck slide 17), then workstreams; no new client material is prepared for it; the agenda is the owner's internal chair notes (`harness/meetings/2026-11-11_kickoff_Dunaujvaros.md`) | FLIN-002 |
 
 ## 4. Open owner items (O-nnn)
@@ -94,13 +95,16 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | FLIN-001 | 2026-11-08 | cloud, model n/r | client meeting material: HU notes FLINS-CFS-001…005 (-HU), deck (17 slides), detail figures D01–D09, glossary alignment, light reading-copy format; branch `claude/trusting-mayer-47ebp9` to 8676f47 |
 | FLIN-002 | 2026-11-08 | cloud, Fable 5.1 high | home and harness decided by owner Q&A (D-001…D-005, D-010, D-011); `harness/` created; flins/FLIN registered in the ledger (rows FLIN-001, FLIN-002); Tuesday chair notes drafted; smart token rule and venue rule encoded; 3w-cp skill patch built (`harness/skills-proposed/3w-cp.zip`, owner uploads) |
 | FLIN-003 | 2026-11-10..11 | cloud (model in the ledger row) | context verified (1382e5e, 12 passed, ledger FLIN-003); kick-off outcome logged: D-012 programme on hold, D-013 pilot house proposed, D-014 catalogue / case matrix not run; then, at the owner's lead, the pilot house concept: brief by Q&A (D-015), interactive 3D viewer with detail scenes and member picking, roof / ridge / eave / long wall panels / door decided item by item (D-016, D-017); branch at 5ccf1cc; kickoff FLIN-004 rewritten |
+| FLIN-004 | 2026-11-11..12 | cloud, Fable 5.1 high + Sonnet 5.5 sub-agents | context verified (branch rebased onto the FLIN-003 branch, 12 passed, FLIN-003 ledger row still pending); gable 5 as two shop panels with a horizontal panel joint on the eave line (D-018, viewer v19), apex panel with the raking stack = cap track + nested C150 header + raking track, studs at 600 only, stack members run individually to the bottom track (viewer v20); long-wall end panels and end roof panels to the gable outer face; tier rule D-019; branch at 3ab69af + wrap-up commit; kickoff FLIN-005 written |
 
 ## 7. Queue
 
-1. **FLIN-004** — pilot house framing, continued one item at a time (O-013): glazed bays of
-   wall C, knee joint, gable walls, loft, ground floor; then the work breakdown in hours and
-   the Hungarian fixed-price offer with the viewer as attachment (O-010). Kickoff:
-   `harness/kickoffs/KICKOFF_FLIN-004.txt`.
+1. **FLIN-005** — pilot house framing, continued one item at a time (O-013): gable 5
+   leftovers (stack-end fixing, hold-downs, apex bracing), gable 1, remaining wall
+   bracing, glazed bays of wall C, knee joint, loft, ground floor, partitions; then the
+   work breakdown in hours and the Hungarian fixed-price offer with the viewer as
+   attachment (O-010). Opus 5.5 + Sonnet sub-agents (D-019). Kickoff:
+   `harness/kickoffs/KICKOFF_FLIN-005.txt`.
 2. Parked by D-012, resume only on a FLINS decision on superstructure + market: catalogue
    freeze v0, GMNIA campaign case matrix, test programme, app (`KICKOFF_FLIN-003.txt` keeps
    that scope text).

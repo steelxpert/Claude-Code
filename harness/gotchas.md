@@ -50,3 +50,29 @@ Tags: [MEASURED] seen and reproduced in the session · [DOC] from documentation 
    screenshot yourself before showing it. A geometry brief with coordinates gets a right
    first draft; a vague one does not.
 
+
+## — 2026-11-12 (FLIN-004)
+
+14. [MEASURED, FLIN-004] Artifact-tool publish to a URL this session has not read: refused
+   with a line diff of the live page (the diff counts as the read); the identical retry is
+   refused once more ("resent unchanged"); the third identical call goes through. Budget
+   three calls, or read the page first (the read costs the whole 90 KB file).
+15. [MEASURED, FLIN-004] Sonnet screenshot briefs with named camera positions missed the
+   target twice in the whole-house scene (a frame rafter in the way, the detail too small).
+   A numeric check settles it in one run: page.evaluate over window.__members with
+   THREE.Box3().expandByObject(mesh) gives world extents per member name (nesting order,
+   clearance to a track web). The exploded view cannot show the real order, because the
+   explode offsets set it.
+16. [MEASURED, FLIN-004] The harness gave the session a branch created from main, without
+   harness/ and docs/pilot_house. `git checkout -B <session branch> origin/<previous FLIN
+   branch>` and push fixed it in one step. The kickoff must name the branch to base on.
+17. [MEASURED, FLIN-004] pytest and ezdxf are not in the fresh container: `pip install -e
+   ".[dev]"` first (about 30 s), then 12 passed.
+18. [PROCESS, FLIN-004] Owner loop refined: "show screenshot" at the comment stage means a
+   draft rendering before approval; commit the draft to the branch ("draft, owner check
+   pending") when the stop hook asks; republish the artifact only after the yes. A brief
+   that gives per-member offsets (stack of three nested sections) got a right first draft;
+   the only rework was the owner's own refinement (members run individually to the track).
+19. [PROCESS, FLIN-004] Terminology: the line where two wall panels meet is a horizontal
+   "panel joint" (track-to-track connection), not a "splice" (EN 1993-1-8 6.2.7 keeps that
+   word for one member). Tier: Fable is not needed for this item-by-item work (D-019).
