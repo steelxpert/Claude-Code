@@ -198,7 +198,7 @@ const T = {
     gable5: {title: 'Gable 5 as two shop panels', parts: [
       'Lower panel 5.05 x 2.76 m between the long walls, horizontal panel joint on the eave line (top of wall)',
       'Apex top build-up under the roof panel, top to bottom: U150 cap track open down (top face in the rafter-top plane, the end roof-panel tracks lie on it) + C150 lying inside it web down, lips up = capped box, the weak-axis header (roof-panel tracks and gable studs are on different modules) + the normal raking top track; studs end in that track',
-      'Corner cut square 0.22 m from the long wall: the stack bears on the apex bottom track, which runs the full 5.05 m; the 145 x 120 mm corner sliver stays open inside the eave box',
+      'Corner: each stack member runs down the slope until its lowest square-cut edge is 3 mm above the apex bottom track web (cap track and header C end 0.12 m from the long wall, raking track 0.16 m); the bottom track runs the full 5.05 m',
       'Apex studs at 600 only (0.6 to 4.8), no ridge stud; the ridge point is carried by the mitred stack',
       'Bridging 0.92 m above the joint: straps stack to stack on both faces, one solid block at each end against the stack',
       'Window 1.5 x 1.5: door detail reused - boxed header, capped box jambs, sill track, cripples',
@@ -1249,12 +1249,14 @@ function gable5Panels(E){
   });
   /* apex panel */
   E.trk('dark',P(XG,top+t/2,ZA),P(XG,top+t/2,ZB),AXd,PYd,an+' '+MD+' bottom track',0.150);
-  [['rear',-1,0.222,2.6],['front',1,2.6,4.978]].forEach(function(r){
+  /* each stack member runs down to 3 mm above the apex bottom track web: end z where its underside (offset dl) reaches top+t+0.003 */
+  [['rear',-1],['front',1]].forEach(function(r){
     var p=V(0,COS,r[1]*SIN), np=Dm(-p.x,-p.y,-p.z), pp=Dm(p.x,p.y,p.z);
     function pt(z,d){var q=V(XG,yR(z)+0.0979,z).addScaledVector(p,d); return P(q.x,q.y,q.z)}
-    E.trk('dark',pt(r[2],-t/2),pt(r[3],-t/2),AXd,np,an+' '+MD+' raking header '+r[0]+' '+MD+' cap track',0.150);
-    E.cst('c2',pt(r[2],-0.04625),pt(r[3],-0.04625),AXd,pp,an+' '+MD+' raking header '+r[0]+' '+MD+' stud',true);
-    E.trk('dark',pt(r[2],-0.04875),pt(r[3],-0.04875),AXd,np,an+' '+MD+' raking track '+r[0],0.150);
+    function zEnd(dl){var ze=(top+t+0.003-EV-0.0979-dl*COS)/TAN; return r[1]<0?ze:W-ze}
+    E.trk('dark',pt(zEnd(-0.0475),-t/2),pt(2.6,-t/2),AXd,np,an+' '+MD+' raking header '+r[0]+' '+MD+' cap track',0.150);
+    E.cst('c2',pt(zEnd(-0.0475),-0.04625),pt(2.6,-0.04625),AXd,pp,an+' '+MD+' raking header '+r[0]+' '+MD+' stud',true);
+    E.trk('dark',pt(zEnd(-0.095),-0.04875),pt(2.6,-0.04875),AXd,np,an+' '+MD+' raking track '+r[0],0.150);
   });
   [0.6,1.2,1.8,2.4,3.0,3.6,4.2,4.8].forEach(function(z,k){
     stud('c1',an+' '+MD+' stud '+(k+1),z,top+t,yR(z)+0.0137);
