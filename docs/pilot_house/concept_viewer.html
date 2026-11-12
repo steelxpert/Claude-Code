@@ -238,7 +238,7 @@ const T = {
       'Column base on the screw (grids 2, 3, 4, lines A and C): the T web is extended 300 mm above the floor (to y 0.90) through the bearer gap into the 26 mm gap between the two column C webs, with 2 x 10 mm packing plates and 4 x M12 bolts (2 rows) through C web, packing, T web, packing, C web = bolted column base on the screw',
       'Cross bearer: 2 x C200x60x15x2.5 back to back, 6 mm gap, continuous over the three screws of a grid line, y 0.25 - 0.45 (primary beam, like the rafters of the roof)',
       'Floor panels (shop-built, one per bay, like the roof panels): y 0.45 - 0.60 on the bearer tops; ends at the bearer centrelines with a 3 mm joint, gable panels to the bearer outer face',
-      'End tracks U150, web in the panel end plane, open toward the panel interior; cut around the frame columns at grids 2, 3, 4 with 3 mm clearance (the columns stand on the bearer top)',
+      'End tracks U150, web in the panel end plane, open toward the panel interior, continuous (not cut); panel joint over the bearer 3 mm, 9 mm at grids 2, 3, 4 where the T web rises into the frame column (column starts 5 mm above the floor top)',
       'Rims under walls A and C: boxed pair of C150, toes facing, lips touching, 90 wide, nested in the end tracks',
       'Joists C150x45x1.5 along x between the end tracks, 12 per panel at about 396 mm, open toward +z',
       'Bridging: 2 rows per panel at the third points, 40 x 1.5 straps on the top and bottom flanges from rim to rim, solid C150 blocks in the first and last space; no floor-plane bracing'],
@@ -529,11 +529,11 @@ function groundFloor(E){
   var zA0=-hw+0.09, zC0=W+hw-0.09, sp=(zC0-zA0)/13, zj=[]; for(k=1;k<=12;k++) zj.push(zA0+k*sp);
   var cut=[[-hw,0.075-0.003],[0.28+0.003,4.92-0.003],[5.125+0.003,W+hw]];   /* end-track pieces between the frame-column cut-outs (3 mm clearance) */
   for(i=0;i<4;i++){
-    var bn=PF+'bay '+(i+1)+'-'+(i+2)+' '+MD+' ', xs0=i===0?-hw:GX[i]+0.0015, xs1=i===3?L+hw:GX[i+1]-0.0015, x0=xs0+t, x1=xs1-t;
-    /* end tracks U150, web in the panel end plane, open toward the panel interior; cut around the columns at grids 2, 3, 4 */
+    var bn=PF+'bay '+(i+1)+'-'+(i+2)+' '+MD+' ', xs0=i===0?-hw:GX[i]+0.0045, xs1=i===3?L+hw:GX[i+1]-0.0045, x0=xs0+t, x1=xs1-t;
+    /* end tracks U150, web in the panel end plane, open toward the panel interior, continuous; 9 mm panel joint at grids 2-4 for the T web */
     [[xs0+t/2,XA,'grid '+(i+1),i>=1],[xs1-t/2,nX,'grid '+(i+2),i<=2]].forEach(function(e){
-      if(!e[3]) E.trk('dark',V(e[0],yP,-hw),V(e[0],yP,W+hw),WU,e[1],bn+'end track '+e[2],0.150);
-      else cut.forEach(function(c,q){E.trk('dark',V(e[0],yP,c[0]),V(e[0],yP,c[1]),WU,e[1],bn+'end track '+e[2]+' piece '+(q+1),0.150)});
+      E.trk('dark',V(e[0],yP,-hw),V(e[0],yP,W+hw),WU,e[1],bn+'end track '+e[2],0.150);
+      if(false) cut.forEach(function(c,q){E.trk('dark',V(e[0],yP,c[0]),V(e[0],yP,c[1]),WU,e[1],bn+'end track '+e[2]+' piece '+(q+1),0.150)});
     });
     /* boxed rims under the long walls: two C150 toes facing, lips touching, 90 wide */
     E.c('c1',V(x0,yP,-hw+t/2),V(x1,yP,-hw+t/2),WU,ZA,bn+'rim A C1',ro);
