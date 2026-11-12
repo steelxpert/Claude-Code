@@ -663,9 +663,7 @@ xbrace(fB,0.075,3.20,NZ,EV+DY,false,{x:3.1765,y:FL+0.0025+0.125,z:W,sx:0.035,sy:
 })();
 
 /* ---------- 11 glazing (wall B) ---------- */
-[3.25,4.8,6.35,7.9,9.45,11.0].reduce(function(a,b){
-  QUAD('glass',[V(a,FL,W),V(b,FL,W),V(b,EV-0.2+DY,W),V(a,EV-0.2+DY,W)]); return b;
-});
+/* wall C glass quads are drawn in wallsHouse() with the glazed panels */
 
 /* ---------- ground grid and labels ---------- */
 var gridLines;
@@ -1275,17 +1273,18 @@ function wallsHouse(){
     var pn='Wall '+wn+' panel bay '+(bi+1)+'-'+(bi+2);
     var glazed=(wn==='C'&&bi>0), door=(wn==='A'&&bi===0), c4=(wn==='C'&&bi===3), i;
     var tx0=xa2, tx1=xb2;
-    uTrack(V(tx0,top-t/2,z),V(tx1,top-t/2,z),NZv,MY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' top track'},0.150); COUNT.walls++;
+    var yJ=top-3*t-0.145, yE=glazed?yJ:y1;
+    if(!glazed){ uTrack(V(tx0,top-t/2,z),V(tx1,top-t/2,z),NZv,MY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' top track'},0.150); COUNT.walls++; }
     if(door){
       uTrack(V(xa2,FL+t/2,z),V(xb2,FL+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' bottom track (cut out at the door after erection)'},0.150); COUNT.walls++;
     } else { uTrack(V(xa2,FL+t/2,z),V(xb2,FL+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' bottom track'},0.150); COUNT.walls++; }
-    LBL(pn+' '+MD+' end stud at grid '+(bi+1),function(){CM('walls',V(xa2+t/2,y0,z),V(xa2+t/2,y1,z),NZv,PX)});
-    LBL(pn+' '+MD+' end stud at grid '+(bi+2),function(){CM('walls',V(xb2-t/2,y0,z),V(xb2-t/2,y1,z),NZv,MX)});
+    if(!glazed) LBL(pn+' '+MD+' end stud at grid '+(bi+1),function(){CM('walls',V(xa2+t/2,y0,z),V(xa2+t/2,y1,z),NZv,PX)});
+    if(!glazed||c4) LBL(pn+' '+MD+' end stud at grid '+(bi+2),function(){CM('walls',V(xb2-t/2,y0,z),V(xb2-t/2,yE,z),NZv,MX)});
     var xs=[];
     if(door) xs=[0.6,1.2,3.0];
     else if(c4) xs=[11.6,12.2];
     else if(!glazed) for(i=1;(bi===0?0:xa2)+0.6*i<=xb2-0.145;i++) xs.push((bi===0?0:xa2)+0.6*i);
-    xs.forEach(function(x,k){LBL(pn+' '+MD+' stud '+(k+1),function(){STUD(z,x,y0,y1)})});
+    xs.forEach(function(x,k){LBL(pn+' '+MD+' stud '+(k+1),function(){STUD(z,x,y0,yE)})});
     var wpost=(wn==='A'&&bi===3), cpost=(wn==='C'&&bi===0);
     if(wpost){ /* wind post: two C studs back to back, no track, web plane = gable inner face x 12.425 */
       LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(12.425+t/2,y0,z),V(12.425+t/2,y1,z),NZv,PX)});
@@ -1294,15 +1293,42 @@ function wallsHouse(){
       LBL(pn+' '+MD+' second end stud at grid '+(bi+1),function(){CM('walls',V(xa2+0.0475,y0,z),V(xa2+0.0475,y1,z),NZv,PX)});
     }
     if(c4){ /* wall C bay 4-5 short X (11.0..corner C/5): wind post on the gable 5 inner face plane x 12.425 as at corner A/5; at x 11.0 a doubled stud (end stud + second stud, same orientation, toes into the braced field) replaces the glazing mullion */
-      LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(12.425+t/2,y0,z),V(12.425+t/2,y1,z),NZv,PX)});
-      LBL(pn+' '+MD+' wind post '+MD+' inner stud',function(){CM('walls',V(12.425-t/2,y0,z),V(12.425-t/2,y1,z),NZv,MX)});
-      LBL(pn+' '+MD+' end stud at x 11.0',function(){CM('walls',V(10.955+t/2,y0,z),V(10.955+t/2,y1,z),NZv,PX)});
-      LBL(pn+' '+MD+' second end stud at x 11.0',function(){CM('walls',V(10.955+0.0475,y0,z),V(10.955+0.0475,y1,z),NZv,PX)});
+      LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(12.425+t/2,y0,z),V(12.425+t/2,yE,z),NZv,PX)});
+      LBL(pn+' '+MD+' wind post '+MD+' inner stud',function(){CM('walls',V(12.425-t/2,y0,z),V(12.425-t/2,yE,z),NZv,MX)});
+      LBL(pn+' '+MD+' end stud at x 11.0',function(){CM('walls',V(10.955+t/2,y0,z),V(10.955+t/2,yE,z),NZv,PX)});
+      LBL(pn+' '+MD+' second end stud at x 11.0',function(){CM('walls',V(10.955+0.0475,y0,z),V(10.955+0.0475,yE,z),NZv,PX)});
     }
     if(cpost){ /* wall C bay 1-2 (X-braced), mirror of wall A bay 4-5: wind post on the gable 1 inner face plane x 0.075; grid-2 end stud doubled inside the panel */
       LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(0.075-t/2,y0,z),V(0.075-t/2,y1,z),NZv,MX)});
       LBL(pn+' '+MD+' wind post '+MD+' inner stud',function(){CM('walls',V(0.075+t/2,y0,z),V(0.075+t/2,y1,z),NZv,PX)});
       LBL(pn+' '+MD+' second end stud at grid '+(bi+2),function(){CM('walls',V(xb2-0.0475,y0,z),V(xb2-0.0475,y1,z),NZv,MX)});
+    }
+    if(glazed){ /* wall C glazed panels: gable-type girt build on top + capped posts (gable window jambs); glass between the posts */
+      var ga=xa2, gb=xb2, yc=top-t-0.0725, MZv=V(0,0,-1), PZv=V(0,0,1), OPN=[];
+      function wtrk(a,b,yy,fd,part){ uTrack(V(a,yy,z),V(b,yy,z),NZv,fd,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' '+part},0.150); COUNT.walls++; }
+      wtrk(ga,gb,top-t/2,MY,'girt '+MD+' top track');
+      LBL(pn+' '+MD+' girt '+MD+' stud outside',function(){CM('walls',V(ga,yc,z+0.07125),V(gb,yc,z+0.07125),PY,MZv,{mid:true})});
+      LBL(pn+' '+MD+' girt '+MD+' stud inside',function(){CM('walls',V(ga,yc,z-0.07125),V(gb,yc,z-0.07125),PY,PZv,{mid:true})});
+      wtrk(ga,gb,top-t-0.145-t/2,PY,'girt '+MD+' bottom track');
+      wtrk(ga,gb,top-2*t-0.145-t/2,MY,'top track');
+      function wpost2(lb,xc,sg){ /* sg=+1: web at the low-x end, open toward +x */
+        var fl=sg>0?PX:MX, ofl=sg>0?MX:PX;
+        uTrack(V(xc,y0,z),V(xc,yJ,z),NZv,fl,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' '+lb+' '+MD+' cap track'},0.150); COUNT.walls++;
+        LBL(pn+' '+MD+' '+lb+' '+MD+' stud A',function(){CM('walls',V(xc+sg*0.04625,y0,z),V(xc+sg*0.04625,yJ,z),NZv,ofl)});
+        LBL(pn+' '+MD+' '+lb+' '+MD+' stud B',function(){CM('walls',V(xc+sg*0.04875,y0,z),V(xc+sg*0.04875,yJ,z),NZv,fl)});
+      }
+      wpost2('end post at grid '+(bi+1),ga+t/2,1);
+      var gl=ga+t/2+0.095, gr=c4?10.955:gb-t/2-0.095;
+      if(!c4){
+        wpost2('end post at grid '+(bi+2),gb-t/2,-1);
+        var xm=(ga+gb)/2;
+        uTrack(V(xm-0.0475,y0,z),V(xm-0.0475,yJ,z),NZv,PX,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' mullion '+MD+' cap track 1'},0.150); COUNT.walls++;
+        LBL(pn+' '+MD+' mullion '+MD+' stud A',function(){CM('walls',V(xm-0.00125,y0,z),V(xm-0.00125,yJ,z),NZv,MX)});
+        LBL(pn+' '+MD+' mullion '+MD+' stud B',function(){CM('walls',V(xm+0.00125,y0,z),V(xm+0.00125,yJ,z),NZv,PX)});
+        uTrack(V(xm+0.0475,y0,z),V(xm+0.0475,yJ,z),NZv,MX,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' mullion '+MD+' cap track 2'},0.150); COUNT.walls++;
+        OPN=[[gl,xm-0.04875],[xm+0.04875,gr]];
+      } else OPN=[[gl,gr]];
+      OPN.forEach(function(o){var zg=z+0.076; QUAD('glass',[V(o[0],y0,zg),V(o[1],y0,zg),V(o[1],yJ,zg),V(o[0],yJ,zg)])});
     }
     if(door){
       var yb=FL+2.1, ys=yb+t+0.0725, yt=yb+t+0.145, zo=z+sg*0.07125, zi=z-sg*0.07125;
@@ -1336,8 +1362,6 @@ function wallsHouse(){
     });
   }
   [0,1,2,3].forEach(function(bi){panel('A',0,-1,bi);panel('C',W,1,bi)});
-  SEQ('Wall C mullion',function(){[4.8,6.35,7.9,9.45].forEach(function(x){M('walls',V(x,FL+0.04,W),V(x,EV-0.22+DY,W),0.09,0.15)})});
-  LBL('Wall C glazing header',function(){M('walls',V(3.25,EV-0.12+DY,W),V(11.0,EV-0.12+DY,W),0.09,0.2)});
 }
 wallsHouse();
 
