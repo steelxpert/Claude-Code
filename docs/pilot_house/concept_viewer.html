@@ -152,13 +152,11 @@ const T = {
       'Frame and wall are separate: wall studs carry wind to the floor and the roof; OPEN: gusset thickness/packing, column base on the floor frame (150-280 mm inside the pile line)'],
       governs: 'to be checked: knee gusset and the C webs in bolt bearing; column and rafter as built-up members; tie force; preliminary.'},
     apex: {title: 'Apex', parts: [
-      'Rafters: 2 \u00d7 C150\u00d745\u00d71.5 back-to-back with 6 mm gap, 40\u00b0 each side',
-      'Gusset: 6 mm kite plate between the webs, covering 400 mm of each rafter',
-      'Bolts: 4 \u00d7 M12 per rafter',
-      'Gusset stays below the rafter top lines',
+      'Rafters: 2 \u00d7 C200\u00d760\u00d715\u00d72.0 back to back (26 mm gap) + U150\u00d740\u00d72.0 tracks on both edges, 40\u00b0 each side, plumb cut at the ridge',
+      'Apex gusset plate in the 26 mm gap, covering 400 mm of each rafter',
+      'Rafter top in the roof plane; gusset stays inside the gap',
       'Ridge: see the Ridge box detail'],
-      governs: 'bolt bearing in the 2 \u00d7 1.5 mm webs; rafter compression about 17 kN (preliminary).'},
-    panel: {title: 'Roof panel on rafter', parts: [
+      governs: 'to be checked: apex gusset and the C webs in bolt bearing; rafter compression about 17 kN (preliminary).'},    panel: {title: 'Roof panel on rafter', parts: [
       'Rafter pair 2 \u00d7 C150\u00d745\u00d71.5 with 6 mm gap, at 40\u00b0',
       'Two tracks with webs 6 mm apart, centred on the rafter gap: upper flange 45 mm, lower flange 70 mm lying on the rafter top flanges, flanges pointing into their own panels',
       'Purlins C150 at about 556 mm along the slope, ends inside the tracks',
@@ -182,6 +180,8 @@ const T = {
       'The lowest edge of the roof panel\'s eave-edge purlin meets the inner top edge of the wall top track (3 mm clearance)',
       'Top of wall = eaves work point + 158 mm; wall panel height about 2760 mm above the floor frame',
       'Roof panels start 161 mm up the slope from the eaves work point; first purlin spacing about 400 mm',
+      'Rafter: 2 \u00d7 C200\u00d760\u00d715\u00d72.0 back to back (26 mm gap) + U150\u00d740\u00d72.0 tracks; it stops at the wall inner face (plumb cut) and the roof panel bears on the rafter top and the wall top',
+      'Column below the rafter with the knee gusset plate in the 26 mm gap',
       'The wall top, the purlin web and the eave cap enclose a box along the eave',
       'Inner eave angle: folded 1.5 mm angle, 45 mm legs, joining the eave-edge purlin\'s bottom flange to the inner flange of the wall top track; stops at each frame',
       'Eave cap: folded 1.5 mm plate on the roof panel top and the wall\'s outer face, bent where the two planes meet; screwed to the eave-edge purlin and to the wall top track',
@@ -479,6 +479,7 @@ var NZ=V(0,0,1), NX=V(1,0,0);
    Drawn as prisms extruded along x from outlines in the frame (z,y) plane, so the ends get a true plumb / underside cut.
    Rear (wall A) coordinates; the front frame half is the mirror about z = W/2. */
 var FHW=0.1, FGAP=0.013, FCF=0.060, FCLIP=0.015, FTW=0.075, FTL=0.040;
+var FDZ=0;                          /* z shift of a detail scene origin (apex scene: 2.6) */
 var FZ0=0.075;                      /* wall inner face */
 var FQC=-0.0275;                    /* rafter centreline offset (along the slope normal) from the old centreline: top track outer face stays on the old rafter top plane q = 0.075 */
 var FZC=FZ0+FHW+CT;                 /* column centreline z */
@@ -504,7 +505,7 @@ function fmember(g,mt,x,dy,mir,m,L,cnt){
   }
   function pl(mat,poly,xa,xb){
     if(poly.length<3) return;
-    plate(g,mat,poly.map(function(P){return [mir?W-P[0]:P[0], P[1]+dy]}),Math.abs(xb-xa),V(0,0,1),V(0,1,0),V(x+(xa+xb)/2,0,0));
+    plate(g,mat,poly.map(function(P){return [(mir?W-P[0]:P[0])-FDZ, P[1]+dy]}),Math.abs(xb-xa),V(0,0,1),V(0,1,0),V(x+(xa+xb)/2,0,0));
   }
   var t=CT;
   [[-1,L.c1],[1,L.c2]].forEach(function(c){
@@ -799,6 +800,16 @@ function clip(g,c,dA,nA,sA){
 }
 function exOffset(key,label){
   var P=V(0,COS,-SIN), sgn=/left|x\+/.test(label)?1:-1;
+  if((key==='apex'||key==='eave')&&/rafter|column|knee gusset|Apex gusset/i.test(label)){
+    var Pf=/front/.test(label)?V(0,COS,SIN):P;
+    if(/Apex gusset|Knee gusset/i.test(label)) return V(0.25,0,0);
+    if(/C 1$|C stud 1/.test(label)) return V(-0.12,0,0);
+    if(/C 2$|C stud 2/.test(label)) return V(0.12,0,0);
+    if(/column .*outer track/.test(label)) return V(0,0,-0.15);
+    if(/column .*inner track/.test(label)) return V(0,0,0.15);
+    if(/rafter .*top track/.test(label)) return Pf.clone().multiplyScalar(0.15);
+    if(/rafter .*bottom track/.test(label)) return Pf.clone().multiplyScalar(-0.15);
+  }
   if(key==='knee'){
     if(/Knee gusset/.test(label)) return V(0.25,0,0);
     if(/C stud 1|C 1$/.test(label)) return V(-0.12,0,0);
@@ -961,17 +972,15 @@ function cleat(g,F,s0,xc){
   addDetail('knee',g);
 })();
 
-/* ---- detail 2: apex ---- */
+/* ---- detail 2: apex (frame rafter ends, both sides, plumb cut at the ridge; scene origin = ridge point) ---- */
 (function(){
-  var g=new THREE.Group(); dprefix=T.details.apex;
-  var R={o:V(0,0,0),a:V(0,-SIN,COS),p:V(0,COS,SIN),x:AX};
-  var Lf={o:V(0,0,0),a:V(0,-SIN,-COS),p:V(0,COS,-SIN),x:AX};
-  pairC(sp(R,0.06,0,0),sp(R,1.26,0,0),R.p,AX,C1(g,'Right rafter C'));
-  pairC(sp(Lf,0.06,0,0),sp(Lf,1.26,0,0),Lf.p,AX,C2(g,'Left rafter C'));
-  var q=0.07, Yt=q/COS, ue=sp(R,0.4,q,0), le=sp(R,0.4,-q,0);
-  var pts=[[0,Yt],[ue.z,ue.y],[le.z,le.y],[0,-Yt],[-le.z,le.y],[-ue.z,ue.y]];
-  LBL('Apex gusset',function(){plate(g,DM.dark,pts,0.006,AZ,AY)});
-  [R,Lf].forEach(function(F){[0.15,0.25].forEach(function(s){[-0.035,0.035].forEach(function(qq){bolt(g,sp(F,s,qq,0),AX,0.011)})})});
+  var g=new THREE.Group(), MD='\u00b7', mt={c:DM.c1,t:DM.mid}, dy=-RIDGE; dprefix=T.details.apex;
+  FDZ=2.6;
+  [['Rear',false],['Front',true]].forEach(function(sd){
+    fmember(g,mt,0,dy,sd[1],frafter(2.6),{c1:sd[0]+' rafter '+MD+' C 1',c2:sd[0]+' rafter '+MD+' C 2',tp:sd[0]+' rafter '+MD+' top track',tm:sd[0]+' rafter '+MD+' bottom track'});
+  });
+  LBL('Apex gusset',function(){plate(g,DM.dark,apexGussetPts().map(function(P){return [P[0]-2.6,P[1]+dy]}),0.01,AZ,AY,V(0,0,0))});
+  FDZ=0;
   addDetail('apex',g);
 })();
 
@@ -1165,11 +1174,17 @@ function eaveScene(){
   /* inner eave angle */
   var oi=-0.078, hi=0.072, si=(hi*SIN-oi)/COS, yi=si*SIN+hi*COS;
   var Bi=V(0,yi,-oi), L1=V(0,yi+0.045*SIN,-(oi-0.045*COS)), L2=V(0,yi-0.045,-oi);
-  LBL('Eave inner angle',function(){segBox(g,DM.mid,L1,Bi,1.2,0.003);segBox(g,DM.mid,Bi,L2,1.2,0.003)});
+  /* the angle stops at the rafter (|x| >= 0.075), as in the house */
+  LBL('Eave inner angle',function(){[-1,1].forEach(function(sx){var o=V(sx*0.3375,0,0);segBox(g,DM.mid,L1.clone().add(o),Bi.clone().add(o),0.525,0.003);segBox(g,DM.mid,Bi.clone().add(o),L2.clone().add(o),0.525,0.003)})});
   [-0.45,-0.15,0.15,0.45].forEach(function(x){
     screw(g,sp(F,si+0.0225,hi-0.0015,x),F.p);
     screw(g,V(x,yi-0.0225,-(oi-0.0015)),neg(AZ));
   });
+  /* frame rafter foot, column top and knee gusset (same geometry as the house frames) */
+  var MD2='\u00b7', mt2={c:DM.c1,t:DM.mid}, dy2=-EV;
+  fmember(g,mt2,0,dy2,false,fcolumn(EV-0.75),{c1:'Frame column '+MD2+' C stud 1',c2:'Frame column '+MD2+' C stud 2',tp:'Frame column '+MD2+' inner track',tm:'Frame column '+MD2+' outer track'});
+  fmember(g,mt2,0,dy2,false,frafter(0.9),{c1:'Frame rafter '+MD2+' C 1',c2:'Frame rafter '+MD2+' C 2',tp:'Frame rafter '+MD2+' top track',tm:'Frame rafter '+MD2+' bottom track'});
+  LBL('Knee gusset',function(){plate(g,DM.dark,kneeGussetPts().map(function(P){return [P[0],P[1]+dy2]}),0.01,AZ,AY,V(0,0,0))});
   addDetail('eave',g);
 }
 eaveScene();
