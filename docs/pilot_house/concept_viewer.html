@@ -648,15 +648,7 @@ var f1=function(u,y){return V(-OFS,y,u)}, f5=function(u,y){return V(L+OFS,y,u)};
 xbrace(fA,9.30,12.425,NZ,EV+DY,false,{x:12.4025,y:FL+0.0025+0.125,z:0,sx:0.035,sy:0.25,sz:0.12},{x:9.324,y:FL+0.0025+0.125,z:0,sx:0.035,sy:0.25,sz:0.12});
 /* wall C bay 1-2: lands on the wind post at corner C/1 and on the doubled grid-2 end stud; hold-downs inside the open C */
 xbrace(fB,0.075,3.20,NZ,EV+DY,false,{x:3.1765,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12},{x:0.0975,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12}); xbrace(fB,11.0,12.425,NZ,EV+DY,false,{x:12.4025,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12},{x:11.024,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12});
-/* ---------- 10 partitions ---------- */
-(function(){
-  var h0=FL, h1=LF-0.2;
-  SEQ('Partition stud',function(){
-  [1.9,3.3].forEach(function(z){
-    steps(0.6,3.0,0.6).forEach(function(x){M('parts',V(x,h0,z),V(x,h1,z),0.04,0.075)});
-  });
-  });
-})();
+/* ---------- 10 partitions: only the grid-2 kitchen partition (loftFloor); architectural partitions not shown (owner, FLIN-006) ---------- */
 
 /* ---------- 11 glazing (wall B) ---------- */
 /* wall C glass quads are drawn in wallsHouse() with the glazed panels */
