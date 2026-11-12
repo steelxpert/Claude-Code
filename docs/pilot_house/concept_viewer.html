@@ -238,7 +238,8 @@ const T = {
       'Ridge cap: folded 1.5 mm plate on the top flanges of both panels',
       'Inner angle: folded 1.5 mm angle, 45 mm legs, joining the two bottom flanges; stops at each frame',
       'Ridge blocking plate at each bridging row: fills the box, 50 mm bent edge on all four sides',
-      'Bridging straps end straight on the ridge-edge members; a ridge blocking plate sits at every bridging row'],
+      'Bridging straps end straight on the ridge-edge members; a ridge blocking plate sits at every bridging row',
+      'Frame rafters below: 2 \u00d7 C200\u00d760\u00d715\u00d72.0 + U150\u00d740\u00d72.0 tracks, plumb cut at the ridge; apex gusset plate in the 26 mm gap'],
       governs: 'The two webs, the cap and the inner angle form a closed box that works as the ridge beam: about 8 kN per bay, about 6.5 kNm, against an estimated 9 to 10 kNm (preliminary). Ends of the ridge-edge members at the tracks: about 4 kN, near the web crippling limit, may need a clip.'}
   },
   factsHead: 'Key facts',
@@ -800,14 +801,14 @@ function clip(g,c,dA,nA,sA){
 }
 function exOffset(key,label){
   var P=V(0,COS,-SIN), sgn=/left|x\+/.test(label)?1:-1;
-  if((key==='apex'||key==='eave')&&/rafter|column|knee gusset|Apex gusset/i.test(label)){
-    var Pf=/front/.test(label)?V(0,COS,SIN):P;
+  if((key==='apex'||key==='eave'||key==='ridgebox')&&/rafter|column|knee gusset|Apex gusset/i.test(label)){
+    var Pf=(key==='ridgebox'?/front/i:/front/).test(label)?V(0,COS,SIN):P;
     if(/Apex gusset|Knee gusset/i.test(label)) return V(0.25,0,0);
     if(/C 1$|C stud 1/.test(label)) return V(-0.12,0,0);
     if(/C 2$|C stud 2/.test(label)) return V(0.12,0,0);
     if(/column .*outer track/.test(label)) return V(0,0,-0.15);
     if(/column .*inner track/.test(label)) return V(0,0,0.15);
-    if(/rafter .*top track/.test(label)) return Pf.clone().multiplyScalar(0.15);
+    if(/rafter .*top track/.test(label)) return key==='ridgebox'?V(0,0,0):Pf.clone().multiplyScalar(0.15);
     if(/rafter .*bottom track/.test(label)) return Pf.clone().multiplyScalar(-0.15);
   }
   if(key==='knee'){
@@ -911,7 +912,6 @@ function exOffset(key,label){
     if(/top track/.test(label)) return V(0,0.12,0);
   } else if(key==='ridgebox'){
     var zs=/rear/.test(label)?-0.22:0.22;
-    if(/Rafter|Apex gusset|Bolt/.test(label)) return null;
     if(/strap .*top/.test(label)) return V(0,0.70,zs);
     if(/strap .*bottom/.test(label)) return V(0,-0.05,zs);
     if(/Panel track|Ridge-edge|Next purlin|Block/.test(label)) return V(0,0.05,zs);
@@ -1095,11 +1095,9 @@ function ridgeBox(){
   function nm(k){return k>0?'front':'rear'}
   function plane(k,u,off){return V(0,YC-u*SIN+off*COS,k*(u*COS+off*SIN))}
   function plane2(k,u,off){return V(0,0.097-u*SIN+off*COS,k*(u*COS+off*SIN))}
-  var q=0.07, Yt=q/COS, XB=0.8;
+  var XB=0.8;
   [1,-1].forEach(function(k){
     var F=Fk[k], n=nm(k);
-    pairC(sp(F,0.06,0,0),sp(F,1.0,0,0),F.p,AX,k>0?C1(g,'Rafter '+n+' C'):C2(g,'Rafter '+n+' C'));
-    [0.15,0.25].forEach(function(s){[-0.035,0.035].forEach(function(qq){bolt(g,sp(F,s,qq,0),AX,0.011)})});
     [1,-1].forEach(function(sx){
       var xw=sx*(0.003+CT/2), xn=sx>0?'x+':'x-', xe=sx>0?1.6:-0.4;
       track(sp(F,-0.060,0.1515,xw),sp(F,1.0,0.1515,xw),F.p,AX.clone().multiplyScalar(sx),{group:g,mat:DM.track,label:'Panel track '+n+' '+xn});
@@ -1142,9 +1140,14 @@ function ridgeBox(){
       });
     }
   });
-  /* apex gusset */
-  var ue=sp(Fk[1],0.4,q,0), le=sp(Fk[1],0.4,-q,0);
-  LBL('Apex gusset',function(){plate(g,DM.dark,[[0,Yt],[ue.z,ue.y],[le.z,le.y],[0,-Yt],[-le.z,le.y],[-ue.z,ue.y]],0.006,AZ,AY)});
+  /* frame rafter ends (2 x C200 + U150 tracks) and apex gusset in the gap; scene origin = ridge point of the old centreline */
+  var MDd='\u00b7', mtf={c:DM.c1,t:DM.mid}, dyf=-RIDGE;
+  FDZ=2.6;
+  [['Rear',false],['Front',true]].forEach(function(sd){
+    fmember(g,mtf,0,dyf,sd[1],frafter(2.6),{c1:sd[0]+' rafter '+MDd+' C 1',c2:sd[0]+' rafter '+MDd+' C 2',tp:sd[0]+' rafter '+MDd+' top track',tm:sd[0]+' rafter '+MDd+' bottom track'});
+  });
+  LBL('Apex gusset',function(){plate(g,DM.dark,apexGussetPts().map(function(P){return [P[0]-2.6,P[1]+dyf]}),0.01,AZ,AY,V(0,0,0))});
+  FDZ=0;
   addDetail('ridgebox',g);
 }
 ridgeBox();
