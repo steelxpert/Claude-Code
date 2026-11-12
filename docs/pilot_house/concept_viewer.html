@@ -588,7 +588,8 @@ var f1=function(u,y){return V(-OFS,y,u)}, f5=function(u,y){return V(L+OFS,y,u)};
 /* wall A X-strap lands on the wind post (web plane x 12.425); hold-down inside the inner C */
 /* grid-4 end: lands on the doubled end stud (wind post), hold-down inside the second C */
 xbrace(fA,9.30,12.425,NZ,EV+DY,false,{x:12.4025,y:FL+0.0025+0.125,z:0,sx:0.035,sy:0.25,sz:0.12},{x:9.324,y:FL+0.0025+0.125,z:0,sx:0.035,sy:0.25,sz:0.12});
-xbrace(fB,0,3.25,NZ,EV+DY); xbrace(fB,11.0,12.5,NZ,EV+DY);
+/* wall C bay 1-2: lands on the wind post at corner C/1 and on the doubled grid-2 end stud; hold-downs inside the open C */
+xbrace(fB,0.075,3.20,NZ,EV+DY,false,{x:3.1765,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12},{x:0.0975,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12}); xbrace(fB,11.0,12.5,NZ,EV+DY);
 /* ---------- 10 partitions ---------- */
 (function(){
   var h0=FL, h1=LF-0.2;
@@ -1206,12 +1207,17 @@ function wallsHouse(){
     else if(c4) xs=[11.6,12.2];
     else if(!glazed) for(i=1;(bi===0?0:xa2)+0.6*i<=xb2-0.145;i++) xs.push((bi===0?0:xa2)+0.6*i);
     xs.forEach(function(x,k){LBL(pn+' '+MD+' stud '+(k+1),function(){STUD(z,x,y0,y1)})});
-    var wpost=(wn==='A'&&bi===3);
+    var wpost=(wn==='A'&&bi===3), cpost=(wn==='C'&&bi===0);
     if(wpost){ /* wind post: two C studs back to back, no track, web plane = gable inner face x 12.425 */
       LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(12.425+t/2,y0,z),V(12.425+t/2,y1,z),NZv,PX)});
       LBL(pn+' '+MD+' wind post '+MD+' inner stud',function(){CM('walls',V(12.425-t/2,y0,z),V(12.425-t/2,y1,z),NZv,MX)});
       /* grid 4: end stud doubled inside the panel, same orientation (web on the end stud's lips) = wind post for the X-strap */
       LBL(pn+' '+MD+' second end stud at grid '+(bi+1),function(){CM('walls',V(xa2+0.0475,y0,z),V(xa2+0.0475,y1,z),NZv,PX)});
+    }
+    if(cpost){ /* wall C bay 1-2 (X-braced), mirror of wall A bay 4-5: wind post on the gable 1 inner face plane x 0.075; grid-2 end stud doubled inside the panel */
+      LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(0.075-t/2,y0,z),V(0.075-t/2,y1,z),NZv,MX)});
+      LBL(pn+' '+MD+' wind post '+MD+' inner stud',function(){CM('walls',V(0.075+t/2,y0,z),V(0.075+t/2,y1,z),NZv,PX)});
+      LBL(pn+' '+MD+' second end stud at grid '+(bi+2),function(){CM('walls',V(xb2-0.0475,y0,z),V(xb2-0.0475,y1,z),NZv,MX)});
     }
     if(door){
       var yb=FL+2.1, ys=yb+t+0.0725, yt=yb+t+0.145, zo=z+sg*0.07125, zi=z-sg*0.07125;
@@ -1237,8 +1243,8 @@ function wallsHouse(){
           segs.forEach(function(sq){M('wbb',V(sq[0],yr,z+f[1]*0.0765),V(sq[1],yr,z+f[1]*0.0765),0.04,0.003,{ref:NZv})});
         });
       });
-      if(!c4) LBL(pn+' '+MD+' block row '+r+' first space',function(){CM('wbb',V(xa2+(wpost?0.095:0.0475),yb,z),V(xs[0]-0.0238,yb,z),NZv,MY,{mid:true,D:0.150})});
-      LBL(pn+' '+MD+' block row '+r+' last space',function(){CM('wbb',V(xs[xs.length-1]+0.0275,yb,z),V(wpost?12.375:xb2-0.0475,yb,z),NZv,MY,{mid:true,D:0.150})});
+      if(!c4) LBL(pn+' '+MD+' block row '+r+' first space',function(){CM('wbb',V(cpost?0.124:xa2+(wpost?0.095:0.0475),yb,z),V(xs[0]-0.0238,yb,z),NZv,MY,{mid:true,D:0.150})});
+      LBL(pn+' '+MD+' block row '+r+' last space',function(){CM('wbb',V(xs[xs.length-1]+0.0275,yb,z),V(wpost?12.375:cpost?xb2-0.095:xb2-0.0475,yb,z),NZv,MY,{mid:true,D:0.150})});
     });
   }
   [0,1,2,3].forEach(function(bi){panel('A',0,-1,bi);panel('C',W,1,bi)});
