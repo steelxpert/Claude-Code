@@ -103,3 +103,17 @@ Tags: [MEASURED] seen and reproduced in the session · [DOC] from documentation 
    stud; tops of openings / gables = boxed girt with king + jack posts. Apply the same rule to
    every analogous place without being asked to list them one by one, but show it as a draft.
 
+## — 2026-11-12 (FLIN-006)
+
+26. [MEASURED, FLIN-006] Owner sketch rules in practice: render with a separate THREE.OrthographicCamera
+   substituted inside the wrapped renderer.render (window.__ORTHO), and outline with LineSegments2 /
+   LineMaterial (examples/js/lines, linewidth 3 at deviceScaleFactor 2) - WebGL ignores linewidth
+   on plain LineSegments. Sections = two clipping planes (a slab) seen in iso. In the house view the
+   Playwright locator screenshot can time out; stop requestAnimationFrame and grab the canvas with
+   toDataURL instead (scratchpad shot3.js pattern).
+27. [MEASURED, FLIN-006] Gotcha 14/20 again: first publish refused with the diff, identical retry
+   refused, the third call published v32.
+28. [PROCESS, FLIN-006] Commit drafts between sub-agent runs and dump a fresh Box3 baseline after
+   each owner-approved change; cmp.js compares label+box multisets, so SEQ renumbering after a
+   removal shows up as paired remove/add lines with identical boxes - read them as renames.
+
