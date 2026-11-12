@@ -589,7 +589,7 @@ var f1=function(u,y){return V(-OFS,y,u)}, f5=function(u,y){return V(L+OFS,y,u)};
 /* grid-4 end: lands on the doubled end stud (wind post), hold-down inside the second C */
 xbrace(fA,9.30,12.425,NZ,EV+DY,false,{x:12.4025,y:FL+0.0025+0.125,z:0,sx:0.035,sy:0.25,sz:0.12},{x:9.324,y:FL+0.0025+0.125,z:0,sx:0.035,sy:0.25,sz:0.12});
 /* wall C bay 1-2: lands on the wind post at corner C/1 and on the doubled grid-2 end stud; hold-downs inside the open C */
-xbrace(fB,0.075,3.20,NZ,EV+DY,false,{x:3.1765,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12},{x:0.0975,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12}); xbrace(fB,11.0,12.5,NZ,EV+DY);
+xbrace(fB,0.075,3.20,NZ,EV+DY,false,{x:3.1765,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12},{x:0.0975,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12}); xbrace(fB,11.0,12.425,NZ,EV+DY,false,{x:12.4025,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12},{x:11.024,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12});
 /* ---------- 10 partitions ---------- */
 (function(){
   var h0=FL, h1=LF-0.2;
@@ -1214,6 +1214,12 @@ function wallsHouse(){
       /* grid 4: end stud doubled inside the panel, same orientation (web on the end stud's lips) = wind post for the X-strap */
       LBL(pn+' '+MD+' second end stud at grid '+(bi+1),function(){CM('walls',V(xa2+0.0475,y0,z),V(xa2+0.0475,y1,z),NZv,PX)});
     }
+    if(c4){ /* wall C bay 4-5 short X (11.0..corner C/5): wind post on the gable 5 inner face plane x 12.425 as at corner A/5; at x 11.0 a doubled stud (end stud + second stud, same orientation, toes into the braced field) replaces the glazing mullion */
+      LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(12.425+t/2,y0,z),V(12.425+t/2,y1,z),NZv,PX)});
+      LBL(pn+' '+MD+' wind post '+MD+' inner stud',function(){CM('walls',V(12.425-t/2,y0,z),V(12.425-t/2,y1,z),NZv,MX)});
+      LBL(pn+' '+MD+' end stud at x 11.0',function(){CM('walls',V(10.955+t/2,y0,z),V(10.955+t/2,y1,z),NZv,PX)});
+      LBL(pn+' '+MD+' second end stud at x 11.0',function(){CM('walls',V(10.955+0.0475,y0,z),V(10.955+0.0475,y1,z),NZv,PX)});
+    }
     if(cpost){ /* wall C bay 1-2 (X-braced), mirror of wall A bay 4-5: wind post on the gable 1 inner face plane x 0.075; grid-2 end stud doubled inside the panel */
       LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(0.075-t/2,y0,z),V(0.075-t/2,y1,z),NZv,MX)});
       LBL(pn+' '+MD+' wind post '+MD+' inner stud',function(){CM('walls',V(0.075+t/2,y0,z),V(0.075+t/2,y1,z),NZv,PX)});
@@ -1244,11 +1250,11 @@ function wallsHouse(){
         });
       });
       if(!c4) LBL(pn+' '+MD+' block row '+r+' first space',function(){CM('wbb',V(cpost?0.124:xa2+(wpost?0.095:0.0475),yb,z),V(xs[0]-0.0238,yb,z),NZv,MY,{mid:true,D:0.150})});
-      LBL(pn+' '+MD+' block row '+r+' last space',function(){CM('wbb',V(xs[xs.length-1]+0.0275,yb,z),V(wpost?12.375:cpost?xb2-0.095:xb2-0.0475,yb,z),NZv,MY,{mid:true,D:0.150})});
+      LBL(pn+' '+MD+' block row '+r+' last space',function(){CM('wbb',V(xs[xs.length-1]+0.0275,yb,z),V((wpost||c4)?12.375:cpost?xb2-0.095:xb2-0.0475,yb,z),NZv,MY,{mid:true,D:0.150})});
     });
   }
   [0,1,2,3].forEach(function(bi){panel('A',0,-1,bi);panel('C',W,1,bi)});
-  SEQ('Wall C mullion',function(){[4.8,6.35,7.9,9.45,11.0].forEach(function(x){M('walls',V(x,FL+0.04,W),V(x,EV-0.22+DY,W),0.09,0.15)})});
+  SEQ('Wall C mullion',function(){[4.8,6.35,7.9,9.45].forEach(function(x){M('walls',V(x,FL+0.04,W),V(x,EV-0.22+DY,W),0.09,0.15)})});
   LBL('Wall C glazing header',function(){M('walls',V(3.25,EV-0.12+DY,W),V(11.0,EV-0.12+DY,W),0.09,0.2)});
 }
 wallsHouse();
