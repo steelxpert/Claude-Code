@@ -1307,14 +1307,15 @@ function wallsHouse(){
       var ga=xa2, gb=xb2, yc=top-t-0.0725, MZv=V(0,0,-1), PZv=V(0,0,1), OPN=[];
       function wtrk(a,b,yy,fd,part){ uTrack(V(a,yy,z),V(b,yy,z),NZv,fd,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' '+part},0.150); COUNT.walls++; }
       wtrk(ga,gb,top-t/2,MY,'girt '+MD+' top track');
-      LBL(pn+' '+MD+' girt '+MD+' stud outside',function(){CM('walls',V(ga,yc,z+0.07125),V(gb,yc,z+0.07125),PY,MZv,{mid:true})});
-      LBL(pn+' '+MD+' girt '+MD+' stud inside',function(){CM('walls',V(ga,yc,z-0.07125),V(gb,yc,z-0.07125),PY,PZv,{mid:true})});
-      wtrk(ga,gb,top-t-0.145-t/2,PY,'girt '+MD+' bottom track');
-      wtrk(ga,gb,top-2*t-0.145-t/2,MY,'top track');
+      var ma=ga+0.04875, mb=c4?gb:gb-0.04875; /* king+jack: members (2)-(4) run between the stud A web faces (bay 4-5: on to the corner end) */
+      LBL(pn+' '+MD+' girt '+MD+' stud outside',function(){CM('walls',V(ma,yc,z+0.07125),V(mb,yc,z+0.07125),PY,MZv,{mid:true})});
+      LBL(pn+' '+MD+' girt '+MD+' stud inside',function(){CM('walls',V(ma,yc,z-0.07125),V(mb,yc,z-0.07125),PY,PZv,{mid:true})});
+      wtrk(ma,mb,top-t-0.145-t/2,PY,'girt '+MD+' bottom track');
+      wtrk(ma,mb,top-2*t-0.145-t/2,MY,'top track');
       function wpost2(lb,xc,sg){ /* sg=+1: web at the low-x end, open toward +x */
         var fl=sg>0?PX:MX, ofl=sg>0?MX:PX;
-        uTrack(V(xc,y0,z),V(xc,yJ,z),NZv,fl,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' '+lb+' '+MD+' cap track'},0.150); COUNT.walls++;
-        LBL(pn+' '+MD+' '+lb+' '+MD+' stud A',function(){CM('walls',V(xc+sg*0.04625,y0,z),V(xc+sg*0.04625,yJ,z),NZv,ofl)});
+        uTrack(V(xc,y0,z),V(xc,y1,z),NZv,fl,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' '+lb+' '+MD+' cap track'},0.150); COUNT.walls++;
+        LBL(pn+' '+MD+' '+lb+' '+MD+' stud A',function(){CM('walls',V(xc+sg*0.04625,y0,z),V(xc+sg*0.04625,y1,z),NZv,ofl)});
         LBL(pn+' '+MD+' '+lb+' '+MD+' stud B',function(){CM('walls',V(xc+sg*0.04875,y0,z),V(xc+sg*0.04875,yJ,z),NZv,fl)});
       }
       wpost2('end post at grid '+(bi+1),ga+t/2,1);
@@ -1322,11 +1323,9 @@ function wallsHouse(){
       if(!c4){
         wpost2('end post at grid '+(bi+2),gb-t/2,-1);
         var xm=(ga+gb)/2;
-        uTrack(V(xm-0.0475,y0,z),V(xm-0.0475,yJ,z),NZv,PX,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' mullion '+MD+' cap track 1'},0.150); COUNT.walls++;
-        LBL(pn+' '+MD+' mullion '+MD+' stud A',function(){CM('walls',V(xm-0.00125,y0,z),V(xm-0.00125,yJ,z),NZv,MX)});
-        LBL(pn+' '+MD+' mullion '+MD+' stud B',function(){CM('walls',V(xm+0.00125,y0,z),V(xm+0.00125,yJ,z),NZv,PX)});
-        uTrack(V(xm+0.0475,y0,z),V(xm+0.0475,yJ,z),NZv,MX,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' mullion '+MD+' cap track 2'},0.150); COUNT.walls++;
-        OPN=[[gl,xm-0.04875],[xm+0.04875,gr]];
+        LBL(pn+' '+MD+' mullion '+MD+' stud',function(){CM('walls',V(xm-0.02375+t/2,y0,z),V(xm-0.02375+t/2,yJ,z),NZv,PX)});
+        uTrack(V(xm+0.02375-t/2,y0,z),V(xm+0.02375-t/2,yJ,z),NZv,MX,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' mullion '+MD+' cap track'},0.150); COUNT.walls++;
+        OPN=[[gl,xm-0.02375],[xm+0.02375,gr]];
       } else OPN=[[gl,gr]];
       OPN.forEach(function(o){var zg=z+0.076; QUAD('glass',[V(o[0],y0,zg),V(o[1],y0,zg),V(o[1],yJ,zg),V(o[0],yJ,zg)])});
     }
