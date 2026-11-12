@@ -198,14 +198,14 @@ const T = {
     gable5: {title: 'Gable 5 as two shop panels', parts: [
       'Lower panel 5.05 x 2.76 m between the long walls, horizontal panel joint on the eave line (top of wall)',
       'Wind girt along the top of the lower panel, top to bottom: U150 open down (full width, end studs end in it) + two C150 lying along the wall, webs on the wall faces, toes facing = boxed girt + U150 open up + the panel top track open down (studs end in it); edge support for both panels against wind',
-      'Each panel end: full-height end stud into the girt top track + jack stud inside it ending under the girt, the girt bears on it',
+      'End posts and window jambs, from the opening / panel end inward: U150 cap track (web on the opening) + stud A capped by it + stud B back to back, open to the field for the hold-down; all end in the panel top track, the girt runs the full width on the posts',
       'Apex top build-up under the roof panel, top to bottom: U150 cap track open down (top face in the rafter-top plane, the end roof-panel tracks lie on it) + C150 lying inside it web down, lips up = capped box, the weak-axis header (roof-panel tracks and gable studs are on different modules) + the normal raking top track; studs end in that track',
       'Corner: each stack member runs down the slope until its lowest square-cut edge is 3 mm above the apex bottom track web (cap track and header C end 0.12 m from the long wall, raking track 0.16 m); the bottom track runs the full 5.05 m',
       'Apex studs at 600 only (0.6 to 4.8), no ridge stud; the ridge point is carried by the mitred stack',
       'Bridging 0.92 m above the joint: straps stack to stack on both faces, one solid block at each end against the stack',
-      'Window 1.5 x 1.5: boxed header as the door, sill track, cripples; each jamb = boxed column of two identical C studs toes facing (no track), up to the panel top track under the girt',
+      'Window 1.5 x 1.5: boxed header as the door, sill track, cripples; jambs as the end posts (cap track + back-to-back studs)',
       'Bridging rows at 0.92 / 1.84 m and 0.92 m above the joint',
-      'X-straps 100 x 1.5 on the outside face, wall A corner to the wall-A-side jamb box, hold-downs at both bottom ends; all wall straps 100 mm wide',
+      'X-straps 100 x 1.5 on the outside face, wall A corner to the wall-A-side jamb box, hold-downs inside stud B at the posts and jambs; X-straps (wall and roof) 100 mm, all bridging straps (wall and roof) 40 mm',
       'OPEN: fixing of the stack end at the corner (clip angle or track flanges), hold-downs, bracing in the apex panel, gable 1 mirror'],
       governs: 'half of bay 4-5 roof load into the apex studs; wind on the gable; preliminary.'},
     wpanel: {title: 'Wall panel', parts: [
@@ -538,8 +538,8 @@ function panel(F,xa,xb,sky,side,bi){
         CM('rb',P(PS[b[0]]+0.0225,PQ,xr0-0.0225),P(PS[b[1]]-0.0225,PQ,xr0-0.0225),F.p,V(1,0,0),{mid:true,D:0.150});
       });
     });
-    LBL(bs+' top',function(){M('rb',P(S0,qt,xr0),P(PS[6],qt,xr0),0.05,0.004,{ref:F.p})});
-    LBL(bs+' bottom',function(){M('rb',P(S0,qb,xr0),P(PS[6],qb,xr0),0.05,0.004,{ref:F.p})});
+    LBL(bs+' top',function(){M('rb',P(S0,qt,xr0),P(PS[6],qt,xr0),0.04,0.004,{ref:F.p})});
+    LBL(bs+' bottom',function(){M('rb',P(S0,qb,xr0),P(PS[6],qb,xr0),0.04,0.004,{ref:F.p})});
   });
   if(sky){
     [[0.860,'lower'],[2.525,'upper']].forEach(function(j){
@@ -558,8 +558,8 @@ function panel(F,xa,xb,sky,side,bi){
     gg.setAttribute('position',new THREE.Float32BufferAttribute(arr,3)); gg.computeVertexNormals();
     var gm=new THREE.Mesh(gg,MAT.glass); gm.renderOrder=2; gm.userData.nopick=true; roofGlass.add(gm); COUNT.glass++;
   } else if(bi===0||bi===3){
-    LBL('Roof strap bracing '+rs+' bay '+bn+' diagonal 1',function(){M('rx',P(S0,0.2335,xa+0.003),P(LT,0.2335,xb-0.003),0.06,0.004,{ref:F.p})});
-    LBL('Roof strap bracing '+rs+' bay '+bn+' diagonal 2',function(){M('rx',P(S0,0.2375,xb-0.003),P(LT,0.2375,xa+0.003),0.06,0.004,{ref:F.p})});
+    LBL('Roof strap bracing '+rs+' bay '+bn+' diagonal 1',function(){M('rx',P(S0,0.2335,xa+0.003),P(LT,0.2335,xb-0.003),0.10,0.004,{ref:F.p})});
+    LBL('Roof strap bracing '+rs+' bay '+bn+' diagonal 2',function(){M('rx',P(S0,0.2375,xb-0.003),P(LT,0.2375,xa+0.003),0.10,0.004,{ref:F.p})});
   }
 }
 [-1,1].forEach(function(side){
@@ -918,8 +918,8 @@ function PSP(i){return 0.025+i*0.5557}
   var g=new THREE.Group(), F=slopeF(), i, S=[0,1,2,3,4,5,6].map(PSP); dprefix=T.details.block;
   S.forEach(function(s,k){cSection(sp(F,s,0.15,-0.5),sp(F,s,0.15,0.5),F.p,F.a,C1(g,'Purlin '+(k+1),true))});
   var sm=(S[0]-0.1+S[6]+0.25)/2, ln=S[6]-S[0]+0.35;
-  LBL('Bridging strap top',function(){obox(g,DM.rod,sp(F,sm,0.2265,0),F.a,F.x,ln,0.05,0.003)});
-  LBL('Bridging strap bottom',function(){obox(g,DM.rod,sp(F,sm,0.0735,0),F.a,F.x,ln,0.05,0.003)});
+  LBL('Bridging strap top',function(){obox(g,DM.rod,sp(F,sm,0.2265,0),F.a,F.x,ln,0.04,0.003)});
+  LBL('Bridging strap bottom',function(){obox(g,DM.rod,sp(F,sm,0.0735,0),F.a,F.x,ln,0.04,0.003)});
   S.forEach(function(s){
     screw(g,sp(F,s+0.022,0.228,0),neg(F.p));
     screw(g,sp(F,s+0.022,0.072,0),F.p);
@@ -979,8 +979,8 @@ function uTrack0(a0,a1,webDir,flangeDir,o,D){
   [-0.415,0.415].forEach(function(x){
     var sm=(S0+S1)/2, ln=S1-S0;
     var rn=x<0?1:2;
-    LBL('Bridging strap row '+rn+' top',function(){obox(g,DM.rod,sp(F,sm,0.2305,x),F.a,F.x,ln,0.05,0.003)});
-    LBL('Bridging strap row '+rn+' bottom',function(){obox(g,DM.rod,sp(F,sm,0.0695,x),F.a,F.x,ln,0.05,0.003)});
+    LBL('Bridging strap row '+rn+' top',function(){obox(g,DM.rod,sp(F,sm,0.2305,x),F.a,F.x,ln,0.04,0.003)});
+    LBL('Bridging strap row '+rn+' bottom',function(){obox(g,DM.rod,sp(F,sm,0.0695,x),F.a,F.x,ln,0.04,0.003)});
     [PSP(1),PSP(5),0.860+0.001,2.525+0.001,1.2,1.7,2.2].forEach(function(s){
       screw(g,sp(F,s+0.022,0.232,x),neg(F.p));
       screw(g,sp(F,s+0.022,0.068,x),F.p);
@@ -1022,11 +1022,11 @@ function ridgeBox(){
     /* straps end straight on the ridge-edge member flanges */
     LBL('Bridging strap '+n+' top',function(){
       var a=plane(k,1.1914,0.0015), b=plane(k,0.1414,0.0015);
-      segBox(g,DM.rod,V(XB,a.y,a.z),V(XB,b.y,b.z),0.05,0.003);
+      segBox(g,DM.rod,V(XB,a.y,a.z),V(XB,b.y,b.z),0.04,0.003);
     });
     [-0.012,0.012].forEach(function(dx){[0.15,0.17].forEach(function(u){screw(g,plane(k,u,0.003).setX(XB+dx*(u>0.16?1:-1)),neg(F.p))})});
     LBL('Bridging strap '+n+' bottom',function(){
-      segBox(g,DM.rod,sp(F,1.0,0.0735,XB),sp(F,-0.012,0.0735,XB),0.05,0.003);
+      segBox(g,DM.rod,sp(F,1.0,0.0735,XB),sp(F,-0.012,0.0735,XB),0.04,0.003);
     });
     [-0.012,0.012].forEach(function(dx){screw(g,sp(F,0.01,0.072,XB+dx),F.p)});
     XL.forEach(function(x){screw(capG,plane(k,0.1544,0.009).setX(x),neg(F.p))});
@@ -1073,8 +1073,8 @@ function eaveScene(){
   cSection(sp(F,0.5587,0.15,-0.6),sp(F,0.5587,0.15,0.6),F.p,F.a,{D:0.150,group:g,mat:DM.c2,slots:true,label:'Next purlin'});
   cSection(sp(F,S0+0.046,0.15,-0.0225),sp(F,0.5575,0.15,-0.0225),F.p,AX,{D:0.150,group:g,mat:DM.c1,slots:'mid',label:'Block'});
   var sm=(S0+0.9)/2, ln=0.9-S0;
-  LBL('Bridging strap top',function(){obox(g,DM.rod,sp(F,sm,0.2265,0),F.a,AX,ln,0.05,0.003)});
-  LBL('Bridging strap bottom',function(){obox(g,DM.rod,sp(F,sm,0.0735,0),F.a,AX,ln,0.05,0.003)});
+  LBL('Bridging strap top',function(){obox(g,DM.rod,sp(F,sm,0.2265,0),F.a,AX,ln,0.04,0.003)});
+  LBL('Bridging strap bottom',function(){obox(g,DM.rod,sp(F,sm,0.0735,0),F.a,AX,ln,0.04,0.003)});
   /* eave cap */
   var oB=0.079, hB=0.232, sB=(hB*SIN-oB)/COS, yB=sB*SIN+hB*COS;
   var Bp=V(0,yB,-oB), Rp=V(0,yB+0.137*SIN,-(oB-0.137*COS)), Wp=V(0,yB-0.127,-oB);
@@ -1210,7 +1210,7 @@ function wallsHouse(){
       var yr=FL+0.92*r, yb=yr+0.0225;
       [['outside',sg],['inside',-sg]].forEach(function(f){
         LBL(pn+' '+MD+' bridging strap row '+r+' '+f[0],function(){
-          segs.forEach(function(sq){M('wbb',V(sq[0],yr,z+f[1]*0.0765),V(sq[1],yr,z+f[1]*0.0765),0.10,0.003,{ref:NZv})});
+          segs.forEach(function(sq){M('wbb',V(sq[0],yr,z+f[1]*0.0765),V(sq[1],yr,z+f[1]*0.0765),0.04,0.003,{ref:NZv})});
         });
       });
       if(!c4) LBL(pn+' '+MD+' block row '+r+' first space',function(){CM('wbb',V(xa2+0.0475,yb,z),V(xs[0]-0.0238,yb,z),NZv,MY,{mid:true,D:0.150})});
@@ -1306,7 +1306,7 @@ gable5Panels({
   P:V, D:V,
   trk:function(role,a0,a1,w,f,label,D){uTrack(a0,a1,w,f,{group:G.walls,mat:MAT.walls,label:label},D); COUNT.walls++},
   cst:function(role,a0,a1,w,f,label,mid){LBL(label,function(){CM(role==='blk'?'wbb':'walls',a0,a1,w,f,role==='blk'?{mid:true,D:0.150}:(mid?{mid:true}:undefined))})},
-  strap:function(p1,p2){M('wbb',p1,p2,0.10,0.003,{ref:V(1,0,0)})},
+  strap:function(p1,p2){M('wbb',p1,p2,0.04,0.003,{ref:V(1,0,0)})},
   xstrap:function(p1,p2){M('straps',p1,p2,0.10,0.003,{ref:V(1,0,0)})},
   hd:function(p,sx,sy,sz){B('straps',p.x,p.y,p.z,sx,sy,sz,{nocount:true})},
   glass:function(pts){QUAD('glass',pts)}
@@ -1330,7 +1330,7 @@ function wallPanelScene(){
   [1,2].forEach(function(r){
     var yr=0.92*r, yb=yr+0.0225;
     [['outside',-1],['inside',1]].forEach(function(f){
-      LBL(pn+' '+MD+' bridging strap row '+r+' '+f[0],function(){obox(g,DM.rod,V(0,yr,f[1]*0.0765),AX,AY,xb-xa,0.10,0.003)});
+      LBL(pn+' '+MD+' bridging strap row '+r+' '+f[0],function(){obox(g,DM.rod,V(0,yr,f[1]*0.0765),AX,AY,xb-xa,0.04,0.003)});
     });
     cSection(V(xa+0.0475,yb,0),V(xs[0]-0.0238,yb,0),AZ,neg(AY),{group:g,mat:DM.c2,slots:'mid',label:pn+' '+MD+' block row '+r+' first space'});
     cSection(V(xs[xs.length-1]+0.0275,yb,0),V(xb-0.0475,yb,0),AZ,neg(AY),{group:g,mat:DM.c2,slots:'mid',label:pn+' '+MD+' block row '+r+' last space'});
@@ -1370,7 +1370,7 @@ function gable5Scene(){
     D:function(dx,dy,dz){return V(-dz,dy,dx)},
     trk:function(role,a0,a1,w,f,label,D){uTrack(a0,a1,w,f,{group:g,mat:DM[role],label:label},D)},
     cst:function(role,a0,a1,w,f,label,mid){cSection(a0,a1,w,f,{D:role==='blk'?0.150:undefined,group:g,mat:role==='blk'?DM.c2:DM[role],slots:mid?'mid':true,label:label})},
-    strap:function(p1,p2){var d=p2.clone().sub(p1), len=d.length(); obox(g,DM.rod,p1.clone().add(p2).multiplyScalar(.5),d.normalize(),AY,len,0.10,0.003)},
+    strap:function(p1,p2){var d=p2.clone().sub(p1), len=d.length(); obox(g,DM.rod,p1.clone().add(p2).multiplyScalar(.5),d.normalize(),AY,len,0.04,0.003)},
     xstrap:function(p1,p2){var d=p2.clone().sub(p1), len=d.length(); d.normalize(); obox(g,DM.rod,p1.clone().add(p2).multiplyScalar(.5),d,new THREE.Vector3(0,0,1).cross(d),len,0.10,0.003)},
     hd:function(p,sx,sy,sz){obox(g,DM.rod,p,V(1,0,0),V(0,1,0),sx,sy,sz)}
   });
