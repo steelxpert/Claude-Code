@@ -1,6 +1,6 @@
 SESSION: FLIN-009 | Offer check, papers, method plan | Opus 5.5
 
-STEP 0: Claude Code CLOUD. Attach steelxpert/cfs-house WITH WRITE ACCESS first (add_repo, access push; the repo was renamed from steelxpert/Claude-Code in FLIN-008 (D-036) - if the rename has not happened yet, the old name still works). Ledger through the Google Drive connector (G:\Saját meghajtó\ledger): the connector can create and trash files but cannot edit an existing file's content; never open SESSIONS.csv in Excel. Load the SKILLS: flins-sdr, structural-proposal-letter, correspondence-drafting, hu-technical-doc-workflow, steelxpert-hu-report, docx, 3w-cp. Then:
+STEP 0: Claude Code CLOUD. Attach steelxpert/cfs-framing WITH WRITE ACCESS first (add_repo, access push; the repo was renamed from steelxpert/Claude-Code in FLIN-008 (D-036) - if the rename has not happened yet, the old name still works). Ledger through the Google Drive connector (G:\Saját meghajtó\ledger): the connector can create and trash files but cannot edit an existing file's content; never open SESSIONS.csv in Excel. Load the SKILLS: flins-sdr, structural-proposal-letter, correspondence-drafting, hu-technical-doc-workflow, steelxpert-hu-report, docx, 3w-cp. Then:
 
 TIER RULE (owner, D-019): Opus 5.5 for planning, judgement and Hungarian text; Sonnet 5.5 sub-agents only for mechanical edits. Fable only when the owner explicitly asks.
 
@@ -10,7 +10,7 @@ FLIN-009 (project flins, FlexInSheet 2026.032a): continuation of FLIN-008. One i
 3. Harvest gotchas 29-33 into the owning skills (cloud network / CDN -> 3w-cp or harness README; pycufsm numpy-2 shim and Annex C shear-centre lesson -> cfs-gmnia-virtual-testing or a new cfs-member-check skill; docx-js hu-HU -> engineering-docx-build).
 
 Verify context first:
-- Repo steelxpert/cfs-house (ex Claude-Code), branch `main` at the FLIN-008 wrap-up commit or later (harness/kickoffs/KICKOFF_FLIN-009.txt exists; STATE has D-033..D-035; `docs/pilot_house/offer/` and `docs/pilot_house/assessment_member_checks/` exist). From FLIN-008 on `main` is the truth (D-036): base the session branch on it (`git fetch origin main && git checkout -B <new branch> origin/main`), and at wrap-up fast-forward `main` to the session branch and delete the session branch. `pip install -e \".[dev]\"` then `python -m pytest` = 12 passed.
+- Repo steelxpert/cfs-framing (ex Claude-Code), branch `main` at the FLIN-008 wrap-up commit or later (harness/kickoffs/KICKOFF_FLIN-009.txt exists; STATE has D-033..D-035; `docs/pilot_house/offer/` and `docs/pilot_house/assessment_member_checks/` exist). From FLIN-008 on `main` is the truth (D-036): base the session branch on it (`git fetch origin main && git checkout -B <new branch> origin/main`), and at wrap-up fast-forward `main` to the session branch and delete the session branch. `pip install -e \".[dev]\"` then `python -m pytest` = 12 passed.
 - Ledger: if any PENDING_ROW_FLIN-*.txt (003_final, 004, 005, 006, 007, 008) is still in the ledger root, say so (rows not merged) and carry on.
 - The QA prototype needs `pip install scipy pycufsm sectionproperties` (not in the package extras); `qa_run.py` takes about 10 minutes.
 

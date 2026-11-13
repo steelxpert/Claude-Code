@@ -10,7 +10,7 @@ FLIN-002, 2026-11-08.
 ```
                  FlexInSheet CFS floor · project "flins" · prefix FLIN
  ┌─────────────────────────────────────────────────────────────────────────┐
- │  GitHub steelxpert/cfs-house (SOURCE OF TRUTH: main; branch per session)    │
+ │  GitHub steelxpert/cfs-framing (SOURCE OF TRUTH: main; branch per session)    │
  │   floorframe/  tests/  examples/      code, pytest = release gate       │
  │   docs/        01..03 + build_*.py    note SOURCES (EN+HU), figures     │
  │   harness/     STATE_FLINS.md         where we are, decisions, queue    │
