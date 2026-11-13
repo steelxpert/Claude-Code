@@ -1,0 +1,2249 @@
+<title>Mintaház váza</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{
+  --bg:#eef1f5; --surface:#f8fafc; --text:#1c2631; --muted:#566475; --line:#c7d0db;
+  --scene:#e3e8ee; --grid:#b4bfcc; --edge:#1c2631; --accent:#e8590c;
+  --c-screw:#6c7785; --c-floor:#4d6d8e; --c-wall:#7b8ea3; --c-frame:#2c4863;
+  --c-rod:#e8590c; --c-purlin:#5d86a9; --c-sky:#3b878c; --c-loft:#6b6f9c;
+  --c-strap:#e8590c; --c-part:#b9c5d2; --c-glass:#8fc6ea;
+  --d-c1:#5f86ab; --d-c2:#9fb6cd; --d-dark:#36424f; --d-bolt:#151b22; --c-track:#2f4b66; --c-trim:#c28a2e; --d-mid:#7a9a6c; --hl:#d6009b; --c-gridline:#6f8196; --d-ghost:#d3dce8;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10151a; --surface:#171d24; --text:#dde4ec; --muted:#93a1b2; --line:#2f3947;
+    --scene:#141a21; --grid:#2e3947; --edge:#e6edf5; --accent:#ff8a3d;
+    --c-screw:#8e99a8; --c-floor:#6c93b8; --c-wall:#8fa3b9; --c-frame:#5a86b0;
+    --c-rod:#ff8a3d; --c-purlin:#7aa6c9; --c-sky:#52a9ae; --c-loft:#8b90c2;
+    --c-strap:#ff8a3d; --c-part:#5b6b7d; --c-glass:#5aa3d0;
+    --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585; --hl:#ff3fcf; --c-gridline:#6d86a0; --d-ghost:#8da2b8;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10151a; --surface:#171d24; --text:#dde4ec; --muted:#93a1b2; --line:#2f3947;
+  --scene:#141a21; --grid:#2e3947; --edge:#e6edf5; --accent:#ff8a3d;
+  --c-screw:#8e99a8; --c-floor:#6c93b8; --c-wall:#8fa3b9; --c-frame:#5a86b0;
+  --c-rod:#ff8a3d; --c-purlin:#7aa6c9; --c-sky:#52a9ae; --c-loft:#8b90c2;
+  --c-strap:#ff8a3d; --c-part:#5b6b7d; --c-glass:#5aa3d0;
+  --d-c1:#6f9ac2; --d-c2:#a9c0d6; --d-dark:#4a5766; --d-bolt:#232b35; --c-track:#4c7396; --c-trim:#e0a64f; --d-mid:#93b585; --hl:#ff3fcf; --c-gridline:#6d86a0; --d-ghost:#8da2b8;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.45;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-bottom:12px}
+h1{font-size:20px;font-weight:600;margin:0}
+.badge{border:1px solid var(--accent);color:var(--accent);padding:2px 8px;font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase}
+#stage{position:relative;width:100%;height:62vh;min-height:360px;background:var(--scene);border:1px solid var(--line);overflow:hidden;touch-action:none}
+#stage canvas{display:block;width:100%;height:100%}
+.hint{position:absolute;left:8px;bottom:6px;font-size:12px;color:var(--muted);pointer-events:none}
+.row{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;align-items:center}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--text);background:var(--surface);border:1px solid var(--line);padding:5px 12px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+:focus-visible{outline:2px solid var(--c-floor);outline-offset:2px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;white-space:nowrap}
+.chip input{margin:0}
+.sw{display:inline-block;width:12px;height:12px;border:1px solid var(--line)}
+.chip .n{color:var(--muted);font-size:12px}
+.layers{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+h2{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:24px 0 8px}
+table{border-collapse:collapse;width:100%;max-width:900px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:5px 10px 5px 0;border-bottom:1px solid var(--line)}
+th{width:34%;font-weight:600;color:var(--muted)}
+ul{margin:0;padding-left:20px;max-width:900px}
+li{margin-bottom:4px}
+.details{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:600}
+[hidden]{display:none!important}
+.notes{margin-top:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);max-width:900px}
+.notes h3{margin:0 0 6px;font-size:16px;font-weight:600}
+.notes h4{margin:10px 0 4px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.notes p{margin:6px 0}
+.notes .badge{display:inline-block;margin-top:6px}
+.selbar{margin-top:12px}
+.selline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.selline .cnt{font-weight:600}
+.selline .n{color:var(--muted);font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip2{font-size:12px;padding:2px 8px;border:1px solid var(--hl);background:var(--surface);color:var(--text);cursor:pointer}
+.selhint{font-size:13px;color:var(--muted);margin:6px 0 0}
+.tip{position:absolute;right:8px;top:8px;max-width:70%;background:var(--surface);color:var(--text);border:1px solid var(--hl);padding:3px 8px;font-size:13px;pointer-events:none}
+.selhelp{font-size:12px;color:var(--muted);margin:4px 0 0}
+#stage canvas:focus-visible{outline:2px solid var(--c-floor);outline-offset:-2px}
+.ctxmenu{position:absolute;z-index:5;min-width:250px;background:var(--surface);color:var(--text);border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.28);padding:4px 0}
+.ctxmenu button{display:flex;justify-content:space-between;gap:24px;width:100%;border:0;background:transparent;text-align:left;padding:5px 12px;font-size:13px}
+.ctxmenu button:disabled{color:var(--muted);opacity:.55;cursor:default}
+.ctxmenu button:hover:not(:disabled),.ctxmenu button:focus{background:var(--bg)}
+.ctxmenu .k{color:var(--muted);font-size:12px}
+.foot{margin-top:20px;font-size:12px;color:var(--muted)}
+@media (max-width:520px){th{width:40%}}
+</style>
+<div class="wrap">
+  <header>
+    <h1 id="t-title"></h1>
+    <span class="badge" id="t-badge"></span>
+  </header>
+  <div class="details" id="details" role="group"></div>
+  <div id="stage"><span class="hint" id="t-hint"></span><div class="tip" id="pick-tip" hidden></div></div>
+  <div class="notes" id="notes" hidden></div>
+  <div class="row">
+    <div class="btns">
+      <button type="button" id="v-front"></button>
+      <button type="button" id="v-rear"></button>
+      <button type="button" id="v-top"></button>
+      <button type="button" id="v-reset"></button>
+    </div>
+    <label class="chip" id="explodeChip"><span id="t-explode"></span> <input type="range" id="explode" min="0" max="100" step="1" value="0" style="width:140px"> <span id="explodeVal" style="min-width:3.2em;text-align:right">0%</span></label>
+    <label class="chip" id="nbChip" hidden><input type="checkbox" id="nbcheck" checked> <span id="t-nb"></span></label>
+    <label class="chip" id="capChip" hidden><input type="checkbox" id="hidecap"> <span id="t-hidecap"></span></label>
+  </div>
+  <div class="selbar" id="selbar">
+    <div class="selline"><span class="cnt" id="t-sel"></span>
+      <span class="cnt" id="t-hid" hidden></span><button type="button" id="sel-showall" hidden></button>
+      <button type="button" id="sel-clear"></button><button type="button" id="sel-copy"></button><span class="n" id="sel-msg"></span></div>
+    <div class="chips" id="sel-chips"></div>
+    <p class="selhint" id="sel-hint"></p>
+    <p class="selhelp" id="sel-help"></p>
+  </div>
+  <div class="layers" id="layers" role="group"></div>
+  <h2 id="t-h-facts"></h2>
+  <table id="t-facts"></table>
+  <h2 id="t-h-open"></h2>
+  <ul id="t-open"></ul>
+  <p class="foot" id="t-foot"></p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+"use strict";
+const T = {
+  docTitle: 'Mintaház váza',
+  title: 'FLINS mintaház — vázkoncepció',
+  badge: 'KONCEPCIÓ — méretek sematikusak, nem ellenőrzött',
+  hint: 'Húzás: forgatás, görgő vagy csippentés: nagyítás, jobb gombos húzás: eltolás',
+  buttons: {front: 'Elölnézet', rear: 'Hátulnézet', top: 'Felülnézet', reset: 'Nézet visszaállítása'},
+  explode: 'Szétszedés',
+  layersLabel: 'Rétegek',
+  layers: {
+    screws: 'Csavarcölöpök', floor: 'Földszinti padló (keresztgerendák + panelek)', walls: 'Falpanelek (teherviselő)',
+    frames: 'Főkeretek', rods: 'Feszítőrudak',
+    rp: 'Tetőpanelek: szelemenek + U-sínek', rb: 'Tetőpanelek: betétblokkok + hídelemek', rx: 'Tetőpanelek: szalagmerevítés', rbox: 'Tetőgerinc-doboz', ecap: 'Ereszdoboz', grid: 'Rácsvonalak', wbb: 'Falpanelek: betétblokkok + hídelemek',
+    loft: 'Galériapadló', straps: 'Szalagmerevítés', parts: 'Válaszfalak (nem teherviselő)', glass: 'Üvegezés'
+  },
+  sel: {selected: 'Kijelölve', hint: 'Kattintson egy elemre a kiemeléshez. Újabb kattintás: feloldás.', clear: 'Kijelölés törlése', copy: 'Lista másolása', copied: 'Átmásolva', manual: 'A kijelölt szöveg másolása: Ctrl+C', hidden: 'Elrejtve', showAll: 'Mind megjelenítése', help: 'Jobb kattintás: menü · H elrejtés · I elkülönítés · G többi halványítása · F ráközelítés · S azonos fajta · V láthatóság megfordítása · A mind megjelenítése · Esc törlés'},
+  menu: {hide: ['Kijelölt elrejtése','H'], isolate: ['Kijelölt elkülönítése','I'], ghost: ['Többi halványítása','G'], zoom: ['Ráközelítés a kijelöltre','F'], same: ['Azonos fajta kijelölése','S'], invsel: ['Kijelölés megfordítása','Shift+I'], invvis: ['Láthatóság megfordítása','V'], showall: ['Mind megjelenítése','A'], clear: ['Kijelölés törlése','Esc']},
+  detailsLabel: 'Részletek',
+  details: {house: 'Teljes ház', knee: 'Keretsarok + feszítőrúd', apex: 'Csúcspont', panel: 'Tetőpanel a szarufán', block: 'Betétblokkok + hídelemek', skyp: 'Tetőablak-nyílás a panelben', ridgebox: 'Tetőgerinc-doboz', eave: 'Eresz-csatlakozás', wpanel: 'Falpanel', dheader: 'Ajtó áthidalója', gable5: '5. oromfal panelei', gable1: '1. oromfal panelei', cornerA5: 'A/5 sarok', loft: 'Galériapadló', floor: 'Földszinti padló: keresztgerendák + panelek'},
+  hideCap: 'Tetőgerinc-fedés elrejtése',
+  showNb: 'Szomszédos panelek végoszlopainak megjelenítése',
+  notesLabels: {parts: 'Elemek', governs: 'Mértékadó', tag: 'KONCEPCIÓ — előzetes, nem ellenőrzés'},
+  notes: {
+    knee: {title: 'Keretsarok + feszítőrúd', parts: [
+      'A keret a hosszanti falakon belül áll: az oszlop külső síkja a fal belső síkján, támaszköz 4,85 m (tengelytávolság)',
+      'Oszlopok és szarufák (rafter): 2 × C200×60×15×2.0 hátoldalukkal egymásnak (26 mm rés) + U150×40×2.0 U-sín (track) mindkét szélén',
+      'A szaru teteje a tetősíkban, függőleges vágással a fal belső síkjánál; a tetőpanelek a szarun és a fal tetején feküdnek fel',
+      'Keretsarok és csúcspont: csomólemez (gusset) a 26 mm-es résben',
+      'Feszítőrúd (tie rod) az oszlopok között, a keretsarok alatt',
+      'A keret és a fal különálló: a falváz-oszlopok (stud) a szélterhet a padlóra és a tetőre adják át; NYITOTT: a csomólemez vastagsága/betétlemez, az oszlopláb 5 mm-rel a padló felső síkja felett, csavarozva a csavarcölöp meghosszabbított T-gerincéhez'],
+      governs: 'ellenőrzendő: a keretsarok csomólemeze és a C-szelvények gerince palástnyomásra; az oszlop és a szaru osztott szelvényű elemként; húzóerő a feszítőrúdban; előzetes.'},
+    apex: {title: 'Csúcspont', parts: [
+      'Szarufák (rafter): 2 × C200×60×15×2.0 hátoldalukkal egymásnak (26 mm rés) + U150×40×2.0 U-sín (track) mindkét szélén, mindkét oldalon 40°, függőleges vágással a tetőgerincnél',
+      'Csúcspont-csomólemez a 26 mm-es résben, mindkét szarufa 400 mm-es szakaszát takarva',
+      'A szaru teteje a tetősíkban; a csomólemez a résen belül marad',
+      'Tetőgerinc: lásd a Tetőgerinc-doboz részletet'],
+      governs: 'ellenőrzendő: a csúcspont csomólemeze és a C-szelvények gerince palástnyomásra; szarufa nyomóereje kb. 17 kN (előzetes).'},    panel: {title: 'Tetőpanel a szarufán', parts: [
+      'Szarufapár (rafter) 2 × C150×45×1.5, 6 mm réssel, 40°-os hajlásszögben',
+      'Két U-sín (track), gerincük 6 mm-re egymástól, a szarufa résére középen: a felső öv 45 mm, az alsó öv 70 mm és a szarufa felső övein fekszik, az övek a saját panelük felé néznek',
+      'C150 szelemenek kb. 556 mm-enként a lejtő mentén, a végük az U-sínek belsejében van',
+      'Egy-egy önfúró csavar minden U-sín alsó övén át a szarufa övébe, két szelemen között középen (kb. 600 mm)',
+      'U-sín öv és szelemen öv közötti csavarok, fent és lent, minden szelemenvégen'],
+      governs: 'a panel lecsúszása a lejtőn, kb. 5 kN U-sín-vonalanként; kb. 0,8 kN csavaronként kb. 4,6 kN palástnyomási ellenállással szemben (előzetes); a szelemenvég felemelkedése az U-sín csavarjain.'},
+    block: {title: 'Betétblokkok és hídelemek', parts: [
+      'C150 szelemenek (purlin) kb. 556 mm-enként a lejtő mentén',
+      'Két lapos szalag (strap) 50 × 1,5 mm, egy a felső és egy az alsó síkon, szalagonként egy csavar szelemen-övenként',
+      'Tömör C150 betétblokkok (blocking) az első és második, valamint a hatodik és hetedik szelemen között, szögacél kapcsolóelemekkel a szelemengerincekhez'],
+      governs: 'a szalagok kb. 1,1 kN-t gyűjtenek szelemenenként, kb. 8 kN-t a sor végén (előzetes); a sornak lehorgonyzás kell, a tetőgerinc-részlettel együtt döntendő el.'},
+    skyp: {title: 'Tetőablak-nyílás a panelben', parts: [
+      'Szárak: C150 + U150 U-sín (track) dobozolva, a szelemenekkel párhuzamosan, a panel teljes hosszán, mindegyik két szelemenvonal között középen',
+      'Szemöldök és küszöb: egy-egy U150 U-sín, a lejtő mentén a szárak között, gerinccel az ablak felé',
+      'Három elvágott szelemen hat csonkként végződik a szemöldök és küszöb U-sínjén belül',
+      'A száraknál a fedő U-sín 50 mm-rel rövidebb mindkét végén, hogy a C belépjen a panel U-sínjébe',
+      'Két hídelemsor a szemöldök és a küszöb U-sínjével egy vonalban, az ereszről a tetőgerincig folytonosan; a szemöldök és a küszöb a szárak között betétblokkként működik',
+      'Nyílás 780 × 1600 mm'],
+      governs: 'szár kb. 2,3 kNm a 3,0 m-es mezőn (előzetes); a szemöldök és a küszöb három csonkvéget visel, egyenként kb. 0,45 kN-t.'},
+    eave: {title: 'Eresz-csatlakozás', parts: [
+      'A tetőpanel ereszszéli szelemenének legalsó éle a fal felső U-sínjének (track) belső felső élén fekszik fel (3 mm hézag)',
+      'A fal teteje = ereszi munkapont + 158 mm; a falpanel magassága kb. 2760 mm a padlókeret felett',
+      'A tetőpanelek az ereszi munkaponttól 161 mm-re kezdődnek a lejtő mentén; az első szelemenosztás kb. 400 mm',
+      'Szarufa (rafter): 2 × C200×60×15×2.0 hátoldalukkal egymásnak (26 mm rés) + U150×40×2.0 U-sínek; a fal belső síkjánál véget ér (függőleges vágás), a tetőpanel a szarufa tetején és a fal tetején fekszik fel',
+      'Oszlop a szarufa alatt, a keretsarok csomólemezével (gusset) a 26 mm-es résben',
+      'A fal teteje, a szelemengerinc és az ereszfedés dobozt zár körül az eresz mentén',
+      'Belső ereszszög: hajlított 1,5 mm-es szögacél, 45 mm-es szárakkal, az ereszszéli szelemen alsó övét a fal felső U-sínjének belső övéhez kapcsolja; minden keretnél megáll',
+      'Ereszfedés: hajlított 1,5 mm-es lemez a tetőpanel tetején és a fal külső síkján, a két sík találkozásánál hajlítva; az ereszszéli szelemenhez és a fal felső U-sínjéhez csavarozva',
+      'Ereszlezárás és rögzítések: részletezendő'],
+      governs: 'az ereszkialakítással együtt részletezendő.'},
+    dheader: {title: 'Ajtó áthidalója', parts: [
+      'Dobozolt áthidaló: két perforált C150 falváz-oszlop (stud), gerincük a fal síkjain, a talpak egymás felé fordulnak',
+      'Alsó U150 U-sín (track), nyitott oldalával felfelé, befogadja a két oszlopot',
+      'Felső U150 U-sín, azonos forgatással, tartja a fölötte lévő rövid oszlopot',
+      'Szögacél kapcsolóelemek a szár-oszlopokhoz',
+      'Az alsó U-sín átfut az ajtónyíláson, és a szerelés után a helyszínen kivágják',
+      'Szár-oszlopok: C150, U150 U-sínnel lezárva dobozzá; a gerinc a nyílás felé néz'],
+      governs: 'ellenőrzendő: az áthidaló hajlítása és a szár-oszlopok az áthidaló reakciója alatt.'},
+    gable5: {title: '5. oromfal két műhelypanelként', parts: [
+      'Alsó panel 5,05 x 2,76 m a hosszanti falak között, vízszintes panelcsatlakozás az eresz vonalában (a fal teteje)',
+      'Szélmerevítő gerenda (girt) az alsó panel tetején, fentről lefelé: U150 U-sín (track) lefelé nyitva (teljes szélesség, a végoszlopok ebben végződnek) + két C150 a fal mentén fekve, gerincük a fal síkjain, a talpak egymás felé = dobozolt gerenda + U150 felfelé nyitva + a panel felső U-sínje lefelé nyitva (az oszlopok ebben végződnek); mindkét panel szélteher elleni peremtámasza',
+      'Végoszlopok és ablakszárak a nyílástól / panelvégtől befelé: U150 fedő U-sín (gerinc a nyíláson) + az általa lezárt A falváz-oszlop (stud) + B falváz-oszlop hátoldalukkal egymásnak, a mező felé nyitva a lehorgonyzáshoz; mind a panel felső U-sínjében végződik, a szélmerevítő gerenda a teljes szélességben az oszlopokon fut',
+      'A csúcsi felső felépítmény a tetőpanel alatt, fentről lefelé: U150 fedő U-sín lefelé nyitva (felső síkja a szarufa-tetősíkban, a végső tetőpanel U-sínek ezen fekszenek) + C150 benne fekve, gerinccel lefelé, ajkakkal felfelé = lezárt doboz, a gyenge tengelyű áthidaló (a tetőpanel U-sínek és az oromfal falváz-oszlopai eltérő modulon vannak) + a szokásos rézsútos felső U-sín; az oszlopok ebben az U-sínben végződnek',
+      'Sarok: a köteg minden eleme a lejtő mentén fut, amíg legalsó derékszögű vágott éle 3 mm-rel a csúcsi alsó U-sín gerince felett van (a fedő U-sín és az áthidaló C a hosszanti faltól 0,12 m-en, a rézsútos U-sín 0,16 m-en ér véget); az alsó U-sín a teljes 5,05 m-en végigfut',
+      'Csúcsi falváz-oszlopok csak 600-as osztással (0,6-tól 4,8-ig), tetőgerinc-oszlop nincs; a tetőgerinc pontját a gérvágott köteg hordja',
+      'Hídelemek (bridging) 0,92 m-re a csatlakozás felett: szalagok köteg és köteg között mindkét síkon, mindkét végén egy tömör blokk a köteg mellett',
+      'Ablak 1,5 x 1,5: dobozolt áthidaló mint az ajtónál, küszöb U-sín, rövid oszlopok; szárak mint a végoszlopoknál (fedő U-sín + hátoldalukkal egymásnak fordított falváz-oszlopok)',
+      'Hídelemsorok 0,92 / 1,84 m-nél és 0,92 m-nél a csatlakozás felett',
+      'X-szalagok 100 x 1,5 a külső síkon, az A fal sarkától az A fal felőli szár-dobozig, lehorgonyzók (hold-down) a B falváz-oszlopon belül az oszlopoknál és szárakon; X-szalagok (fal és tető) 100 mm, minden hídelem-szalag (fal és tető) 40 mm',
+      'NYITOTT: a köteg végének rögzítése a sarokban (szögacél kapcsoló vagy U-sín övek), lehorgonyzók, merevítés a csúcsi panelben, az 1. oromfal tükrözése'],
+      governs: 'a 4-5 mező tetőterhének fele a csúcsi falváz-oszlopokra; szél az oromfalon; előzetes.'},
+    gable1: {title: '1. oromfal két műhelypanelként', parts: [
+      'Alsó panel 5,05 x 2,76 m a hosszanti falak között, vízszintes panelcsatlakozás az eresz vonalában (a fal teteje); kialakítás mint az 5. oromfalnál, tükrözve (külső sík a -x felé)',
+      'Szélmerevítő gerenda (girt) az alsó panel tetején: U150 U-sín (track) lefelé nyitva + két C150 a fal mentén fekve, gerincük a fal síkjain = dobozolt gerenda + U150 felfelé nyitva + a panel felső U-sínje lefelé nyitva; mindkét panel szélteher elleni peremtámasza',
+      'Végoszlopok és ablakszárak a nyílástól / panelvégtől befelé: U150 fedő U-sín (gerinc a nyíláson) + az általa lezárt A falváz-oszlop (stud) + B falváz-oszlop hátoldalukkal egymásnak, a mező felé nyitva a lehorgonyzáshoz; mind a panel felső U-sínjében végződik',
+      'A csúcsi felső felépítmény a tetőpanel alatt mint az 5. oromfalnál: U150 fedő U-sín + C150 áthidaló (lezárt doboz) + a szokásos rézsútos felső U-sín; az oszlopok ebben az U-sínben végződnek; az alsó U-sín a teljes 5,05 m-en végigfut',
+      'Csúcsi falváz-oszlopok csak 600-as osztással (0,6-tól 4,8-ig), tetőgerinc-oszlop nincs; hídelemek (bridging) 0,92 m-re a csatlakozás felett, szalagok köteg és köteg között mindkét síkon, mindkét végén egy tömör blokk',
+      'Ablak 1,0 x 1,0, z 1,5 - 2,5, küszöb 1,15 m-re a padlókeret felett, szemöldök 2,15 m (a galériapadló alatt): dobozolt áthidaló mint az ajtónál, küszöb U-sín, rövid oszlopok; szárak mint a végoszlopoknál (fedő U-sín + hátoldalukkal egymásnak fordított falváz-oszlopok)',
+      'Hídelemsorok 0,92 / 1,84 m-nél: az 1. sor teljes szélességű (a küszöb alatt átmegy), a 2. sort az ablak megszakítja',
+      'X-szalagok 100 x 1,5 a külső síkon, a C fal sarkától a C fal felőli szár-dobozig (a széles mező), lehorgonyzók (hold-down) a B falváz-oszlopon belül az oszlopoknál és szárakon',
+      'Galériapadló az 1. oromfalnál: önálló részlet (Galériapadló); peremsínje az 1. oromfal belső síkjához fekszik, x 0,075'],
+      governs: 'szél az oromfalon; előzetes.'},
+    cornerA5: {title: 'A/5 sarok: A fal vége + szélmerevítő oszlop', parts: [
+      'Az A falpanel az oromfal külső síkjáig fut, és egy szokásos C falváz-oszlopban (stud) végződik',
+      'Szélmerevítő oszlop (wind post): két C falváz-oszlop hátoldalukkal egymásnak, U-sín nélkül, gerincsík = az oromfal belső síkja (x 12,425); nincs összekötve a végoszloppal (rés kb. 60 mm)',
+      'Az A fal X-szalagja a szélmerevítő oszlopra érkezik; lehorgonyzó (hold-down) a belső C-ben',
+      'Az 5. oromfal végoszlopa (fedő U-sín + A falváz-oszlop + B falváz-oszlop) az A fal belső síkjához támaszkodik',
+      'NYITOTT: az oromfali oszlop / szélmerevítő oszlop / szélmerevítő gerenda vége kapcsolata, a lehorgonyzó típusa'],
+      governs: 'ellenőrzendő: a szélmerevítő oszlop az oromfalra ható szél alatt és az X-szalag végereje; előzetes.'},
+    loft: {title: 'Galériapadló + 2. rácsvonali áthidaló + konyhai válaszfal', parts: [
+      'Az 1. oromfal peremsínje (U150 U-sín, track) az oromfal belső síkján; 14 db C150 födémgerenda (joist) 385 mm-enként (egymásba illesztve 147 mély), 12 + 2 szélső gerenda; a 2. rácsvonal peremsínje az áthidalón, a létranyílásnál megszakítva',
+      'A keretoszlopoknál a szélső gerendák 3 mm-rel az oszlopsík előtt megállnak (oszlopok x 3,175 - 3,325)',
+      'Létranyílás 1,2 m mélyen a 2. rácsvonal szélétől: kiváltók = a 10. és 13. gerenda, mindegyik megkettőzve (második C hátoldalával egymásnak) U150 fedő U-sínnel, melynek gerince a sík nyílásperem; a nyílás áthidaló gerendája = U150 fedő U-sín + C150 x 2,125-nél; két csonkgerenda kapcsolóelemmel rögzítve hozzá',
+      'Két sor tömör C150 betétblokk (blocking) + 40 x 1,5 szalag a felső és alsó övön x 1,10 és 2,125 értéknél (a 2. sort a nyílás megszakítja)',
+      '2. rácsvonali áthidaló: felül U150 (lefelé nyitva), két álló C150 egymás felé fordított talppal, alul U150 (felfelé nyitva), a keretoszlopok belső síkjai között; a gerendák erre támaszkodnak',
+      'Konyhai válaszfal a 2. rácsvonal síkjában, z 0,28 - 3,90: U150 U-sínek, C150 falváz-oszlopok (stud) legfeljebb 600 mm-enként, osztott szelvényű oszlopok (2 C) z 1,95-nél és a végoszlop (fedő U-sín + 2 C) az áthidaló alatt; egy hídelemsor'],
+      governs: 'ELŐZETES: gerendák kb. 1,9 kNm (teherbírási határállapot) kb. 3,3 kNm-rel szemben, lehajlás kb. L/560 (0,5 + 2,0 kN/m2 feltételezve); az áthidaló támaszköze <= 1,95 m; oszlopok kb. 5 kN-t adnak át egyenként a földszinti padlóra.'},
+    floor: {title: 'Földszinti padló: keresztgerendák + padlópanelek', parts: [
+      'Csavarcölöp: szár 200 x 200 x 10 fejlemezzel, teteje y 0,24-nél, 10 mm-rel a keresztgerendák alatt; a külső csavarok (A és C vonal) a keretoszlop középvonala alatt állnak (z 0,1775 / 5,0225), a B vonal z 2,6-nál',
+      'T csomólemez (hegesztett): 200 x 200 x 10 öv a fejlemezen, 5 mm-es gerinc 250 x 160 a keresztgerenda 6 mm-es résében állva; két M12 átmenő csavar (C1 gerinc, T gerinc, C2 gerinc) alátétekkel és anyákkal',
+      'Oszlopláb a csavarcölöpön (2., 3., 4. rácsvonal, A és C vonal): a T gerince 300 mm-rel a padló fölé meghosszabbítva (y 0,90-ig) a keresztgerenda résén át az oszlop két C gerince közötti 26 mm-es résbe, 2 x 10 mm betétlemezzel és 4 x M12 csavarral (2 sor) a C gerincen, betétlemezen, T gerincen, betétlemezen, C gerincen át = csavarozott oszlopláb a csavarcölöpön',
+      'Keresztgerenda (bearer): 2 x C200x60x15x2.5 hátoldalukkal egymásnak, 6 mm rés, folytonos a rácsvonal három csavarcölöpe fölött, y 0,25 - 0,45 (főtartó, mint a tető szarufái)',
+      'Padlópanelek (műhelyben gyártott, mezőnként egy, mint a tetőpanelek): y 0,45 - 0,60 a keresztgerendák tetején; a végük a keresztgerenda középvonalában 3 mm-es hézaggal, az oromfali panelek a keresztgerenda külső síkjáig',
+      'U150 végső U-sínek, gerinc a panelvég síkjában, a panel belseje felé nyitva, folytonosak (nem vágottak); panelcsatlakozás a keresztgerenda felett 3 mm, a 2., 3., 4. rácsvonalnál 9 mm, ahol a T gerince az oszlopba nyúlik (az oszlop a padló felső síkja felett 5 mm-rel kezdődik)',
+      'Peremek az A és C falak alatt: dobozolt C150 pár, talpak egymás felé, ajkak érintkeznek, 90 széles, a végső U-sínekbe illesztve',
+      'C150x45x1.5 gerendák (joist) x irányban a végső U-sínek között, panelenként 12 db kb. 396 mm-enként, +z felé nyitva',
+      'Hídelemek (bridging): panelenként 2 sor a harmadolópontokban, 40 x 1,5 szalagok a felső és alsó övön peremtől peremig, tömör C150 blokkok az első és utolsó közben; padlósíkú merevítés nincs'],
+      governs: 'ELŐZETES: keresztgerenda kb. 10 kNm a középső csavarcölöp felett kb. 25 kNm-rel szemben; középső csavarcölöp kb. 37 kN (teherbírási határállapot); panelgerendák kb. 1,9 kNm kb. 3,3 kNm-rel szemben; dobozolt perem a hosszanti falak alatt kb. 5 kNm kb. 6,6 kNm-rel szemben; a panelvégek gerincmerevítést igényelnek (lezárt végső U-sínek); kapcsolatok a szerződés után.'},
+    wpanel: {title: 'Falpanel', parts: [
+      'Panel: mezőhossz mínusz 6 mm, magasság kb. 2760 mm, 150 mm vastag; alsó és felső U-sín (track) U150; a felső és alsó U-sín a teljes panelhosszon fut, és takarja a végoszlopokat',
+      'C150 végoszlopok (stud), gerinccel a panelvégen, övek a panel belseje felé; a csatlakozásoknál hátoldalukkal egymásnak állnak a szomszéd panellel, 6 mm rés; csak falterhet viselnek: a főkereteknek saját oszlopaik vannak a falakon belül',
+      'C150 közbenső oszlopok 600 mm-enként hasított gerinccel, nyitott oldal a nagyobb X felé',
+      'Minden panelnek végenként egy végoszlopa van. A halvány oszlopok a szomszéd paneleké: egymás mellé helyezve az egyik panel utolsó és a következő első oszlopa hátoldalukkal egymásnak áll',
+      'Két sor tömör betétblokk (blocking) + szalagos hídelem (bridging) 920 és 1840 mm-nél: 50 x 1,5 mm szalagok mindkét síkon, tömör C150 blokkok egy-egy hasítékkal az első és utolsó oszlopközben'],
+      governs: 'ellenőrzendő: a végoszlopok a tetőpanel reakciója alatt (a keretoszlopok a falon belül állnak, nem a falban); az oszlop kihajlási hossza a hídelemsorok között kb. 920 mm.'},
+    ridgebox: {title: 'Tetőgerinc-doboz', parts: [
+      'A panelek a tetőgerincig meghosszabbítva: a két tetőgerinc-széli elem alsó sarkai a tetőgerinc vonalában találkoznak',
+      'Tetőgerinc-fedés: hajlított 1,5 mm-es lemez mindkét panel felső övén',
+      'Belső szögacél: hajlított 1,5 mm-es szögacél, 45 mm-es szárakkal, a két alsó övet kapcsolja; minden keretnél megáll',
+      'Tetőtetőgerinc-betétlemez minden hídelemsornál: kitölti a dobozt, 50 mm-es hajlított él mind a négy oldalon',
+      'A hídelem-szalagok egyenesen a tetőgerinc-széli elemeken végződnek; tetőgerinc-betétlemez ül minden hídelemsornál',
+      'Keretszarufák (rafter) alattuk: 2 × C200×60×15×2.0 + U150×40×2.0 U-sínek (track), függőleges vágás a tetőgerincnél; csúcspont-csomólemez (gusset) a 26 mm-es résben'],
+      governs: 'A két gerinclemez, a fedés és a belső szögacél zárt dobozt alkot, amely tetőgerinc-tartóként működik: kb. 8 kN mezőnként, kb. 6,5 kNm, becsült 9-10 kNm-rel szemben (előzetes). A tetőgerinc-széli elemek végei az U-síneknél: kb. 4 kN, közel a gerinclemez beroppanásának határához, kapcsolóelem kellhet.'}
+  },
+  factsHead: 'Főbb adatok',
+  facts: [
+    ['Rács', '12 500 × 5 200 mm (3250 + 3000 + 3000 + 3250)'],
+    ['Terjedelem', 'Csupasz acélvázszerkezet. Fedélhéjazat, burkolat és befejezések mások feladata, szerkezetileg nem számítunk rájuk.'],
+    ['Eresz', 'A tetőpanel legalsó éle a falsín belső felső élén; hajlított ereszfedés kívül és hajlított szögacél belül; betétlemez nincs'],
+    ['Tetőgerinc', 'Zárt tetőgerinc-doboz: a két tetőgerinc-széli elem, hajlított fedés és belső szögacél, minden hídelemsornál betétlemezzel'],
+    ['Tető', '8 gyári panel; C150 szelemenek kb. 560 mm-enként, aszimmetrikus U-sínekben végződnek (alsó öv 70 mm); az U-sínek a szarufákhoz csavarozva 600 mm-enként; 6 mm rés a panelek között; átlós szalagok csak az oromfali mezőkben'],
+    ['Főkeretek', '2., 3., 4. rácsvonal: portálkeretek a hosszanti falakon belül, oszlopok és szarufák 2 × C200×60×15×2.0 hátoldalukkal egymásnak (26 mm rés) U150 U-sínekkel mindkét szélen, csomólemezek a résben, acél feszítőrúd a keretsarkok alatt; saját oszlopok, a falváz-oszlopoktól (stud) különállóak'],
+    ['Hosszanti falak', 'Műhelypanelek, mezőnként egy, mint a tetőpanelek; végoszlopok hátoldalukkal egymásnak a panelcsatlakozásoknál; két sor tömör betétblokk + szalagos hídelem'],
+    ['Földszinti padló', 'Osztott keresztgerendák (2 × C200×60×15×2.5 hátoldalukkal egymásnak, 6 mm rés) hegesztett T csomólemezeken 15 csavarcölöpön (a külső csavarcölöpök a keretoszlopok középvonala alatt; a 6 oszlopcsavarnál a T gerince 300 mm-rel a padló fölé nyúlik az oszlop résébe, 2 × 10 mm betétlemez + 4 × M12 = csavarozott oszlopláb), y 0,25–0,45; négy műhelypadló-panel (y 0,45–0,60) a keresztgerendákon, mezőnként egy: U150 végső U-sínek, dobozolt C150 peremek a hosszanti falak alatt, C150 gerendák kb. 400 mm-enként, 2 szalagos hídelemsor; padló teteje +0,60'],
+    ['Galéria', 'Az 1–2. mező felett: 14 db C150 gerenda 385 mm-enként az 1. oromfal belső síkján lévő U150 peremsín és a 2. rácsvonali peremsín között, a keret síkjában lévő osztott áthidalón (2 C + 2 U); létranyílás megkettőzött kiváltókkal; 2 sor tömör betétblokk + szalag; konyhai válaszfal az áthidaló alatt a 2. rácsvonalon (az oszlopok viszik az áthidalót)'],
+    ['Merevítés', 'Lapos szalagos X lehorgonyzókkal (hold-down)'],
+    ['Gerinclemez-perforációk', '38 × 100 mm-es hasított lyukak 600 mm-enként a falváz-oszlopok (stud) és tetőszelemenek gerincében; elem végétől 250 mm-en belül nincs; minden tömör blokkban egy hasíték'],
+    ['Szelvények', 'C150×45×1.5 / U150×45, legfeljebb 1,5 mm']
+  ],
+  openHead: 'Nyitott pontok',
+  open: [
+    'Tetői átlós szalagok csak az oromfali mezőkben: a hosszanti falakra ható szélnek a kereteken és a tetőgerinc-dobozon át kell az oromfalakra jutnia - a számításban megmutatandó.',
+    'Az aszimmetrikus U-sín a FLINS számára új szelvény.',
+    'A keretsarok és az oszlopláb részletezendő: csomólemez vastagsága és betétlemez, oszlopláb 5 mm-rel a padló felső síkja felett, csavarozva a csavarcölöp meghosszabbított T-gerincéhez; a galériapadló és a 2. rácsvonali áthidaló a keretoszlopoknál megáll (az áthidaló az oszlopsíkokhoz kapcsolva, a részlet megrajzolandó).',
+    'A C fal üvegezett mezői: a panel felépítése eldöntendő.',
+    'Eresz: a tetőpanel a falsín belső élén fekszik fel, 75 mm-re a fal középvonalától - a fal tetejére ható külpontos teher ellenőrzendő.',
+    'A perforáció mérete és a végtávolság a nyírásra és a támaszoknál a gerinclemez beroppanására megerősítendő.',
+    'A tetőgerinc-széli elemek végei az U-síneknél: kb. 4 kN, közel a gerinclemez beroppanásának határához, kapcsolóelem kellhet (előzetes).',
+    'A felső szelemenosztás a tetőgerincnél kb. 630 mm, kissé a 600-as modul felett.',
+    'Kevés a merevítési hossz az üvegezett C falon.',
+    'A földszinti padló kapcsolatai a szerződés után részletezendők: padlópanel-keresztgerenda rögzítések, panelcsatlakozás, T csomólemez a csavarcölöp fejéhez, az oszlopláb csavarjainak méretezése (T gerinc, betétlemez, M12), lehorgonyzók; előzetes elemellenőrzések a Földszinti padló részletben.',
+    'Palástnyomás az 1,5 mm-es gerincekben a keretcsatlakozásoknál.',
+    'Felemelkedés a csavarcölöpökön.'
+  ],
+  foot: 'Rácsvonalak: 1–5 a hossz mentén, A (hátul), B (közép) és C (elöl, üvegezett) keresztben. A rétegek melletti számok a megrajzolt elemeket jelentik.'
+};
+function $(id){return document.getElementById(id)}
+document.title = T.docTitle;
+$('t-title').textContent = T.title; $('t-badge').textContent = T.badge; $('t-hint').textContent = T.hint;
+$('t-explode').textContent = T.explode; $('t-hidecap').textContent = T.hideCap; $('t-nb').textContent = T.showNb; $('layers').setAttribute('aria-label', T.layersLabel);
+['front','rear','top'].forEach(function(n){$('v-'+n).textContent = T.buttons[n]});
+$('v-reset').textContent = T.buttons.reset;
+$('t-h-facts').textContent = T.factsHead; $('t-h-open').textContent = T.openHead; $('t-foot').textContent = T.foot;
+T.facts.forEach(function(r){var tr=document.createElement('tr'),th=document.createElement('th'),td=document.createElement('td');th.textContent=r[0];td.textContent=r[1];tr.appendChild(th);tr.appendChild(td);$('t-facts').appendChild(tr)});
+T.open.forEach(function(t){var li=document.createElement('li');li.textContent=t;$('t-open').appendChild(li)});
+(function(){
+var root=document.documentElement;
+var stage=document.getElementById('stage');
+var V=function(x,y,z){return new THREE.Vector3(x,y,z)};
+
+/* ---------- constants (metres) ---------- */
+var FL=0.60, EV=FL+2.6, LF=FL+2.35, W=5.2, L=12.5, DY=0.1577;
+var TAN=Math.tan(40*Math.PI/180), COS=Math.cos(40*Math.PI/180), SIN=Math.sin(40*Math.PI/180);
+var GX=[0,3.25,6.25,9.25,12.5];
+var XE=L+0.075; /* gable 5 outer face */
+var XS=-0.075, XC=(XE+XS)/2, XLEN=XE-XS; /* gable 1 outer face, span centre, span length */
+function yR(z){return EV+(2.6-Math.abs(z-2.6))*TAN}
+var RIDGE=yR(2.6);
+var CT=0.0025; /* drawn thickness of C walls (real 0.0015) */
+function r3(v){return Math.round(v*1000)/1000}
+function steps(a,b,s){var o=[],i;for(i=0;a+i*s<=b+1e-9;i++)o.push(r3(a+i*s));return o}
+function uniq(a){return a.filter(function(v,i){return a.indexOf(v)===i}).sort(function(p,q){return p-q})}
+
+/* ---------- layers ---------- */
+var LAYERS=[
+ {id:'screws',name:T.layers.screws,tok:'--c-screw'},
+ {id:'floor',name:T.layers.floor,tok:'--c-floor'},
+ {id:'walls',name:T.layers.walls,tok:'--c-wall'},
+ {id:'frames',name:T.layers.frames,tok:'--c-frame'},
+ {id:'rods',name:T.layers.rods,tok:'--c-rod'},
+ {id:'rp',name:T.layers.rp,tok:'--c-purlin'},
+ {id:'rb',name:T.layers.rb,tok:'--c-sky'},
+ {id:'rx',name:T.layers.rx,tok:'--accent'},
+ {id:'rbox',name:T.layers.rbox,tok:'--d-mid'},
+ {id:'wbb',name:T.layers.wbb,tok:'--c-sky'},
+ {id:'ecap',name:T.layers.ecap,tok:'--d-mid'},
+ {id:'loft',name:T.layers.loft,tok:'--c-loft'},
+ {id:'straps',name:T.layers.straps,tok:'--c-strap'},
+ {id:'parts',name:T.layers.parts,tok:'--c-part'},
+ {id:'glass',name:T.layers.glass,tok:'--c-glass'},
+ {id:'grid',name:T.layers.grid,tok:'--c-gridline'}
+];
+var scene=new THREE.Scene();
+scene.background=new THREE.Color(0xe3e8ee);
+var G={}, MAT={}, COUNT={};
+LAYERS.forEach(function(l){
+  l.group=new THREE.Group(); l.group.name=l.id; scene.add(l.group);
+  G[l.id]=l.group; COUNT[l.id]=0;
+  if(l.id==='glass'){
+    MAT[l.id]=new THREE.MeshStandardMaterial({color:0x8fc6ea,transparent:true,opacity:.3,side:THREE.DoubleSide,depthWrite:false,roughness:.2,metalness:0});
+  } else {
+    MAT[l.id]=new THREE.MeshStandardMaterial({color:0x888888,roughness:.6,metalness:.3});
+  }
+});
+var roofGlass=new THREE.Group(); G.glass.add(roofGlass);
+MAT.rptrack=new THREE.MeshStandardMaterial({color:0x2f4b66,roughness:.6,metalness:.3});
+MAT.rptrim=new THREE.MeshStandardMaterial({color:0xc28a2e,roughness:.6,metalness:.3});
+var edgeMat=new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:.35});
+
+/* ---------- members (pickable units; several boxes may form one member) ---------- */
+var MEMBERS=[], SEL=[], AUTO={}, ctx={mode:'auto'}, dprefix='Part', DC={};
+function newMember(label){var m={label:label,meshes:[]};MEMBERS.push(m);return m}
+function LBL(label,fn){var o=ctx;ctx={mode:'one',label:label,member:null};fn();ctx=o}
+function SEQ(prefix,fn){var o=ctx;ctx={mode:'seq',prefix:prefix,n:0};fn();ctx=o}
+function dn(kind){var k=dprefix+kind;DC[k]=(DC[k]||0)+1;return dprefix+' '+'\u00b7'+' '+kind+' '+DC[k]}
+function reg(m,id,kind){
+  var mem;
+  if(ctx.mode==='one'){if(!ctx.member)ctx.member=newMember(ctx.label);mem=ctx.member}
+  else if(ctx.mode==='seq'){ctx.n++;mem=newMember(ctx.prefix+' '+ctx.n)}
+  else if(id){var nm=T.layers[id]||id;AUTO[nm]=(AUTO[nm]||0)+1;mem=newMember(nm+' '+AUTO[nm])}
+  else mem=newMember(dn(kind||'Part'));
+  mem.meshes.push(m); m.userData.member=mem;
+}
+
+/* ---------- helpers ---------- */
+function M(id,p1,p2,w,d,o){
+  o=o||{};
+  var dir=new THREE.Vector3().subVectors(p2,p1), len=dir.length();
+  if(len<1e-6) return;
+  var z=dir.clone().normalize();
+  var ref=o.ref||(Math.abs(z.y)>0.99?V(0,0,1):V(0,1,0));
+  var x=new THREE.Vector3().crossVectors(ref,z);
+  if(x.lengthSq()<1e-8) x.set(1,0,0);
+  x.normalize();
+  var y=new THREE.Vector3().crossVectors(z,x);
+  var geo=new THREE.BoxGeometry(w,d,len);
+  var m=new THREE.Mesh(geo,o.mat||MAT[id]);
+  m.position.copy(p1).add(p2).multiplyScalar(.5);
+  m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(x,y,z));
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat));
+  (o.group||G[id]).add(m); reg(m,id);
+  if(!o.nocount) COUNT[id]++;
+  return m;
+}
+function B(id,cx,cy,cz,sx,sy,sz,o){
+  o=o||{};
+  var geo=new THREE.BoxGeometry(sx,sy,sz), m=new THREE.Mesh(geo,MAT[id]);
+  m.position.set(cx,cy,cz);
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat));
+  G[id].add(m); reg(m,id); if(!o.nocount) COUNT[id]++;
+  return m;
+}
+function CYL(id,p1,p2,dia,o){
+  o=o||{};
+  var dir=new THREE.Vector3().subVectors(p2,p1), len=dir.length();
+  var m=new THREE.Mesh(new THREE.CylinderGeometry(dia/2,dia/2,len,16),MAT[id]);
+  m.position.copy(p1).add(p2).multiplyScalar(.5);
+  m.quaternion.setFromUnitVectors(V(0,1,0),dir.normalize());
+  G[id].add(m); reg(m,id); if(!o.nocount) COUNT[id]++;
+  return m;
+}
+function QUAD(id,pts,o){
+  var g=new THREE.BufferGeometry();
+  var a=[];[0,1,2,0,2,3].forEach(function(i){a.push(pts[i].x,pts[i].y,pts[i].z)});
+  g.setAttribute('position',new THREE.Float32BufferAttribute(a,3)); g.computeVertexNormals();
+  var m=new THREE.Mesh(g,MAT.glass); m.renderOrder=2; m.userData.nopick=true; G[id].add(m);
+  if(!(o&&o.nocount)) COUNT[id]++;
+}
+
+
+/* ---------- lipped C member with stadium slots in the web (one mesh) ---------- */
+function mergeGeos(list){
+  var pos=[], nor=[], i;
+  list.forEach(function(g){
+    var ng=g.index?g.toNonIndexed():g, p=ng.attributes.position.array, n=ng.attributes.normal.array;
+    for(i=0;i<p.length;i++){pos.push(p[i]);nor.push(n[i])}
+  });
+  var out=new THREE.BufferGeometry();
+  out.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  out.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
+  return out;
+}
+function buildC(a0,a1,webDir,flangeDir,slotted,n0,Dov,Fov,LPov){
+  n0=n0||0;
+  var D=Dov||(0.150-2*0.0025), F=Fov||0.045, LP=LPov||0.010, t=0.0025, r=0.019, hs=0.031;
+  var ax=new THREE.Vector3().subVectors(a1,a0), len=ax.length(), axn=ax.clone().normalize();
+  var w=webDir.clone().normalize(), f=flangeDir.clone().normalize(), ez=new THREE.Vector3().crossVectors(w,f);
+  var sgn=ez.dot(axn)>=0?1:-1;
+  var fromA0=Math.abs(a1.x-a0.x)>1e-6?(a0.x<a1.x):(a0.y<=a1.y);
+  var sh=new THREE.Shape(), ds=[], d;
+  sh.moveTo(-D/2,-len/2); sh.lineTo(D/2,-len/2); sh.lineTo(D/2,len/2); sh.lineTo(-D/2,len/2); sh.lineTo(-D/2,-len/2);
+  if(slotted==='mid') ds.push(len/2); else if(slotted) for(d=0.3;d<=len-0.25+1e-9;d+=0.6) ds.push(d);
+  ds.forEach(function(dd){
+    var dist=fromA0?dd:len-dd, y0=-sgn*(dist-len/2), h=new THREE.Path();
+    h.moveTo(r,y0-hs); h.lineTo(r,y0+hs); h.absarc(0,y0+hs,r,0,Math.PI,false); h.lineTo(-r,y0-hs); h.absarc(0,y0-hs,r,Math.PI,2*Math.PI,false);
+    sh.holes.push(h);
+  });
+  var wg=new THREE.ExtrudeGeometry(sh,{depth:t,bevelEnabled:false,curveSegments:6});
+  wg.translate(0,0,-t/2); wg.rotateX(-Math.PI/2);
+  var parts=[];
+  [1,-1].forEach(function(sd){
+    var fg=new THREE.BoxGeometry(t,F+t/2,len-n0); fg.translate(sd*(D/2-t/2),(F-t/2)/2,sgn*n0/2); parts.push(fg);
+    var lg=new THREE.BoxGeometry(LP,t,len-n0); lg.translate(sd*(D/2-t-LP/2),F-t/2,sgn*n0/2); parts.push(lg);
+  });
+  var pg=mergeGeos(parts), geo=mergeGeos([wg,pg]);
+  var m=new THREE.Mesh(geo,MAT.walls);
+  m.position.copy(a0).add(a1).multiplyScalar(.5);
+  m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(w,f,ez));
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(pg),edgeMat));
+  return m;
+}
+function CM(id,a0,a1,webDir,flangeDir,o){
+  o=o||{};
+  var m=buildC(a0,a1,webDir,flangeDir,o.mid?'mid':true,0,o.D);
+  m.material=o.mat||MAT[id]; (o.group||G[id]).add(m); reg(m,id);
+  if(!o.nocount) COUNT[id]++;
+  return m;
+}
+function topTrack(z,ro){
+  [[0,3.25-0.06],[3.25+0.06,6.25-0.06],[6.25+0.06,9.25-0.06],[9.25+0.06,L]].forEach(function(sg){
+    M('walls',V(sg[0],EV-0.02+DY,z),V(sg[1],EV-0.02+DY,z),0.04,0.15,ro);
+  });
+}
+function STUD(z,x,y0,y1){CM('walls',V(x-0.0225,y0,z),V(x-0.0225,y1,z),V(0,0,1),V(1,0,0))}
+function GSTUD(x,z,y0,y1){CM('walls',V(x,y0,z-0.0225),V(x,y1,z-0.0225),V(1,0,0),V(0,0,1))}
+
+/* ---------- 1 soil screws ---------- */
+/* outer screws (lines A and C) stand on the frame-column centreline z 0.1775 / 5.0225 (not under the wall line); line B stays at z 2.6 */
+GX.forEach(function(x,xi){[0.1775,2.6,5.0225].forEach(function(z,zi){
+  LBL('Soil screw '+(xi+1)+'/'+['A','B','C'][zi],function(){
+    CYL('screws',V(x,-1.6,z),V(x,0.24,z),0.09);
+    B('screws',x,0.235,z,0.2,0.01,0.2,{nocount:true});
+  });
+});});
+
+/* ---------- 2 ground floor: built-up cross bearers on T gussets + shop floor panels (one per bay) stacked on the bearers (HOUSE coordinates; emitter E draws it in the house and in the detail scene) ----------
+   Primary section = 2 x C200x60x15x2.5 back to back (webs vertical, toes outward, 6 mm gap, 126 wide), y FL-0.35 .. FL-0.15 (0.25 .. 0.45), continuous over 3 screws.
+   Floor panel (like the roof panels): y FL-0.15 .. FL, end tracks U150, boxed C150 rims under walls A and C, C150 joists (147 nested) at <= 400 mm, 2 bridging rows.
+   Connections not drawn (open): panel to bearer fixings, joist/track screws, column base, hold-downs. */
+function groundFloor(E){
+  var MD='·', P='Ground floor '+MD+' ', PF='Floor panel ', t=CT, hw=0.063, yB=FL-0.25, yP=FL-0.075;
+  var bo={D:0.200,F:hw-0.003-t/2,LP:0.015}, ro={D:0.147,F:0.045-t/2}, jo={D:0.147};
+  var WU=V(0,1,0), XA=V(1,0,0), nX=V(-1,0,0), ZA=V(0,0,1), nZ=V(0,0,-1), i, k, r;
+  function pairB(lbl,a0,a1){
+    [[-1,'C1'],[1,'C2']].forEach(function(c){
+      var s=c[0], off=0.003+t/2;
+      E.c(s<0?'c1':'c2',V(a0.x+s*off,a0.y,a0.z),V(a1.x+s*off,a1.y,a1.z),WU,V(s,0,0),lbl+' '+MD+' '+c[1],bo);
+    });
+  }
+  /* cross bearers, continuous over the three screws */
+  GX.forEach(function(x,xi){ pairB(P+'cross bearer grid '+(xi+1),V(x,yB,-hw),V(x,yB,W+hw)) });
+  /* welded T gussets on the screw heads: flange plate on the head, web in the 6 mm gap of the bearer, two M12 through-bolts (absolute heights: the screws do not move) */
+  GX.forEach(function(x,xi){ [[0.1775,'A'],[2.6,'B'],[W-0.1775,'C']].forEach(function(sc){
+    var zs=sc[0], zc=zs, nm=P+'T gusset '+(xi+1)+'/'+sc[1]+' '+MD+' ';
+    LBL(nm+'flange',function(){E.box('pl',x,0.245,zs,0.2,0.01,0.2)});
+    LBL(nm+'web',function(){E.box('pl',x,0.33,zc,0.005,0.16,0.25)});
+    [-0.07,0.07].forEach(function(dz,bi){ var zb=zc+dz;
+      LBL(nm+'bolt '+(bi+1),function(){
+        E.cylx('bolt',V(x-0.03,0.33,zb),V(x+0.03,0.33,zb),0.012);
+        [-1,1].forEach(function(s){
+          E.box('bolt',x+s*0.007,0.33,zb,0.003,0.024,0.024);
+          E.box('bolt',x+s*(s<0?0.0125:0.0135),0.33,zb,s<0?0.008:0.010,s<0?0.019:0.019,0.019);
+        });
+      });
+    });
+    /* screws under the frame columns (grids 2-4, A and C): the T web continues up through the bearer gap into the 26 mm gap between the two column C webs (planes x = GX -/+ 0.013), with 2 x 10 mm packing and 4 x M12 column bolts */
+    if(xi>=1&&xi<=3&&sc[1]!=='B'){
+      LBL(nm+'web extension into column',function(){E.box('pl',x,0.655,zc,0.005,0.49,0.185)});
+      [-1,1].forEach(function(s,pi){ LBL(nm+'packing '+(pi+1),function(){E.box('blk',x+s*0.0075,(FL+0.005+0.90)/2,zc,0.010,0.90-(FL+0.005),0.185)}) });
+      [[0.70,-0.05],[0.70,0.05],[0.82,-0.05],[0.82,0.05]].forEach(function(b,bi){ var zb=zc+b[1];
+        LBL(nm+'column bolt '+(bi+1),function(){
+          E.cylx('bolt',V(x-0.032,b[0],zb),V(x+0.032,b[0],zb),0.012);
+          [-1,1].forEach(function(s){
+            E.box('bolt',x+s*0.017,b[0],zb,0.003,0.024,0.024);
+            E.box('bolt',x+s*(s<0?0.0215:0.0225),b[0],zb,s<0?0.008:0.010,0.019,0.019);
+          });
+        });
+      });
+    }
+  });});
+  /* floor panels: ends at the bearer centrelines with a 3 mm joint (gable panels to the bearer outer face) */
+  var zA0=-hw+0.09, zC0=W+hw-0.09, sp=(zC0-zA0)/13, zj=[]; for(k=1;k<=12;k++) zj.push(zA0+k*sp);
+  var cut=[[-hw,0.075-0.003],[0.28+0.003,4.92-0.003],[5.125+0.003,W+hw]];   /* end-track pieces between the frame-column cut-outs (3 mm clearance) */
+  for(i=0;i<4;i++){
+    var bn=PF+'bay '+(i+1)+'-'+(i+2)+' '+MD+' ', xs0=i===0?-hw:GX[i]+0.0045, xs1=i===3?L+hw:GX[i+1]-0.0045, x0=xs0+t, x1=xs1-t;
+    /* end tracks U150, web in the panel end plane, open toward the panel interior, continuous; 9 mm panel joint at grids 2-4 for the T web */
+    [[xs0+t/2,XA,'grid '+(i+1),i>=1],[xs1-t/2,nX,'grid '+(i+2),i<=2]].forEach(function(e){
+      E.trk('dark',V(e[0],yP,-hw),V(e[0],yP,W+hw),WU,e[1],bn+'end track '+e[2],0.150);
+      if(false) cut.forEach(function(c,q){E.trk('dark',V(e[0],yP,c[0]),V(e[0],yP,c[1]),WU,e[1],bn+'end track '+e[2]+' piece '+(q+1),0.150)});
+    });
+    /* boxed rims under the long walls: two C150 toes facing, lips touching, 90 wide */
+    E.c('c1',V(x0,yP,-hw+t/2),V(x1,yP,-hw+t/2),WU,ZA,bn+'rim A C1',ro);
+    E.c('c2',V(x0,yP,zA0-t/2),V(x1,yP,zA0-t/2),WU,nZ,bn+'rim A C2',ro);
+    E.c('c1',V(x0,yP,zC0+t/2),V(x1,yP,zC0+t/2),WU,ZA,bn+'rim C C1',ro);
+    E.c('c2',V(x0,yP,W+hw-t/2),V(x1,yP,W+hw-t/2),WU,nZ,bn+'rim C C2',ro);
+    /* joists: web vertical, open +z, evenly spaced between the rim inner faces */
+    for(k=0;k<12;k++) E.c('j',V(x0,yP,zj[k]),V(x1,yP,zj[k]),WU,ZA,bn+'joist '+(k+1),jo);
+    for(r=1;r<=2;r++){
+      var xr=x0+(x1-x0)*r/3;
+      [['top',FL+0.00075],['bottom',FL-0.15075]].forEach(function(f){
+        LBL(bn+'bridging strap row '+r+' '+f[0],function(){E.strap(V(xr,f[1],zA0),V(xr,f[1],zC0))});
+      });
+      E.c('blk',V(xr+0.0225,yP,zA0+0.001),V(xr+0.0225,yP,zj[0]-t/2-0.001),WU,nX,bn+'block row '+r+' first',jo);
+      E.c('blk',V(xr+0.0225,yP,zj[11]+0.045+0.001),V(xr+0.0225,yP,zC0-0.001),WU,nX,bn+'block row '+r+' last',jo);
+    }
+  }
+}
+var FLOOR_HOUSE_E={
+  c:function(role,a0,a1,wd,fd,label,o){cSection(a0,a1,wd,fd,{D:o.D,F:o.F,LP:o.LP,group:G.floor,mat:MAT.floor,slots:false,label:label}); COUNT.floor++},
+  trk:function(role,a0,a1,wd,fd,label,D){uTrack(a0,a1,wd,fd,{group:G.floor,mat:MAT.floor,label:label},D); COUNT.floor++},
+  box:function(role,x,y,z,sx,sy,sz){B('floor',x,y,z,sx,sy,sz)},
+  cylx:function(role,p1,p2,d){CYL('floor',p1,p2,d)},
+  strap:function(p1,p2){M('floor',p1,p2,0.04,0.0015)}
+};
+groundFloor(FLOOR_HOUSE_E);
+
+/* ---------- 3 walls ---------- */
+var NZ=V(0,0,1), NX=V(1,0,0);
+/* ---------- 4 main frames (single-span portal frames inside the long walls), 5 tie rods ---------- */
+/* Column and rafter section: 2 x C200x60x15x2.0 back to back, 26 mm gap, + U150x40x2.0 track on both edges.
+   Drawn as prisms extruded along x from outlines in the frame (z,y) plane, so the ends get a true plumb / underside cut.
+   Rear (wall A) coordinates; the front frame half is the mirror about z = W/2. */
+var FHW=0.1, FGAP=0.013, FCF=0.060, FCLIP=0.015, FTW=0.075, FTL=0.040;
+var FDZ=0;                          /* z shift of a detail scene origin (apex scene: 2.6) */
+var FZ0=0.075;                      /* wall inner face */
+var FQC=-0.0275;                    /* rafter centreline offset (along the slope normal) from the old centreline: top track outer face stays on the old rafter top plane q = 0.075 */
+var FZC=FZ0+FHW+CT;                 /* column centreline z */
+function fpoly(P,a,p,s0,s1,q0,q1){
+  function pt(s,q){return [P[0]+a[0]*s+p[0]*q, P[1]+a[1]*s+p[1]*q]}
+  return [pt(s0,q0),pt(s1,q0),pt(s1,q1),pt(s0,q1)];
+}
+function fclip(poly,h){ /* keep h[0]*z+h[1]*y <= h[2] */
+  var out=[], n=poly.length, i;
+  for(i=0;i<n;i++){
+    var A=poly[i], B=poly[(i+1)%n], da=h[0]*A[0]+h[1]*A[1]-h[2], db=h[0]*B[0]+h[1]*B[1]-h[2];
+    if(da<=0) out.push(A);
+    if((da<0&&db>0)||(da>0&&db<0)){var u=da/(da-db); out.push([A[0]+u*(B[0]-A[0]),A[1]+u*(B[1]-A[1])])}
+  }
+  return out;
+}
+/* member m = {P,a,p,qc,s0,s1,hp}: axis origin, axis dir, in-plane normal (all (z,y)), centreline offset, extent, clip half-planes */
+function fmember(g,mt,x,dy,mir,m,L,cnt){
+  function strip(q0,q1){
+    var p=fpoly(m.P,m.a,m.p,m.s0,m.s1,m.qc+q0,m.qc+q1);
+    m.hp.forEach(function(h){p=fclip(p,h)});
+    return p;
+  }
+  function pl(mat,poly,xa,xb){
+    if(poly.length<3) return;
+    plate(g,mat,poly.map(function(P){return [(mir?W-P[0]:P[0])-FDZ, P[1]+dy]}),Math.abs(xb-xa),V(0,0,1),V(0,1,0),V(x+(xa+xb)/2,0,0));
+  }
+  var t=CT;
+  [[-1,L.c1],[1,L.c2]].forEach(function(c){
+    var sx=c[0], xg=sx*FGAP, xt=sx*(FGAP+FCF);
+    LBL(c[1],function(){
+      pl(mt.c,strip(-FHW+t,FHW-t),xg,xg+sx*t);                       /* web */
+      pl(mt.c,strip(FHW-t,FHW),xg,xt); pl(mt.c,strip(-FHW,-FHW+t),xg,xt);   /* flanges */
+      pl(mt.c,strip(FHW-t-FCLIP,FHW-t),xt-sx*t,xt); pl(mt.c,strip(-FHW+t,-FHW+t+FCLIP),xt-sx*t,xt); /* lips */
+      if(cnt) COUNT.frames++;
+    });
+  });
+  [[1,L.tp],[-1,L.tm]].forEach(function(e){
+    var q0=e[0]>0?FHW:-FHW-t, q1=e[0]>0?FHW+t:-FHW, l0=e[0]>0?FHW-FTL:-FHW, l1=e[0]>0?FHW:-FHW+FTL;
+    LBL(e[1],function(){
+      pl(mt.t,strip(q0,q1),-FTW,FTW);                                /* web across the width */
+      pl(mt.t,strip(l0,l1),FTW-t,FTW); pl(mt.t,strip(l0,l1),-FTW,-FTW+t);  /* legs lapping the C flanges */
+      if(cnt) COUNT.frames++;
+    });
+  });
+}
+function fcolumn(s0){return {P:[FZC,0],a:[0,1],p:[1,0],qc:0,s0:s0,s1:EV+0.8,hp:[[-SIN,COS,COS*EV+FQC-FHW-CT]]}} /* top cut on the rafter underside */
+function frafter(zmax){return {P:[0,EV],a:[COS,SIN],p:[-SIN,COS],qc:FQC,s0:-0.5,s1:4.5,hp:[[-1,0,-FZ0],[1,0,zmax]]}} /* plumb cuts at the wall inner face and at zmax */
+function fL(s,q){return [s*COS-q*SIN, EV+s*SIN+q*COS]}      /* (z,y) of rafter coordinates (s along the slope, q along the normal) from the old centreline */
+function fsAt(z,q){return (z+q*SIN)/COS}
+var GM=0.015, GQ0=FQC-FHW+GM, GQ1=FQC+FHW-GM, GZ0=FZ0+CT+GM, GZ1=FZ0+CT+2*FHW-GM; /* gusset outline margins inside the C webs */
+function kneeGussetPts(){
+  var sK=fsAt(GZ1,GQ0), K1=fL(sK,GQ0), se=sK+0.6, K2=fL(fsAt(GZ0,GQ1),GQ1), yl=K1[1]-0.45;
+  return [[GZ0,yl],[GZ1,yl],K1,fL(se,GQ0),fL(se,GQ1),K2];
+}
+function apexGussetPts(){
+  var sT=fsAt(2.6,GQ1), sB=fsAt(2.6,GQ0), d=0.4, Tt=fL(sT,GQ1), Tb=fL(sT-d,GQ1), Bb=fL(sB-d,GQ0), Bt=fL(sB,GQ0);
+  function mr(P){return [W-P[0],P[1]]}
+  return [Tb,Tt,mr(Tb),mr(Bb),Bt,Bb];
+}
+[3.25,6.25,9.25].forEach(function(x,fi){
+  var fn=fi+2, ff='Frame '+fn, MD='·', mt={c:MAT.frames,t:MAT.frames};
+  [['rear',false],['front',true]].forEach(function(sd){
+    var sn=sd[0], mir=sd[1];
+    fmember(G.frames,mt,x,0,mir,fcolumn(FL+0.005),{c1:ff+' column '+sn+' '+MD+' C stud 1',c2:ff+' column '+sn+' '+MD+' C stud 2',tp:ff+' column '+sn+' '+MD+' inner track',tm:ff+' column '+sn+' '+MD+' outer track'},true);
+    fmember(G.frames,mt,x,0,mir,frafter(2.6),{c1:ff+' rafter '+sn+' '+MD+' C 1',c2:ff+' rafter '+sn+' '+MD+' C 2',tp:ff+' rafter '+sn+' '+MD+' top track',tm:ff+' rafter '+sn+' '+MD+' bottom track'},true);
+    LBL(ff+' knee gusset '+sn,function(){
+      plate(G.frames,MAT.frames,kneeGussetPts().map(function(P){return [mir?W-P[0]:P[0],P[1]]}),0.01,V(0,0,1),V(0,1,0),V(x,0,0));
+    });
+  });
+  LBL(ff+' apex gusset',function(){plate(G.frames,MAT.frames,apexGussetPts(),0.01,V(0,0,1),V(0,1,0),V(x,0,0))});
+  LBL('Tie rod '+fn,function(){CYL('rods',V(x,EV-0.15,FZ0+2*(FHW+CT)),V(x,EV-0.15,W-FZ0-2*(FHW+CT)),0.03)});
+});
+
+/* ---------- 6 roof panels (8 factory panels on top of the rafters) ---------- */
+var SL=2.6/COS, LT=SL+0.060, PQ=0.15;
+var PS=[0,1,2,3,4,5,6].map(function(i){return 0.025+i*0.5557});
+PS[6]=SL+0.060-0.0225;
+var S0=0.1606; PS[0]=S0+0.0225;
+var BAYS=[[XS,3.25],[3.25,6.25],[6.25,9.25],[9.25,XE]];
+function roofFrame(side){
+  return side<0?{o:V(0,EV,0),a:V(0,SIN,COS),p:V(0,COS,-SIN),x:V(1,0,0)}:{o:V(0,EV,W),a:V(0,SIN,-COS),p:V(0,COS,SIN),x:V(1,0,0)};
+}
+function CP(F,i,x0,x1){
+  var flip=(i===6), sref=flip?(SL+0.060-0.00125):(i===0?S0+0.00125:PS[i]-0.0225);
+  return CM('rp',sp(F,sref,PQ,x0),sp(F,sref,PQ,x1),F.p,flip?neg(F.a):F.a,{D:0.150});
+}
+function panel(F,xa,xb,sky,side,bi){
+  var xm=(xa+xb)/2, i, rs=side<0?'rear':'front', bn=(bi+1)+'-'+(bi+2), pn='Roof panel '+rs+' bay '+bn, MD='\u00b7';
+  function P(s,q,x){return sp(F,s,q,x)}
+  [[xa+0.003,1,bi+1],[xb-0.003,-1,bi+2]].forEach(function(t){
+    var xw=t[0], sg=t[1], mt=MAT.rptrack;
+    LBL(pn+' '+MD+' track at grid '+t[2],function(){
+      M('rp',P(S0,PQ,xw),P(LT,PQ,xw),0.0025,0.153,{ref:F.p,mat:mt});
+      var qu=PQ+0.0765-0.00125, ql=PQ-0.0765+0.00125;
+      M('rp',P(S0,qu,xw+sg*0.0225),P(LT,qu,xw+sg*0.0225),0.045,0.0025,{ref:F.p,mat:mt,nocount:true});
+      M('rp',P(S0,ql,xw+sg*0.035),P(LT,ql,xw+sg*0.035),0.070,0.0025,{ref:F.p,mat:mt,nocount:true});
+    });
+  });
+  var xl=xa+0.0043, xr=xb-0.0043;
+  for(i=0;i<7;i++){
+    (function(i){
+      if(sky&&i>=2&&i<=4){               /* cripples, ending inside the head/sill tracks */
+        LBL('Skylight '+MD+' cripple '+(i-1),function(){CP(F,i,xl,7.3575)});
+        LBL('Skylight '+MD+' cripple '+(i+2),function(){CP(F,i,8.1425,xr)});
+      } else LBL(pn+' '+MD+(i===6?' ridge-edge member':' purlin '+(i+1)),function(){CP(F,i,xl,xr)});
+    })(i);
+  }
+  /* blocking + bridging: mid-bay row, or two rows in line with the skylight head/sill */
+  (sky?[7.335,8.165]:[xm]).forEach(function(xr0,ri){
+    var qt=sky?0.2325:0.2285, qb=sky?0.0675:0.0715, bs='Bridging strap '+rs+' bay '+bn+(sky?' row '+(ri+1):'');
+    [[0,1],[5,6]].forEach(function(b){
+      LBL('Bridging block '+rs+' bay '+bn+(sky?' row '+(ri+1):'')+' '+(b[0]+1)+'-'+(b[1]+1),function(){
+        CM('rb',P(PS[b[0]]+0.0225,PQ,xr0-0.0225),P(PS[b[1]]-0.0225,PQ,xr0-0.0225),F.p,V(1,0,0),{mid:true,D:0.150});
+      });
+    });
+    LBL(bs+' top',function(){M('rb',P(S0,qt,xr0),P(PS[6],qt,xr0),0.04,0.004,{ref:F.p})});
+    LBL(bs+' bottom',function(){M('rb',P(S0,qb,xr0),P(PS[6],qb,xr0),0.04,0.004,{ref:F.p})});
+  });
+  if(sky){
+    [[0.860,'lower'],[2.525,'upper']].forEach(function(j){
+      LBL('Skylight '+MD+' '+j[1]+' jamb',function(){M('rp',P(j[0],PQ,xl),P(j[0],PQ,xr),0.05,0.153,{ref:F.p,mat:MAT.rptrim})});
+    });
+    [[7.36,-1,'head'],[8.14,1,'sill']].forEach(function(h){
+      var xw=h[0]+h[1]*0.00125, mt=MAT.rptrack, qu=PQ+0.079-0.00125, ql=PQ-0.079+0.00125;
+      LBL('Skylight '+MD+' '+h[2]+' track',function(){
+        M('rp',P(0.885,PQ,xw),P(2.5,PQ,xw),0.0025,0.158,{ref:F.p,mat:mt});
+        M('rp',P(0.885,qu,xw+h[1]*0.0225),P(2.5,qu,xw+h[1]*0.0225),0.045,0.0025,{ref:F.p,mat:mt,nocount:true});
+        M('rp',P(0.885,ql,xw+h[1]*0.0225),P(2.5,ql,xw+h[1]*0.0225),0.045,0.0025,{ref:F.p,mat:mt,nocount:true});
+      });
+    });
+    var gp=[P(0.885,PQ,7.36),P(0.885,PQ,8.14),P(2.5,PQ,8.14),P(2.5,PQ,7.36)], gg=new THREE.BufferGeometry(), arr=[];
+    [0,1,2,0,2,3].forEach(function(k){arr.push(gp[k].x,gp[k].y,gp[k].z)});
+    gg.setAttribute('position',new THREE.Float32BufferAttribute(arr,3)); gg.computeVertexNormals();
+    var gm=new THREE.Mesh(gg,MAT.glass); gm.renderOrder=2; gm.userData.nopick=true; roofGlass.add(gm); COUNT.glass++;
+  } else if(bi===0||bi===3){
+    LBL('Roof strap bracing '+rs+' bay '+bn+' diagonal 1',function(){M('rx',P(S0,0.2335,xa+0.003),P(LT,0.2335,xb-0.003),0.10,0.004,{ref:F.p})});
+    LBL('Roof strap bracing '+rs+' bay '+bn+' diagonal 2',function(){M('rx',P(S0,0.2375,xb-0.003),P(LT,0.2375,xa+0.003),0.10,0.004,{ref:F.p})});
+  }
+}
+[-1,1].forEach(function(side){
+  BAYS.forEach(function(b,bi){panel(roofFrame(side),b[0],b[1],side<0&&b[0]===6.25,side,bi)});
+});
+
+/* ---------- 8 loft: see loftFloor() after the gable panels ---------- */
+
+/* ---------- 9 strap bracing ---------- */
+function strap(p1,p2,n,grp){M('straps',p1,p2,0.10,0.003,{ref:n,group:grp})}
+function xbrace(fn,u0,u1,n,top,single,h1,h0){
+  top=top||EV;
+  SEQ('Wall brace strap',function(){strap(fn(u0,FL),fn(u1,top),n); if(!single) strap(fn(u0,top),fn(u1,FL),n)});
+  SEQ('Hold-down',function(){[u0,u1].forEach(function(u){var hh=(h1&&u===u1)?h1:(h0&&u===u0)?h0:null;if(hh){B('straps',hh.x,hh.y,hh.z,hh.sx,hh.sy,hh.sz,{nocount:true});return}var p=fn(u,FL+0.125);B('straps',p.x,p.y,p.z,0.1,0.25,0.1,{nocount:true})})});
+}
+var OFS=0.0795;
+var fA=function(u,y){return V(u,y,-OFS)}, fB=function(u,y){return V(u,y,W+OFS)};
+var f1=function(u,y){return V(-OFS,y,u)}, f5=function(u,y){return V(L+OFS,y,u)};
+/* wall A X-strap lands on the wind post (web plane x 12.425); hold-down inside the inner C */
+/* grid-4 end: lands on the doubled end stud (wind post), hold-down inside the second C */
+xbrace(fA,9.30,12.425,NZ,EV+DY,false,{x:12.4025,y:FL+0.0025+0.125,z:0,sx:0.035,sy:0.25,sz:0.12},{x:9.324,y:FL+0.0025+0.125,z:0,sx:0.035,sy:0.25,sz:0.12});
+/* wall C bay 1-2: lands on the wind post at corner C/1 and on the doubled grid-2 end stud; hold-downs inside the open C */
+xbrace(fB,0.075,3.20,NZ,EV+DY,false,{x:3.1765,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12},{x:0.0975,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12}); xbrace(fB,11.0,12.425,NZ,EV+DY,false,{x:12.4025,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12},{x:11.024,y:FL+0.0025+0.125,z:W,sx:0.035,sy:0.25,sz:0.12});
+/* ---------- 10 partitions: only the grid-2 kitchen partition (loftFloor); architectural partitions not shown (owner, FLIN-006) ---------- */
+
+/* ---------- 11 glazing (wall B) ---------- */
+/* wall C glass quads are drawn in wallsHouse() with the glazed panels */
+
+/* ---------- ground grid and labels ---------- */
+var gridLines;
+var gridMat=new THREE.LineBasicMaterial({color:0xb4bfcc,transparent:true,opacity:.7});
+(function(){
+  var p=[],x,z;
+  for(x=-1;x<=13.5;x+=0.5){p.push(x,0,-1.5,x,0,6.7)}
+  for(z=-1.5;z<=6.7;z+=0.5){p.push(-1,0,z,13.5,0,z)}
+  var g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
+  gridLines=new THREE.LineSegments(g,gridMat); scene.add(gridLines);
+})();
+var glMat=new THREE.MeshBasicMaterial({color:0x6f8196});
+(function(){
+  var X0=-0.8, X1=L+0.8, Z0=-0.8, Z1=W+0.8, m;
+  [0,2.6,W].forEach(function(z){m=new THREE.Mesh(new THREE.BoxGeometry(X1-X0,0.004,0.035),glMat);m.position.set((X0+X1)/2,0.012,z);G.grid.add(m)});
+  GX.forEach(function(x){m=new THREE.Mesh(new THREE.BoxGeometry(0.035,0.004,Z1-Z0),glMat);m.position.set(x,0.012,(Z0+Z1)/2);G.grid.add(m)});
+  COUNT.grid=8;
+})();
+var labels=[];
+function label(text,x,z){
+  var c=document.createElement('canvas'); c.width=c.height=96;
+  var tex=new THREE.CanvasTexture(c);
+  var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,depthTest:false,transparent:true}));
+  sp.scale.set(0.6,0.6,1); sp.position.set(x,0.05,z); sp.renderOrder=5; G.grid.add(sp);
+  labels.push({c:c,tex:tex,text:text,sp:sp});
+}
+[['A',0],['B',2.6],['C',W]].forEach(function(l){label(l[0],-1.1,l[1]);label(l[0],L+1.1,l[1])});
+GX.forEach(function(x,i){label(String(i+1),x,-1.1);label(String(i+1),x,W+1.1)});
+function paintLabels(color){
+  labels.forEach(function(l){
+    var g=l.c.getContext('2d'); g.clearRect(0,0,96,96);
+    g.strokeStyle=color; g.lineWidth=3; g.beginPath(); g.arc(48,48,34,0,Math.PI*2); g.stroke();
+    g.fillStyle=color; g.font='600 40px "Segoe UI",system-ui,sans-serif'; g.textAlign='center'; g.textBaseline='middle';
+    g.fillText(l.text,48,50); l.tex.needsUpdate=true;
+  });
+}
+
+/* ---------- detail scenes ---------- */
+function mkMat(){return new THREE.MeshStandardMaterial({color:0x888888,roughness:.55,metalness:.35})}
+var DM={c1:mkMat(),c2:mkMat(),dark:mkMat(),rod:mkMat(),bolt:mkMat(),track:mkMat(),trim:mkMat(),mid:mkMat(),ghost:mkMat()};
+DM.ghost.transparent=true; DM.ghost.opacity=0.35; DM.ghost.depthWrite=false;
+var DG={}, AX=V(1,0,0), AY=V(0,1,0), AZ=V(0,0,1);
+function VA(p,d,k){return p.clone().addScaledVector(d,k)}
+function sp(F,s,q,t){return F.o.clone().addScaledVector(F.a,s).addScaledVector(F.p,q).addScaledVector(F.x,t)}
+function neg(v){return v.clone().negate()}
+/* box in basis (ex, ey, ex x ey); sizes along those three */
+function obox(g,mat,c,ex,ey,sx,sy,sz){
+  var geo=new THREE.BoxGeometry(sx,sy,sz), m=new THREE.Mesh(geo,mat);
+  var e1=ex.clone().normalize(), e2=ey.clone().normalize(), e3=new THREE.Vector3().crossVectors(e1,e2);
+  m.position.copy(c);
+  m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(e1,e2,e3));
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat));
+  reg(m,null,'Plate'); g.add(m); return m;
+}
+function cyl(g,mat,p1,p2,dia,seg){
+  var dir=new THREE.Vector3().subVectors(p2,p1), len=dir.length();
+  var m=new THREE.Mesh(new THREE.CylinderGeometry(dia/2,dia/2,len,seg||20),mat);
+  m.position.copy(p1).add(p2).multiplyScalar(.5);
+  m.quaternion.setFromUnitVectors(AY,dir.normalize());
+  reg(m,null,'Rod'); g.add(m); return m;
+}
+function plate(g,mat,pts,th,ex,ey,origin){
+  var sh=new THREE.Shape();
+  pts.forEach(function(p,i){if(i)sh.lineTo(p[0],p[1]);else sh.moveTo(p[0],p[1])});
+  var geo=new THREE.ExtrudeGeometry(sh,{depth:th,bevelEnabled:false}); geo.translate(0,0,-th/2);
+  var m=new THREE.Mesh(geo,mat), ez=new THREE.Vector3().crossVectors(ex,ey);
+  m.position.copy(origin||V(0,0,0));
+  m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ex,ey,ez));
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat));
+  reg(m,null,'Gusset plate'); g.add(m);
+}
+function cSection(a0,a1,webDir,flangeDir,o){ LBL((o&&o.label)||dn('C section'),function(){ cSection0(a0,a1,webDir,flangeDir,o) }); }
+function cSection0(a0,a1,webDir,flangeDir,o){
+  if(o.slots){var sm=buildC(a0,a1,webDir,flangeDir,o.slots==='mid'?'mid':true,o.n0,o.D,o.F,o.LP);sm.material=o.mat;o.group.add(sm);reg(sm,null,'C section');return}
+  var D=o.D||(0.150-2*CT), F=o.F||0.045, LP=o.LP||0.010, t=CT;
+  var len=a0.distanceTo(a1), mid=a0.clone().add(a1).multiplyScalar(.5);
+  var w=webDir.clone().normalize(), f=flangeDir.clone().normalize();
+  var n0=o.n0||0, n1=o.n1||0, axn=a1.clone().sub(a0).normalize();
+  function part(u,v,su,sv,sh){
+    var c=mid.clone().addScaledVector(w,u).addScaledVector(f,v);
+    if(sh){c.addScaledVector(axn,(n0-n1)/2);obox(o.group,o.mat,c,w,f,su,sv,len-n0-n1)}
+    else obox(o.group,o.mat,c,w,f,su,sv,len);
+  }
+  part(0,0,D,t);
+  [1,-1].forEach(function(s){
+    part(s*(D/2-t/2),(F-t/2)/2,t,F+t/2,true);
+    part(s*(D/2-t-LP/2),F-t/2,LP,t,true);
+  });
+}
+/* asymmetric track: web 0.153, upper flange 0.045, lower flange 0.070, both pointing along flangeDir */
+function track(a0,a1,webDir,flangeDir,o){ LBL((o&&o.label)||dn('Track'),function(){ track0(a0,a1,webDir,flangeDir,o) }); }
+function track0(a0,a1,webDir,flangeDir,o){
+  var D=0.153, t=CT, len=a0.distanceTo(a1), mid=a0.clone().add(a1).multiplyScalar(.5);
+  var w=webDir.clone().normalize(), f=flangeDir.clone().normalize();
+  function part(u,v,su,sv){obox(o.group,o.mat,mid.clone().addScaledVector(w,u).addScaledVector(f,v),w,f,su,sv,len)}
+  part(0,0,D,t);
+  part(D/2-t/2,(0.045-t/2)/2,t,0.045+t/2);
+  part(-(D/2-t/2),(0.070-t/2)/2,t,0.070+t/2);
+}
+/* back-to-back pair, 6 mm gap, flanges pointing away from each other */
+function pairC(a0,a1,webDir,sep,o){
+  [1,-1].forEach(function(s){
+    var off=sep.clone().multiplyScalar(s*(0.003+CT/2));
+    var o2={D:o.D,group:o.group,mat:o.mat,label:o.label?o.label+(s>0?' 1':' 2'):undefined};
+    cSection(a0.clone().add(off),a1.clone().add(off),webDir,sep.clone().multiplyScalar(s),o2);
+  });
+}
+function bolt(g,c,dir,grip){ LBL(dn('Bolt M12'),function(){ bolt0(g,c,dir,grip) }); }
+function bolt0(g,c,dir,grip){
+  var d=dir.clone().normalize(), L=grip+0.020;
+  cyl(g,DM.bolt,VA(c,d,-L/2),VA(c,d,L/2),0.012);
+  [1,-1].forEach(function(s){var h=VA(c,d,s*(grip/2+0.005));cyl(g,DM.bolt,VA(h,d,-0.005),VA(h,d,0.005),0.024,6)});
+}
+function screw(g,head,dirIn){ LBL(dn('Screw'),function(){ screw0(g,head,dirIn) }); }
+function screw0(g,head,dirIn){
+  var d=dirIn.clone().normalize();
+  cyl(g,DM.dark,VA(head,d,-0.003),head,0.010,12);
+  cyl(g,DM.dark,head,VA(head,d,0.02),0.0055,10);
+}
+/* angle: corner c, leg A along dA (thickness along nA), leg B along nA (thickness along dA), length L */
+function angle(g,c,dA,nA,lA,lB,L,t){ LBL(dn('Clip angle'),function(){ angle0(g,c,dA,nA,lA,lB,L,t) }); }
+function angle0(g,c,dA,nA,lA,lB,L,t){
+  obox(g,DM.dark,VA(VA(c,dA,lA/2),nA,t/2),dA,nA,lA,t,L);
+  obox(g,DM.dark,VA(VA(c,nA,lB/2),dA,t/2),dA,nA,t,lB,L);
+}
+function clip(g,c,dA,nA,sA){
+  var w=new THREE.Vector3().crossVectors(dA,nA);
+  angle(g,c,dA,nA,0.05,0.05,0.12,0.003);
+  [1,-1].forEach(function(k){
+    screw(g,VA(VA(c,dA,sA),nA,0.003).addScaledVector(w,k*0.035),neg(nA));
+    screw(g,VA(VA(c,dA,0.003),nA,0.03).addScaledVector(w,k*0.035),neg(dA));
+  });
+}
+function exOffset(key,label){
+  var P=V(0,COS,-SIN), sgn=/left|x\+/.test(label)?1:-1;
+  if((key==='apex'||key==='eave'||key==='ridgebox')&&/rafter|column|knee gusset|Apex gusset/i.test(label)){
+    var Pf=(key==='ridgebox'?/front/i:/front/).test(label)?V(0,COS,SIN):P;
+    if(/Apex gusset|Knee gusset/i.test(label)) return V(0.25,0,0);
+    if(/C 1$|C stud 1/.test(label)) return V(-0.12,0,0);
+    if(/C 2$|C stud 2/.test(label)) return V(0.12,0,0);
+    if(/column .*outer track/.test(label)) return V(0,0,-0.15);
+    if(/column .*inner track/.test(label)) return V(0,0,0.15);
+    if(/rafter .*top track/.test(label)) return key==='ridgebox'?V(0,0,0):Pf.clone().multiplyScalar(0.15);
+    if(/rafter .*bottom track/.test(label)) return Pf.clone().multiplyScalar(-0.15);
+  }
+  if(key==='knee'){
+    if(/Knee gusset/.test(label)) return V(0.25,0,0);
+    if(/C stud 1|C 1$/.test(label)) return V(-0.12,0,0);
+    if(/C stud 2|C 2$/.test(label)) return V(0.12,0,0);
+    if(/column .* outer track/.test(label)) return V(0,0,-0.15);
+    if(/column .* inner track/.test(label)) return V(0,0,0.15);
+    if(/rafter .* top track/.test(label)) return P.clone().multiplyScalar(0.15);
+    if(/rafter .* bottom track/.test(label)) return P.clone().multiplyScalar(-0.15);
+    if(/Tie rod/.test(label)) return V(0,0,0.3);
+    if(/^Wall A panel/.test(label)) return /top track/.test(label)?V(0,0.2,-0.35):V(0,0,-0.35);
+  } else if(key==='apex'){
+    if(/Apex gusset/.test(label)) return V(0.25,0,0);
+  } else if(key==='panel'){
+    var up=P.clone().multiplyScalar(0.2);
+    if(/Track/.test(label)) return up;
+    if(/Purlin/.test(label)) return up.add(V((/left/.test(label)?1:-1)*0.15,0,0));
+  } else if(key==='block'){
+    if(/strap top/.test(label)) return P.clone().multiplyScalar(0.25);
+    if(/strap bottom/.test(label)) return P.clone().multiplyScalar(-0.25);
+    if(/Block/.test(label)) return V(0.25,0,0);
+  } else if(key==='skyp'){
+    if(/Panel track|cap track/.test(label)) return P.clone().multiplyScalar(0.2);
+    var cm=label.match(/cripple (\d)/); if(cm) return V(+cm[1]<=3?-0.15:0.15,0,0);
+    if(/strap row \d top/.test(label)) return P.clone().multiplyScalar(0.25);
+    if(/strap row \d bottom/.test(label)) return P.clone().multiplyScalar(-0.25);
+  } else if(key==='dheader'){
+    if(/Door header .* top track/.test(label)) return V(0,0.15,0);
+    if(/Door header .* bottom track/.test(label)) return V(0,-0.15,0);
+    if(/bottom track \(cut out/.test(label)) return V(0,-0.15,0);
+    if(/stud outside/.test(label)) return V(0,0,-0.12);
+    if(/stud inside/.test(label)) return V(0,0,0.12);
+    if(/cripple above door/.test(label)) return V(0,0.35,0);
+    if(/grid-1 side .* cap track/.test(label)) return V(-0.15,0,0);
+    if(/grid-2 side .* cap track/.test(label)) return V(0.15,0,0);
+  } else if(key==='gable5'||key==='gable1'){
+    var ex=V(0,0,0), sx=(key==='gable1')?-1:1;
+    if(/apex panel/.test(label)) ex.y+=0.45;
+    if(/raking header rear .* cap track/.test(label)) ex.add(V(sx*SIN,COS,0).multiplyScalar(0.30));
+    if(/raking header front .* cap track/.test(label)) ex.add(V(-sx*SIN,COS,0).multiplyScalar(0.30));
+    if(/raking header rear .* stud/.test(label)) ex.add(V(sx*SIN,COS,0).multiplyScalar(0.15));
+    if(/raking header front .* stud/.test(label)) ex.add(V(-sx*SIN,COS,0).multiplyScalar(0.15));
+    if(/girt/.test(label)){
+      if(/bottom track/.test(label)) ex.y+=0.08;
+      else if(/stud outside/.test(label)){ex.y+=0.16; ex.z+=0.15}
+      else if(/stud inside/.test(label)){ex.y+=0.16; ex.z-=0.15}
+      else if(/top track/.test(label)) ex.y+=0.30;
+    } else if(/wall panel .* bottom track/.test(label)) ex.y-=0.15;
+    if(/end post at wall A .* cap track/.test(label)) ex.x+=sx*0.15;
+    if(/end post at wall A .* stud B/.test(label)) ex.x-=sx*0.15;
+    if(/end post at wall C .* cap track/.test(label)) ex.x-=sx*0.15;
+    if(/end post at wall C .* stud B/.test(label)) ex.x+=sx*0.15;
+    if(/strap.*outside/.test(label)) ex.z+=0.3;
+    if(/strap.*inside/.test(label)) ex.z-=0.3;
+    if(/block/.test(label)) ex.z+=0.15;
+    if(/[Ww]indow header .* top track/.test(label)) ex.y+=0.12;
+    if(/[Ww]indow header .* bottom track/.test(label)) ex.y-=0.12;
+    if(/[Ww]indow header .* stud outside/.test(label)) ex.z+=0.12;
+    if(/[Ww]indow header .* stud inside/.test(label)) ex.z-=0.12;
+    if(/[Ww]indow sill/.test(label)) ex.y-=0.12;
+    if(/[Ww]indow jamb wall-A side .* cap track/.test(label)) ex.x-=sx*0.15;
+    if(/[Ww]indow jamb wall-A side .* second stud/.test(label)) ex.x+=sx*0.15;
+    if(/[Ww]indow jamb wall-C side .* cap track/.test(label)) ex.x+=sx*0.15;
+    if(/[Ww]indow jamb wall-C side .* second stud/.test(label)) ex.x-=sx*0.15;
+    if(/X-strap/.test(label)) ex.z+=0.45;
+    if(/hold-down/.test(label)) ex.z+=0.25;
+    return ex.lengthSq()>0?ex:null;
+  } else if(key==='cornerA5'){
+    var cx=V(0,0,0);
+    if(/^Gable 5/.test(label)){
+      cx.z+=0.35;
+      if(/girt/.test(label)) cx.y+=0.2;
+      if(/strap.*outside|X-strap/.test(label)) cx.x+=0.2;
+      else if(/strap.*inside/.test(label)) cx.x-=0.2;
+    } else if(/^Wall A/.test(label)){
+      if(/end stud at grid 5/.test(label)) cx.x+=0.20;
+      if(/wind post .* outer stud/.test(label)) cx.x+=0.08;
+      if(/wind post .* inner stud/.test(label)) cx.x-=0.10;
+      if(/hold-down/.test(label)) cx.x-=0.10;
+      if(/top track/.test(label)) cx.y+=0.2;
+      if(/bottom track/.test(label)) cx.y-=0.2;
+      if(/strap.*outside|X-strap/.test(label)) cx.z-=0.2;
+      else if(/strap.*inside/.test(label)) cx.z+=0.2;
+    }
+    return cx.lengthSq()>0?cx:null;
+  } else if(key==='wpanel'){
+    if(/strap.*outside/.test(label)) return V(0,0,-0.3);
+    if(/strap.*inside/.test(label)) return V(0,0,0.3);
+    if(/block/.test(label)) return V(0,0,0.15);
+    if(/top track/.test(label)) return V(0,0.25,0);
+    if(/bottom track/.test(label)) return V(0,-0.25,0);
+    if(/Neighbouring panel bay 1-2/.test(label)) return V(-0.25,0,0);
+    if(/Neighbouring panel bay 3-4/.test(label)) return V(0.25,0,0);
+  } else if(key==='eave'){
+    var Pn=V(0,COS,-SIN);
+    if(/Eave cap/.test(label)) return V(0,0.10,-0.25);
+    if(/Eave inner angle/.test(label)) return V(0,-0.10,0.25);
+    if(/strap/.test(label)) return Pn.clone().multiplyScalar(0.35);
+    if(/purlin|Block/.test(label)) return Pn.clone().multiplyScalar(0.25);
+    if(/top track/.test(label)) return V(0,0.12,0);
+  } else if(key==='ridgebox'){
+    var zs=/rear/.test(label)?-0.22:0.22;
+    if(/strap .*top/.test(label)) return V(0,0.70,zs);
+    if(/strap .*bottom/.test(label)) return V(0,-0.05,zs);
+    if(/Panel track|Ridge-edge|Next purlin|Block/.test(label)) return V(0,0.05,zs);
+    if(/Inner angle/.test(label)) return V(0,-0.22,0);
+    if(/blocking plate/.test(label)) return V(0,0.30,0);
+    if(/Ridge cap/.test(label)) return V(0,0.55,0);
+  } else if(key==='floor'){
+    if(/bolt/.test(label)) return V(0.25,0,0);
+    if(/packing 1$/.test(label)) return V(-0.12,0,0);
+    if(/packing 2$/.test(label)) return V(0.12,0,0);
+    if(/T gusset/.test(label)) return V(0,-0.30,0);
+    if(/cross bearer .* C1$/.test(label)) return V(-0.15,0,0);
+    if(/cross bearer .* C2$/.test(label)) return V(0.15,0,0);
+    if(/^Frame column stub/.test(label)) return V(0,0.60,0);
+    if(/^Floor panel .*strap/.test(label)) return V(0,0.45,0);
+    if(/^Floor panel/.test(label)) return V(0,0.30,0);
+  } else if(key==='loft'){
+    var lx=V(0,0,0);
+    if(/^Grid-2 partition/.test(label)) lx.y-=0.70;
+    else if(/^Grid-2 header/.test(label)) lx.y-=0.35;
+    else {
+      lx.y+=/strap/.test(label)?0.50:0.35;
+      if(/trimmer A second C/.test(label)) lx.z-=0.18;
+      if(/trimmer A cap/.test(label)) lx.z+=0.18;
+      if(/trimmer B second C/.test(label)) lx.z+=0.18;
+      if(/trimmer B cap/.test(label)) lx.z-=0.18;
+      if(/opening header/.test(label)) lx.x+=0.30;
+    }
+    return lx;
+  }
+  return null;
+}
+function addDetail(key,g){
+  g.visible=false;scene.add(g);DG[key]=g;
+  g.traverse(function(o){
+    if(!o.isMesh) return;
+    o.userData.p0=o.position.clone();
+    var mem=o.userData.member;
+    if(mem){
+      mem.scene=key;
+      o.userData.ex=exOffset(key,mem.label);
+      o.userData.fast=/Screw|Clip angle/.test(mem.label);
+    }
+  });
+}
+var explodeS=0;
+function applyExplode(v){
+  var s=(v===true)?1:(v===false||v==null)?0:Math.max(0,Math.min(1,+v||0));
+  explodeS=s;
+  var g=DG[mode];
+  if(g) g.traverse(function(o){
+    if(!o.isMesh||!o.userData.p0) return;
+    o.position.copy(o.userData.p0);
+    if(s&&o.userData.ex) o.position.addScaledVector(o.userData.ex,s);
+  });
+  if(mode==='house'&&window.__houseExplode) window.__houseExplode(s);
+  refreshVis();
+}
+var CO={};
+function C1(g,l,sl){return {group:g,mat:DM.c1,label:l,slots:sl,D:0.150}}
+function C2(g,l,sl){return {group:g,mat:DM.c2,label:l,slots:sl,D:0.150}}
+function slopeF(){return {o:V(0,0,0),a:V(0,SIN,COS),p:V(0,COS,-SIN),x:AX}}
+function purlinC(g,mat,F,s0,x0,x1,flipFlange){
+  cSection(sp(F,s0,0.15,x0),sp(F,s0,0.15,x1),F.p,F.a,{D:0.150,group:g,mat:mat});
+}
+/* cleat angle of a purlin at slope position s0 (web ref line), centred at x=xc */
+function cleat(g,F,s0,xc){
+  angle(g,sp(F,s0-CT/2,0.075,xc),neg(F.a),F.p,0.06,0.14,0.15,0.003);
+  [0.02,0.045].forEach(function(d){[-0.03,0.03].forEach(function(dx){
+    screw(g,sp(F,s0-CT/2-d,0.078,xc+dx),neg(F.p));
+  })});
+}
+
+/* ---- detail 1: knee + tie rod (frame column and rafter foot inside the wall, wall A panel top beside it) ---- */
+(function(){
+  var g=new THREE.Group(), MD='\u00b7', mt={c:DM.c1,t:DM.mid}, dy=-EV, t=CT, top=DY, y1=top-0.0025, y0=top-0.65; dprefix=T.details.knee;
+  fmember(g,mt,0,dy,false,fcolumn(EV-0.9),{c1:'Frame column '+MD+' C stud 1',c2:'Frame column '+MD+' C stud 2',tp:'Frame column '+MD+' inner track',tm:'Frame column '+MD+' outer track'});
+  fmember(g,mt,0,dy,false,frafter(1.0),{c1:'Frame rafter '+MD+' C 1',c2:'Frame rafter '+MD+' C 2',tp:'Frame rafter '+MD+' top track',tm:'Frame rafter '+MD+' bottom track'});
+  LBL('Knee gusset',function(){plate(g,DM.dark,kneeGussetPts().map(function(P){return [P[0],P[1]+dy]}),0.01,AZ,AY,V(0,0,0))});
+  LBL('Tie rod',function(){cyl(g,DM.rod,V(0,-0.15,FZ0+2*(FHW+CT)),V(0,-0.15,0.85),0.03)});
+  /* wall A panel top at grid 2 (context): top track, end stud, next stud */
+  uTrack(V(-0.70,top-t/2,0),V(-0.003,top-t/2,0),AZ,V(0,-1,0),{group:g,mat:DM.c2,label:'Wall A panel '+MD+' top track'},0.150);
+  cSection(V(-0.003-t/2,y0,0),V(-0.003-t/2,y1,0),AZ,V(-1,0,0),{group:g,mat:DM.c2,label:'Wall A panel '+MD+' end stud'});
+  cSection(V(-0.6225,y0,0),V(-0.6225,y1,0),AZ,AX,{group:g,mat:DM.c2,label:'Wall A panel '+MD+' stud'});
+  addDetail('knee',g);
+})();
+
+/* ---- detail 2: apex (frame rafter ends, both sides, plumb cut at the ridge; scene origin = ridge point) ---- */
+(function(){
+  var g=new THREE.Group(), MD='\u00b7', mt={c:DM.c1,t:DM.mid}, dy=-RIDGE; dprefix=T.details.apex;
+  FDZ=2.6;
+  [['Rear',false],['Front',true]].forEach(function(sd){
+    fmember(g,mt,0,dy,sd[1],frafter(2.6),{c1:sd[0]+' rafter '+MD+' C 1',c2:sd[0]+' rafter '+MD+' C 2',tp:sd[0]+' rafter '+MD+' top track',tm:sd[0]+' rafter '+MD+' bottom track'});
+  });
+  LBL('Apex gusset',function(){plate(g,DM.dark,apexGussetPts().map(function(P){return [P[0]-2.6,P[1]+dy]}),0.01,AZ,AY,V(0,0,0))});
+  FDZ=0;
+  addDetail('apex',g);
+})();
+
+/* ---- detail 3: roof panel on rafter (short cut section) ---- */
+function PSP(i){return 0.025+i*0.5557}
+(function(){
+  var g=new THREE.Group(), F=slopeF(), L3=0.75, s0=0.35; dprefix=T.details.panel;
+  pairC(sp(F,0,0,0),sp(F,L3,0,0),F.p,AX,C2(g,'Rafter C'));
+  [[0.003,1],[-0.003,-1]].forEach(function(t){
+    var xw=t[0], sg=t[1];
+    track(sp(F,0,0.15,xw),sp(F,L3,0,0).clone().add(F.p.clone().multiplyScalar(0.15)).addScaledVector(F.x,xw),F.p,F.x.clone().multiplyScalar(sg),{group:g,mat:DM.mid,label:'Track '+(sg>0?'left':'right')});
+    [0.12,0.62].forEach(function(s){screw(g,sp(F,s,0.076,xw+sg*0.03),neg(F.p))});
+    cSection(sp(F,s0,0.15,sg*0.00425),sp(F,s0,0.15,sg*0.45),F.p,F.a,C1(g,'Purlin '+(sg>0?'left':'right'),true));
+    screw(g,sp(F,s0+0.022,0.0775,sg*0.02),neg(F.p));
+    screw(g,sp(F,s0+0.022,0.226,sg*0.02),neg(F.p));
+  });
+  addDetail('panel',g);
+})();
+
+/* ---- detail 4: blocking + bridging ---- */
+(function(){
+  var g=new THREE.Group(), F=slopeF(), i, S=[0,1,2,3,4,5,6].map(PSP); dprefix=T.details.block;
+  S.forEach(function(s,k){cSection(sp(F,s,0.15,-0.5),sp(F,s,0.15,0.5),F.p,F.a,C1(g,'Purlin '+(k+1),true))});
+  var sm=(S[0]-0.1+S[6]+0.25)/2, ln=S[6]-S[0]+0.35;
+  LBL('Bridging strap top',function(){obox(g,DM.rod,sp(F,sm,0.2265,0),F.a,F.x,ln,0.04,0.003)});
+  LBL('Bridging strap bottom',function(){obox(g,DM.rod,sp(F,sm,0.0735,0),F.a,F.x,ln,0.04,0.003)});
+  S.forEach(function(s){
+    screw(g,sp(F,s+0.022,0.228,0),neg(F.p));
+    screw(g,sp(F,s+0.022,0.072,0),F.p);
+  });
+  [[0,1],[5,6]].forEach(function(b){
+    var s0=S[b[0]]+CT/2, s1=S[b[1]]-CT/2;
+    cSection(sp(F,s0,0.15,0),sp(F,s1,0.15,0),F.p,F.x,{D:0.150,group:g,mat:DM.c2,n0:0.05,slots:'mid',label:'Block '+(b[0]+1)+'-'+(b[1]+1)});
+    clip(g,sp(F,s0,0.15,CT/2),AX,F.a,0.03);
+    clip(g,sp(F,s1,0.15,CT/2),AX,neg(F.a),0.03);
+  });
+  addDetail('block',g);
+})();
+
+/* ---- detail 5: skylight opening in panel (full bay) ---- */
+function uTrack(a0,a1,webDir,flangeDir,o,D){ LBL((o&&o.label)||dn('U track'),function(){ uTrack0(a0,a1,webDir,flangeDir,o,D) }); }
+function uTrack0(a0,a1,webDir,flangeDir,o,D){
+  var t=CT, len=a0.distanceTo(a1), mid=a0.clone().add(a1).multiplyScalar(.5);
+  var w=webDir.clone().normalize(), f=flangeDir.clone().normalize();
+  function part(u,v,su,sv){obox(o.group,o.mat,mid.clone().addScaledVector(w,u).addScaledVector(f,v),w,f,su,sv,len)}
+  var LG=(o&&o.leg)||0.045;
+  part(0,0,D,t);
+  [1,-1].forEach(function(s){part(s*(D/2-t/2),(LG-t/2)/2,t,LG+t/2)});
+}
+(function(){
+  var g=new THREE.Group(), F=slopeF(), Q=0.15, hw=0.39, HX=1.5, XI=HX-0.00425, D=0.158, MD='\u00b7'; dprefix=T.details.skyp;
+  var S0=0.30, S1=3.10, i;
+  /* asymmetric panel tracks */
+  [[-(HX-0.003),1],[HX-0.003,-1]].forEach(function(t){
+    track(sp(F,S0,Q,t[0]),sp(F,S1,Q,t[0]),F.p,F.x.clone().multiplyScalar(t[1]),{group:g,mat:DM.track,label:'Panel track '+(t[1]>0?'left':'right')});
+  });
+  /* purlins 1 and 5 */
+  [1,5].forEach(function(k){cSection(sp(F,PSP(k),Q,-XI),sp(F,PSP(k),Q,XI),F.p,F.a,C1(g,'Purlin '+k,true))});
+  /* boxed jambs: C150 + cap track, cap stopped 0.05 short at each end */
+  [[0.860,'lower'],[2.525,'upper']].forEach(function(j){
+    var s0=j[0], sc=s0-0.024;
+    cSection(sp(F,sc,Q,-XI),sp(F,sc,Q,XI),F.p,F.a,{D:0.150,group:g,mat:DM.trim,label:'Skylight '+MD+' '+j[1]+' jamb C'});
+    uTrack(sp(F,sc+0.0463,Q,-(XI-0.05)),sp(F,sc+0.0463,Q,XI-0.05),F.p,neg(F.a),{group:g,mat:DM.mid,label:'Skylight '+MD+' '+j[1]+' jamb cap track'},D);
+    [-1.2,-0.9,-0.6,-0.3,0,0.3,0.6,0.9,1.2].forEach(function(x){
+      screw(g,sp(F,sc+0.025,Q+0.079,x),neg(F.p));
+      screw(g,sp(F,sc+0.025,Q-0.079,x),F.p);
+    });
+  });
+  /* head and sill U tracks: web facing the window, flanges away from it */
+  [1,-1].forEach(function(sg){
+    var out=F.x.clone().multiplyScalar(sg), xw=sg*(hw+CT/2);
+    uTrack(sp(F,0.885,Q,xw),sp(F,2.5,Q,xw),F.p,out,{group:g,mat:DM.dark,label:'Skylight '+MD+' '+(sg<0?'head':'sill')+' track'},D);
+    clip(g,sp(F,0.885,Q,sg*hw),neg(out),F.a,0.03);
+    clip(g,sp(F,2.5,Q,sg*hw),neg(out),neg(F.a),0.03);
+    [2,3,4].forEach(function(k){
+      var sk=PSP(k);
+      cSection(sp(F,sk,Q,sg*(hw+CT)),sp(F,sk,Q,sg*XI),F.p,F.a,C1(g,'Skylight '+MD+' cripple '+(sg<0?k-1:k+2),true));
+      [Q+0.0795+0.00125,Q-0.0795-0.00125].forEach(function(q,qi){
+        screw(g,sp(F,sk+0.02,q,sg*(hw+CT+0.025)),qi?F.p:neg(F.p));
+      });
+    });
+  });
+  /* two bridging rows beside the opening */
+  [-0.415,0.415].forEach(function(x){
+    var sm=(S0+S1)/2, ln=S1-S0;
+    var rn=x<0?1:2;
+    LBL('Bridging strap row '+rn+' top',function(){obox(g,DM.rod,sp(F,sm,0.2305,x),F.a,F.x,ln,0.04,0.003)});
+    LBL('Bridging strap row '+rn+' bottom',function(){obox(g,DM.rod,sp(F,sm,0.0695,x),F.a,F.x,ln,0.04,0.003)});
+    [PSP(1),PSP(5),0.860+0.001,2.525+0.001,1.2,1.7,2.2].forEach(function(s){
+      screw(g,sp(F,s+0.022,0.232,x),neg(F.p));
+      screw(g,sp(F,s+0.022,0.068,x),F.p);
+    });
+  });
+  var gp=[sp(F,0.885,Q,-hw),sp(F,0.885,Q,hw),sp(F,2.5,Q,hw),sp(F,2.5,Q,-hw)], gg=new THREE.BufferGeometry(), arr=[];
+  [0,1,2,0,2,3].forEach(function(k){arr.push(gp[k].x,gp[k].y,gp[k].z)});
+  gg.setAttribute('position',new THREE.Float32BufferAttribute(arr,3)); gg.computeVertexNormals();
+  var gm=new THREE.Mesh(gg,MAT.glass); gm.renderOrder=2; gm.userData.nopick=true; g.add(gm);
+  gm.userData.ex=V(0,COS,-SIN).multiplyScalar(0.3);
+  addDetail('skyp',g);
+})();
+
+/* ---- ridge draft scenes ---- */
+function segBox(g,mat,p,q,wx,th){
+  var d=new THREE.Vector3().subVectors(q,p), len=d.length();
+  obox(g,mat,p.clone().add(q).multiplyScalar(.5),AX,d.normalize(),wx,len+0.002,th);
+}
+var RIDGE_CAP=null;
+function ridgeBox(){
+  var g=new THREE.Group(), capG=new THREE.Group(), YC=0.2976, XL=[-0.3,0,0.3,0.6,0.9,1.2,1.5];
+  g.add(capG); RIDGE_CAP=capG; dprefix=T.details.ridgebox;
+  var Fk={'1':{o:V(0,0,0),a:V(0,-SIN,COS),p:V(0,COS,SIN),x:AX},'-1':{o:V(0,0,0),a:V(0,-SIN,-COS),p:V(0,COS,-SIN),x:AX}};
+  function nm(k){return k>0?'front':'rear'}
+  function plane(k,u,off){return V(0,YC-u*SIN+off*COS,k*(u*COS+off*SIN))}
+  function plane2(k,u,off){return V(0,0.097-u*SIN+off*COS,k*(u*COS+off*SIN))}
+  var XB=0.8;
+  [1,-1].forEach(function(k){
+    var F=Fk[k], n=nm(k);
+    [1,-1].forEach(function(sx){
+      var xw=sx*(0.003+CT/2), xn=sx>0?'x+':'x-', xe=sx>0?1.6:-0.4;
+      track(sp(F,-0.060,0.1515,xw),sp(F,1.0,0.1515,xw),F.p,AX.clone().multiplyScalar(sx),{group:g,mat:DM.track,label:'Panel track '+n+' '+xn});
+      cSection(sp(F,-0.05875,0.1515,sx*0.0055),sp(F,-0.05875,0.1515,xe),F.p,F.a,{D:0.150,group:g,mat:DM.c1,label:'Ridge-edge member '+n+' '+xn,slots:true});
+      cSection(sp(F,0.5185,0.1515,sx*0.0055),sp(F,0.5185,0.1515,xe),F.p,neg(F.a),{D:0.150,group:g,mat:DM.c2,label:'Next purlin '+n+' '+xn,slots:true});
+    });
+    cSection(sp(F,-0.012,0.1515,XB),sp(F,0.4725,0.1515,XB),F.p,AX,{D:0.150,group:g,mat:DM.c2,slots:'mid',label:'Block '+n});
+    /* straps end straight on the ridge-edge member flanges */
+    LBL('Bridging strap '+n+' top',function(){
+      var a=plane(k,1.1914,0.0015), b=plane(k,0.1414,0.0015);
+      segBox(g,DM.rod,V(XB,a.y,a.z),V(XB,b.y,b.z),0.04,0.003);
+    });
+    [-0.012,0.012].forEach(function(dx){[0.15,0.17].forEach(function(u){screw(g,plane(k,u,0.003).setX(XB+dx*(u>0.16?1:-1)),neg(F.p))})});
+    LBL('Bridging strap '+n+' bottom',function(){
+      segBox(g,DM.rod,sp(F,1.0,0.0735,XB),sp(F,-0.012,0.0735,XB),0.04,0.003);
+    });
+    [-0.012,0.012].forEach(function(dx){screw(g,sp(F,0.01,0.072,XB+dx),F.p)});
+    XL.forEach(function(x){screw(capG,plane(k,0.1544,0.009).setX(x),neg(F.p))});
+  });
+  /* ridge cap (inverted V) */
+  LBL('Ridge cap',function(){[1,-1].forEach(function(k){segBox(capG,DM.mid,plane(k,-0.0115,0.0075).setX(0.6),plane(k,0.20,0.0075).setX(0.6),2.0,0.003)})});
+  /* inner angle under the two bottom flanges, stops at the frame */
+  [[0.075,1.6,'x+',[0.3,0.6,0.9,1.2,1.5]],[-0.4,-0.075,'x-',[-0.3]]].forEach(function(pc){
+    var xc=(pc[0]+pc[1])/2, w=pc[1]-pc[0];
+    LBL('Inner angle '+pc[2],function(){[1,-1].forEach(function(k){segBox(g,DM.mid,plane2(k,0,-0.0015).setX(xc),plane2(k,0.045,-0.0015).setX(xc),w,0.003)})});
+    pc[3].forEach(function(x){[1,-1].forEach(function(k){screw(g,plane2(k,0.0225,-0.003).setX(x),Fk[k].p)})});
+  });
+  /* ridge blocking plate with bent edges */
+  var Vb=[[0,0.101],[0.1006,0.2133],[0,0.2946],[-0.1006,0.2133]];
+  LBL('Ridge blocking plate',function(){
+    plate(g,DM.trim,Vb,0.003,AZ,AY,V(XB,0,0));
+    for(var i=0;i<4;i++){
+      var p0=Vb[i], p1=Vb[(i+1)%4], dz=p1[0]-p0[0], dy=p1[1]-p0[1], len=Math.hypot(dz,dy);
+      var ez=dz/len, ey=dy/len, mz=(p0[0]+p1[0])/2, my=(p0[1]+p1[1])/2, nz=-ey, ny=ez;
+      if((0-mz)*nz+(0.2-my)*ny<0){nz=-nz;ny=-ny}
+      obox(g,DM.trim,V(XB+0.025,my+ny*0.0015,mz+nz*0.0015),V(0,ey,ez),AX,len,0.05,0.003);
+      [0.25,0.5,0.75].forEach(function(f){
+        var hz=p0[0]+dz*f+nz*0.003, hy=p0[1]+dy*f+ny*0.003;
+        screw(g,V(XB+0.025,hy,hz),V(0,-ny,-nz));
+      });
+    }
+  });
+  /* frame rafter ends (2 x C200 + U150 tracks) and apex gusset in the gap; scene origin = ridge point of the old centreline */
+  var MDd='\u00b7', mtf={c:DM.c1,t:DM.mid}, dyf=-RIDGE;
+  FDZ=2.6;
+  [['Rear',false],['Front',true]].forEach(function(sd){
+    fmember(g,mtf,0,dyf,sd[1],frafter(2.6),{c1:sd[0]+' rafter '+MDd+' C 1',c2:sd[0]+' rafter '+MDd+' C 2',tp:sd[0]+' rafter '+MDd+' top track',tm:sd[0]+' rafter '+MDd+' bottom track'});
+  });
+  LBL('Apex gusset',function(){plate(g,DM.dark,apexGussetPts().map(function(P){return [P[0]-2.6,P[1]+dyf]}),0.01,AZ,AY,V(0,0,0))});
+  FDZ=0;
+  addDetail('ridgebox',g);
+}
+ridgeBox();
+
+/* ---- eave contact (draft) ---- */
+function eaveScene(){
+  var g=new THREE.Group(), F=slopeF(), WTl=0.1577, t=CT, S0=0.1606;
+  dprefix=T.details.eave;
+  [-0.3,0.3].forEach(function(x,i){
+    cSection(V(x-0.0225,WTl-t-0.9,0),V(x-0.0225,WTl-t,0),AZ,AX,{group:g,mat:DM.c1,slots:true,label:'Wall stud '+(i+1)});
+  });
+  uTrack(V(-0.6,WTl-t/2,0),V(0.6,WTl-t/2,0),AZ,neg(AY),{group:g,mat:DM.dark,label:'Wall top track'},0.150);
+  cSection(sp(F,S0+0.00125,0.15,-0.6),sp(F,S0+0.00125,0.15,0.6),F.p,F.a,{D:0.150,group:g,mat:DM.c2,slots:true,label:'Eave-edge purlin'});
+  cSection(sp(F,0.5587,0.15,-0.6),sp(F,0.5587,0.15,0.6),F.p,F.a,{D:0.150,group:g,mat:DM.c2,slots:true,label:'Next purlin'});
+  cSection(sp(F,S0+0.046,0.15,-0.0225),sp(F,0.5575,0.15,-0.0225),F.p,AX,{D:0.150,group:g,mat:DM.c1,slots:'mid',label:'Block'});
+  var sm=(S0+0.9)/2, ln=0.9-S0;
+  LBL('Bridging strap top',function(){obox(g,DM.rod,sp(F,sm,0.2265,0),F.a,AX,ln,0.04,0.003)});
+  LBL('Bridging strap bottom',function(){obox(g,DM.rod,sp(F,sm,0.0735,0),F.a,AX,ln,0.04,0.003)});
+  /* eave cap */
+  var oB=0.079, hB=0.232, sB=(hB*SIN-oB)/COS, yB=sB*SIN+hB*COS;
+  var Bp=V(0,yB,-oB), Rp=V(0,yB+0.137*SIN,-(oB-0.137*COS)), Wp=V(0,yB-0.127,-oB);
+  LBL('Eave cap',function(){segBox(g,DM.mid,Rp,Bp,1.2,0.003);segBox(g,DM.mid,Bp,Wp,1.2,0.003)});
+  [-0.45,-0.15,0.15,0.45].forEach(function(x){
+    screw(g,sp(F,S0+0.023,hB+0.0015,x),neg(F.p));
+    screw(g,V(x,0.13,-(oB+0.0015)),AZ);
+  });
+  /* inner eave angle */
+  var oi=-0.078, hi=0.072, si=(hi*SIN-oi)/COS, yi=si*SIN+hi*COS;
+  var Bi=V(0,yi,-oi), L1=V(0,yi+0.045*SIN,-(oi-0.045*COS)), L2=V(0,yi-0.045,-oi);
+  /* the angle stops at the rafter (|x| >= 0.075), as in the house */
+  LBL('Eave inner angle',function(){[-1,1].forEach(function(sx){var o=V(sx*0.3375,0,0);segBox(g,DM.mid,L1.clone().add(o),Bi.clone().add(o),0.525,0.003);segBox(g,DM.mid,Bi.clone().add(o),L2.clone().add(o),0.525,0.003)})});
+  [-0.45,-0.15,0.15,0.45].forEach(function(x){
+    screw(g,sp(F,si+0.0225,hi-0.0015,x),F.p);
+    screw(g,V(x,yi-0.0225,-(oi-0.0015)),neg(AZ));
+  });
+  /* frame rafter foot, column top and knee gusset (same geometry as the house frames) */
+  var MD2='\u00b7', mt2={c:DM.c1,t:DM.mid}, dy2=-EV;
+  fmember(g,mt2,0,dy2,false,fcolumn(EV-0.75),{c1:'Frame column '+MD2+' C stud 1',c2:'Frame column '+MD2+' C stud 2',tp:'Frame column '+MD2+' inner track',tm:'Frame column '+MD2+' outer track'});
+  fmember(g,mt2,0,dy2,false,frafter(0.9),{c1:'Frame rafter '+MD2+' C 1',c2:'Frame rafter '+MD2+' C 2',tp:'Frame rafter '+MD2+' top track',tm:'Frame rafter '+MD2+' bottom track'});
+  LBL('Knee gusset',function(){plate(g,DM.dark,kneeGussetPts().map(function(P){return [P[0],P[1]+dy2]}),0.01,AZ,AY,V(0,0,0))});
+  addDetail('eave',g);
+}
+eaveScene();
+
+/* ---- ridge box in the whole-house model ---- */
+var capGrp=new THREE.Group(); capGrp.userData.extra=0.3; G.rbox.add(capGrp);
+function ridgeHouse(){
+  var YC=0.2976;
+  function hp(v){return V(v.x,v.y+RIDGE,v.z+2.6)}
+  function plane(k,u,off){return V(0,YC-u*SIN+off*COS,k*(u*COS+off*SIN))}
+  function plane2(k,u,off){return V(0,0.097-u*SIN+off*COS,k*(u*COS+off*SIN))}
+  function bay(xa,xb){var i=xa===XS?0:GX.indexOf(xa);return (i+1)+'-'+(i+2)}
+  LBL('Ridge cap',function(){[1,-1].forEach(function(k){
+    segBox(capGrp,MAT.rbox,hp(plane(k,-0.0115,0.0075)).setX(XC),hp(plane(k,0.20,0.0075)).setX(XC),XLEN,0.003);
+  }); COUNT.rbox++});
+  [[XS,3.25],[3.25,6.25],[6.25,9.25],[9.25,XE]].forEach(function(b){
+    var xc=(b[0]+b[1])/2, w=b[1]-b[0]-0.15;
+    LBL('Ridge inner angle bay '+bay(b[0],b[1]),function(){[1,-1].forEach(function(k){
+      segBox(G.rbox,MAT.rbox,hp(plane2(k,0,-0.0015)).setX(xc),hp(plane2(k,0.045,-0.0015)).setX(xc),w,0.003);
+    }); COUNT.rbox++});
+  });
+  var q=0.07, Vb=[[0,0.101],[0.1006,0.2133],[0,0.2946],[-0.1006,0.2133]];
+  [[1.625,'1-2'],[4.75,'2-3'],[7.335,'3-4'],[7.75,'3-4'],[8.165,'3-4'],[10.875,'4-5']].forEach(function(r){
+    LBL('Ridge blocking plate bay '+r[1]+' at '+r[0],function(){
+      plate(G.rbox,MAT.rptrim,Vb,0.003,V(0,0,1),V(0,1,0),V(r[0],RIDGE,2.6)); COUNT.rbox++;
+      for(var i=0;i<4;i++){
+        var p0=Vb[i], p1=Vb[(i+1)%4], dz=p1[0]-p0[0], dy=p1[1]-p0[1], len=Math.hypot(dz,dy);
+        var ez=dz/len, ey=dy/len, mz=(p0[0]+p1[0])/2, my=(p0[1]+p1[1])/2, nz=-ey, ny=ez;
+        if((0-mz)*nz+(0.2-my)*ny<0){nz=-nz;ny=-ny}
+        obox(G.rbox,MAT.rptrim,V(r[0]+0.025,RIDGE+my+ny*0.0015,2.6+mz+nz*0.0015),V(0,ey,ez),V(1,0,0),len,0.05,0.003);
+      }
+    });
+  });
+}
+ridgeHouse();
+
+/* ---- eave cap in the whole-house model ---- */
+var ecapA=new THREE.Group(), ecapC=new THREE.Group();
+ecapA.userData.extra=0.15; ecapA.userData.dz=-0.3; ecapC.userData.extra=0.15; ecapC.userData.dz=0.3;
+G.ecap.add(ecapA); G.ecap.add(ecapC);
+var iangA=new THREE.Group(), iangC=new THREE.Group();
+iangA.userData.dz=0.2; iangC.userData.dz=-0.2; G.ecap.add(iangA); G.ecap.add(iangC);
+function eaveCapPts(){
+  var oB=0.079, hB=0.232, sB=(hB*SIN-oB)/COS, yB=sB*SIN+hB*COS;
+  return {B:[oB,yB], R:[oB-0.137*COS, yB+0.137*SIN], W:[oB, yB-0.127]};
+}
+function eaveHouse(){
+  var P=eaveCapPts();
+  [[ecapA,'A',0,-1],[ecapC,'C',W,1]].forEach(function(w){
+    function pt(o){return V(XC,EV+o[1],w[2]+w[3]*o[0])}
+    LBL('Eave cap wall '+w[1],function(){
+      segBox(w[0],MAT.ecap,pt(P.R),pt(P.B),XLEN,0.003);
+      segBox(w[0],MAT.ecap,pt(P.B),pt(P.W),XLEN,0.003);
+      COUNT.ecap++;
+    });
+  });
+}
+eaveHouse();
+function eaveInnerPts(){
+  var oB=-0.078, h=0.072, sB=(h*SIN-oB)/COS, yB=sB*SIN+h*COS;
+  return {B:[oB,yB], L1:[oB-0.045*COS,yB+0.045*SIN], L2:[oB,yB-0.045]};
+}
+function eaveInnerHouse(){
+  var P=eaveInnerPts();
+  [[iangA,'A',0,-1],[iangC,'C',W,1]].forEach(function(w){
+    [[XS,3.25],[3.25,6.25],[6.25,9.25],[9.25,XE]].forEach(function(b,bi){
+      var xc=(b[0]+b[1])/2, wx=b[1]-b[0]-0.15;
+      function pt(o){return V(xc,EV+o[1],w[2]+w[3]*o[0])}
+      LBL('Eave inner angle wall '+w[1]+' bay '+(bi+1)+'-'+(bi+2),function(){
+        segBox(w[0],MAT.ecap,pt(P.L1),pt(P.B),wx,0.003);
+        segBox(w[0],MAT.ecap,pt(P.B),pt(P.L2),wx,0.003);
+        COUNT.ecap++;
+      });
+    });
+  });
+}
+eaveInnerHouse();
+
+/* ---- long walls A and C as shop panels ---- */
+function wallsHouse(){
+  var MD='·', t=0.0025, top=EV+DY, y0=FL+0.0025, y1=top-0.0025;
+  var NZv=V(0,0,1), PX=V(1,0,0), MX=V(-1,0,0), MY=V(0,-1,0), PY=V(0,1,0);
+  function panel(wn,z,sg,bi){
+    var xa=GX[bi], xb=GX[bi+1], xa2=bi===0?XS:xa+0.003, xb2=bi===3?XE:xb-0.003;
+    var pn='Wall '+wn+' panel bay '+(bi+1)+'-'+(bi+2);
+    var glazed=(wn==='C'&&bi>0), door=(wn==='A'&&bi===0), c4=(wn==='C'&&bi===3), i;
+    var tx0=xa2, tx1=xb2;
+    var yJ=top-3*t-0.145, yE=glazed?yJ:y1;
+    if(!glazed){ uTrack(V(tx0,top-t/2,z),V(tx1,top-t/2,z),NZv,MY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' top track'},0.150); COUNT.walls++; }
+    if(door){
+      uTrack(V(xa2,FL+t/2,z),V(xb2,FL+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' bottom track (cut out at the door after erection)'},0.150); COUNT.walls++;
+    } else { uTrack(V(xa2,FL+t/2,z),V(xb2,FL+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' bottom track'},0.150); COUNT.walls++; }
+    if(!glazed) LBL(pn+' '+MD+' end stud at grid '+(bi+1),function(){CM('walls',V(xa2+t/2,y0,z),V(xa2+t/2,y1,z),NZv,PX)});
+    if(!glazed||c4) LBL(pn+' '+MD+' end stud at grid '+(bi+2),function(){CM('walls',V(xb2-t/2,y0,z),V(xb2-t/2,yE,z),NZv,MX)});
+    var xs=[];
+    if(door) xs=[0.6,1.2,3.0];
+    else if(c4) xs=[11.6,12.2];
+    else if(!glazed) for(i=1;(bi===0?0:xa2)+0.6*i<=xb2-0.145;i++) xs.push((bi===0?0:xa2)+0.6*i);
+    xs.forEach(function(x,k){LBL(pn+' '+MD+' stud '+(k+1),function(){STUD(z,x,y0,yE)})});
+    var wpost=(wn==='A'&&bi===3), cpost=(wn==='C'&&bi===0);
+    if(wpost){ /* wind post: two C studs back to back, no track, web plane = gable inner face x 12.425 */
+      LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(12.425+t/2,y0,z),V(12.425+t/2,y1,z),NZv,PX)});
+      LBL(pn+' '+MD+' wind post '+MD+' inner stud',function(){CM('walls',V(12.425-t/2,y0,z),V(12.425-t/2,y1,z),NZv,MX)});
+      /* grid 4: end stud doubled inside the panel, same orientation (web on the end stud's lips) = wind post for the X-strap */
+      LBL(pn+' '+MD+' second end stud at grid '+(bi+1),function(){CM('walls',V(xa2+0.0475,y0,z),V(xa2+0.0475,y1,z),NZv,PX)});
+    }
+    if(c4){ /* wall C bay 4-5 short X (11.0..corner C/5): wind post on the gable 5 inner face plane x 12.425 as at corner A/5; at x 11.0 a doubled stud (end stud + second stud, same orientation, toes into the braced field) replaces the glazing mullion */
+      LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(12.425+t/2,y0,z),V(12.425+t/2,yE,z),NZv,PX)});
+      LBL(pn+' '+MD+' wind post '+MD+' inner stud',function(){CM('walls',V(12.425-t/2,y0,z),V(12.425-t/2,yE,z),NZv,MX)});
+      LBL(pn+' '+MD+' end stud at x 11.0',function(){CM('walls',V(10.955+t/2,y0,z),V(10.955+t/2,yE,z),NZv,PX)});
+      LBL(pn+' '+MD+' second end stud at x 11.0',function(){CM('walls',V(10.955+0.0475,y0,z),V(10.955+0.0475,yE,z),NZv,PX)});
+    }
+    if(cpost){ /* wall C bay 1-2 (X-braced), mirror of wall A bay 4-5: wind post on the gable 1 inner face plane x 0.075; grid-2 end stud doubled inside the panel */
+      LBL(pn+' '+MD+' wind post '+MD+' outer stud',function(){CM('walls',V(0.075-t/2,y0,z),V(0.075-t/2,y1,z),NZv,MX)});
+      LBL(pn+' '+MD+' wind post '+MD+' inner stud',function(){CM('walls',V(0.075+t/2,y0,z),V(0.075+t/2,y1,z),NZv,PX)});
+      LBL(pn+' '+MD+' second end stud at grid '+(bi+2),function(){CM('walls',V(xb2-0.0475,y0,z),V(xb2-0.0475,y1,z),NZv,MX)});
+    }
+    if(glazed){ /* wall C glazed panels: gable-type girt build on top + capped posts (gable window jambs); glass between the posts */
+      var ga=xa2, gb=xb2, yc=top-t-0.0725, MZv=V(0,0,-1), PZv=V(0,0,1), OPN=[];
+      function wtrk(a,b,yy,fd,part){ uTrack(V(a,yy,z),V(b,yy,z),NZv,fd,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' '+part},0.150); COUNT.walls++; }
+      wtrk(ga,gb,top-t/2,MY,'girt '+MD+' top track');
+      var ma=ga+0.04875, mb=c4?gb:gb-0.04875; /* king+jack: members (2)-(4) run between the stud A web faces (bay 4-5: on to the corner end) */
+      LBL(pn+' '+MD+' girt '+MD+' stud outside',function(){CM('walls',V(ma,yc,z+0.07125),V(mb,yc,z+0.07125),PY,MZv,{mid:true})});
+      LBL(pn+' '+MD+' girt '+MD+' stud inside',function(){CM('walls',V(ma,yc,z-0.07125),V(mb,yc,z-0.07125),PY,PZv,{mid:true})});
+      wtrk(ma,mb,top-t-0.145-t/2,PY,'girt '+MD+' bottom track');
+      wtrk(ma,mb,top-2*t-0.145-t/2,MY,'top track');
+      function wpost2(lb,xc,sg){ /* sg=+1: web at the low-x end, open toward +x */
+        var fl=sg>0?PX:MX, ofl=sg>0?MX:PX;
+        uTrack(V(xc,y0,z),V(xc,y1,z),NZv,fl,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' '+lb+' '+MD+' cap track'},0.150); COUNT.walls++;
+        LBL(pn+' '+MD+' '+lb+' '+MD+' stud A',function(){CM('walls',V(xc+sg*0.04625,y0,z),V(xc+sg*0.04625,y1,z),NZv,ofl)});
+        LBL(pn+' '+MD+' '+lb+' '+MD+' stud B',function(){CM('walls',V(xc+sg*0.04875,y0,z),V(xc+sg*0.04875,yJ,z),NZv,fl)});
+      }
+      wpost2('end post at grid '+(bi+1),ga+t/2,1);
+      var gl=ga+t/2+0.095, gr=c4?10.955:gb-t/2-0.095;
+      if(!c4){
+        wpost2('end post at grid '+(bi+2),gb-t/2,-1);
+        var xm=(ga+gb)/2;
+        LBL(pn+' '+MD+' mullion '+MD+' stud',function(){CM('walls',V(xm-0.02375+t/2,y0,z),V(xm-0.02375+t/2,yJ,z),NZv,PX)});
+        uTrack(V(xm+0.02375-t/2,y0,z),V(xm+0.02375-t/2,yJ,z),NZv,MX,{group:G.walls,mat:MAT.walls,label:pn+' '+MD+' mullion '+MD+' cap track'},0.150); COUNT.walls++;
+        OPN=[[gl,xm-0.02375],[xm+0.02375,gr]];
+      } else OPN=[[gl,gr]];
+      OPN.forEach(function(o){var zg=z+0.076; QUAD('glass',[V(o[0],y0,zg),V(o[1],y0,zg),V(o[1],yJ,zg),V(o[0],yJ,zg)])});
+    }
+    if(door){
+      var yb=FL+2.1, ys=yb+t+0.0725, yt=yb+t+0.145, zo=z+sg*0.07125, zi=z-sg*0.07125;
+      /* jamb studs: web on the opening side, capped by a U150 track on the far side */
+      [[1.6,-1,'grid-1'],[2.5,1,'grid-2']].forEach(function(j){
+        var xw=j[0]+j[1]*0.00125, fl=j[1]>0?PX:MX, tip=xw+j[1]*0.045, xc=tip+j[1]*0.00125;
+        LBL('Door jamb '+j[2]+' side '+MD+' stud',function(){CM('walls',V(xw,y0,z),V(xw,y1,z),NZv,fl)});
+        uTrack(V(xc,y0+0.05,z),V(xc,y1-0.05,z),NZv,j[1]>0?MX:PX,{group:G.walls,mat:MAT.walls,label:'Door jamb '+j[2]+' side '+MD+' cap track'},0.158); COUNT.walls++;
+      });
+      /* boxed header */
+      uTrack(V(1.6,yb+t/2,z),V(2.5,yb+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:'Door header '+MD+' bottom track'},0.150); COUNT.walls++;
+      LBL('Door header '+MD+' stud outside',function(){CM('walls',V(1.601,ys,zo),V(2.499,ys,zo),PY,V(0,0,sg>0?-1:1),{mid:true})});
+      LBL('Door header '+MD+' stud inside',function(){CM('walls',V(1.601,ys,zi),V(2.499,ys,zi),PY,V(0,0,sg>0?1:-1),{mid:true})});
+      uTrack(V(1.6,yt+t/2,z),V(2.5,yt+t/2,z),NZv,PY,{group:G.walls,mat:MAT.walls,label:'Door header '+MD+' top track'},0.150); COUNT.walls++;
+      LBL(pn+' '+MD+' cripple above door',function(){STUD(z,2.05,yt+t,y1)});
+    }
+    if(glazed&&!c4) return;
+    var segs=door?[[xa2,1.5525],[2.5475,xb2]]:(c4?[[11.0,xb2]]:[[xa2,xb2]]);
+    [1,2].forEach(function(r){
+      var yr=FL+0.92*r, yb=yr+0.0225;
+      [['outside',sg],['inside',-sg]].forEach(function(f){
+        LBL(pn+' '+MD+' bridging strap row '+r+' '+f[0],function(){
+          segs.forEach(function(sq){var a=sq[0], b=sq[1];
+            /* inside straps stop 2 mm short of the frame columns (column outer face = wall inner face) */
+            if(f[0]==='inside') [3.25,6.25,9.25].forEach(function(gx){if(Math.abs(a-gx)<0.08) a=gx+0.077; if(Math.abs(b-gx)<0.08) b=gx-0.077;});
+            M('wbb',V(a,yr,z+f[1]*0.0765),V(b,yr,z+f[1]*0.0765),0.04,0.003,{ref:NZv})});
+        });
+      });
+      if(!c4) LBL(pn+' '+MD+' block row '+r+' first space',function(){CM('wbb',V(cpost?0.124:xa2+(wpost?0.095:0.0475),yb,z),V(xs[0]-0.0238,yb,z),NZv,MY,{mid:true,D:0.150})});
+      LBL(pn+' '+MD+' block row '+r+' last space',function(){CM('wbb',V(xs[xs.length-1]+0.0275,yb,z),V((wpost||c4)?12.375:cpost?xb2-0.095:xb2-0.0475,yb,z),NZv,MY,{mid:true,D:0.150})});
+    });
+  }
+  [0,1,2,3].forEach(function(bi){panel('A',0,-1,bi);panel('C',W,1,bi)});
+}
+wallsHouse();
+
+/* ---- gables 5 and 1 as two shop panels each: lower wall panel + apex panel (one builder for house and detail scenes); C.so = sign of the outside direction along x ---- */
+function gablePanels(E,C){
+  var P=E.P, Dm=E.D, t=CT, MD='·', top=EV+DY, y0=FL+t, y1=top-t, ZA=0.075, ZB=5.125, XG=C.XG, so=C.so, win=C.win;
+  var yJ=top-3*t-0.145, yc=top-t-0.0725;
+  var AXd=Dm(1,0,0), PYd=Dm(0,1,0), MYd=Dm(0,-1,0), PZd=Dm(0,0,1), MZd=Dm(0,0,-1), MXd=Dm(-1,0,0);
+  var OUTd=so>0?MXd:AXd, INd=so>0?AXd:MXd; /* flange direction of members lying on the outside / inside face */
+  var pn=C.pn, an=C.an, wp=C.wp;
+  function stud(role,label,z,ya,yb){E.cst(role,P(XG,ya,z-0.0225),P(XG,yb,z-0.0225),AXd,PZd,label)}
+  function strapRow(label,sf,segs,yr){
+    LBL(label,function(){segs.forEach(function(s){E.strap(P(XG+so*sf*0.0765,yr,s[0]),P(XG+so*sf*0.0765,yr,s[1]))})});
+  }
+  /* lower panel */
+  E.trk('dark',P(XG,FL+t/2,ZA),P(XG,FL+t/2,ZB),AXd,PYd,pn+' '+MD+' bottom track',0.150);
+  E.trk('dark',P(XG,top-2*t-0.145-t/2,ZA),P(XG,top-2*t-0.145-t/2,ZB),AXd,MYd,pn+' '+MD+' top track',0.150);
+  E.trk('dark',P(XG,top-t-0.145-t/2,ZA),P(XG,top-t-0.145-t/2,ZB),AXd,PYd,pn+' '+MD+' girt '+MD+' bottom track',0.150);
+  E.cst('c2',P(XG+so*0.07125,yc,ZA),P(XG+so*0.07125,yc,ZB),PYd,OUTd,pn+' '+MD+' girt '+MD+' stud outside',true);
+  E.cst('c2',P(XG-so*0.07125,yc,ZA),P(XG-so*0.07125,yc,ZB),PYd,INd,pn+' '+MD+' girt '+MD+' stud inside',true);
+  E.trk('dark',P(XG,top-t/2,ZA),P(XG,top-t/2,ZB),AXd,MYd,pn+' '+MD+' girt '+MD+' top track',0.150);
+  function post(label,zc,sg){ /* sg=+1: opening/end at low z, panel toward +z; cap track flanges into panel */
+    var fl=sg>0?PZd:MZd, ofl=sg>0?MZd:PZd;
+    E.trk('mid',P(XG,y0,zc),P(XG,yJ,zc),AXd,fl,label+' '+MD+' cap track',0.150);
+    E.cst('c1',P(XG,y0,zc+sg*0.04625),P(XG,yJ,zc+sg*0.04625),AXd,ofl,label+' '+MD+' stud A');
+    E.cst('c1',P(XG,y0,zc+sg*0.04875),P(XG,yJ,zc+sg*0.04875),AXd,fl,label+' '+MD+' stud B');
+  }
+  post(pn+' '+MD+' end post at wall A',ZA+t/2,1);
+  post(pn+' '+MD+' end post at wall C',ZB-t/2,-1);
+  C.xs.forEach(function(z,k){stud('c1',pn+' '+MD+' stud '+(k+1),z,y0,yJ)});
+  /* window */
+  var wz0=win.z0, wz1=win.z1, ysill=win.ys, yb=win.yb, ys=yb+t+0.0725, yt=yb+t+0.145;
+  function jamb(side,zc,sg){
+    var l=wp+' jamb '+side+' side '+MD, fl=sg>0?PZd:MZd, ofl=sg>0?MZd:PZd;
+    E.trk('mid',P(XG,y0,zc),P(XG,yJ,zc),AXd,fl,l+' cap track',0.150);
+    E.cst('c1',P(XG,y0,zc+sg*0.04625),P(XG,yJ,zc+sg*0.04625),AXd,ofl,l+' stud');
+    E.cst('c1',P(XG,y0,zc+sg*0.04875),P(XG,yJ,zc+sg*0.04875),AXd,fl,l+' second stud');
+  }
+  jamb('wall-A',wz0-t/2,-1);
+  jamb('wall-C',wz1+t/2,1);
+  E.trk('dark',P(XG,yb+t/2,wz0),P(XG,yb+t/2,wz1),AXd,PYd,wp+' header '+MD+' bottom track',0.150);
+  E.cst('c2',P(XG+so*0.07125,ys,wz0+0.001),P(XG+so*0.07125,ys,wz1-0.001),PYd,OUTd,wp+' header '+MD+' stud outside',true);
+  E.cst('c2',P(XG-so*0.07125,ys,wz0+0.001),P(XG-so*0.07125,ys,wz1-0.001),PYd,INd,wp+' header '+MD+' stud inside',true);
+  E.trk('dark',P(XG,yt+t/2,wz0),P(XG,yt+t/2,wz1),AXd,PYd,wp+' header '+MD+' top track',0.150);
+  C.cr.forEach(function(z,k){stud('c1',pn+' '+MD+' cripple above window '+(k+1),z,yt+t,yJ)});
+  E.trk('mid',P(XG,ysill-t/2,wz0),P(XG,ysill-t/2,wz1),AXd,MYd,wp+' sill '+MD+' track',0.150);
+  C.cr.forEach(function(z,k){stud('c1',pn+' '+MD+' cripple below window '+(k+1),z,y0,ysill-t)});
+  if(E.glass) E.glass([P(XG+so*0.001,ysill,wz0),P(XG+so*0.001,ysill,wz1),P(XG+so*0.001,yb,wz1),P(XG+so*0.001,yb,wz0)]);
+  /* X-strap on the outside face + hold-downs */
+  var xo=XG+so*0.0795, xz0=C.xstrapSide==='A'?ZA+0.05:ZB-0.05;
+  LBL(pn+' '+MD+' X-strap 1',function(){E.xstrap(P(xo,FL+0.05,xz0),P(xo,top-0.05,C.xz))});
+  LBL(pn+' '+MD+' X-strap 2',function(){E.xstrap(P(xo,top-0.05,xz0),P(xo,FL+0.05,C.xz))});
+  [['at wall A',ZA+0.0700],['at wall C',ZB-0.0700],['at window jamb wall-A side',wz0-0.0700],['at window jamb wall-C side',wz1+0.0700]].forEach(function(h){
+    LBL(pn+' '+MD+' hold-down '+h[0],function(){E.hd(P(XG,FL+t+0.125,h[1]),0.12,0.25,0.035)});
+  });
+  /* bridging rows, interrupted by the window */
+  [1,2].forEach(function(r){
+    var yr=FL+0.92*r, ybk=yr+0.0225;
+    strapRow(pn+' '+MD+' bridging strap row '+r+' outside',1,C.rows[r-1],yr);
+    strapRow(pn+' '+MD+' bridging strap row '+r+' inside',-1,C.rows[r-1],yr);
+    E.cst('blk',P(XG,ybk,ZA+0.095),P(XG,ybk,C.xs[0]-0.0238),AXd,MYd,pn+' '+MD+' block row '+r+' first space',true);
+    E.cst('blk',P(XG,ybk,C.xs[C.xs.length-1]+0.0275),P(XG,ybk,ZB-0.095),AXd,MYd,pn+' '+MD+' block row '+r+' last space',true);
+  });
+  /* apex panel */
+  E.trk('dark',P(XG,top+t/2,ZA),P(XG,top+t/2,ZB),AXd,PYd,an+' '+MD+' bottom track',0.150);
+  /* each stack member runs down to 3 mm above the apex bottom track web: end z where its underside (offset dl) reaches top+t+0.003 */
+  [['rear',-1],['front',1]].forEach(function(r){
+    var p=V(0,COS,r[1]*SIN), np=Dm(-p.x,-p.y,-p.z), pp=Dm(p.x,p.y,p.z);
+    function pt(z,d){var q=V(XG,yR(z)+0.0979,z).addScaledVector(p,d); return P(q.x,q.y,q.z)}
+    function zEnd(dl){var ze=(top+t+0.003-EV-0.0979-dl*COS)/TAN; return r[1]<0?ze:W-ze}
+    E.trk('dark',pt(zEnd(-0.0475),-t/2),pt(2.6,-t/2),AXd,np,an+' '+MD+' raking header '+r[0]+' '+MD+' cap track',0.150);
+    E.cst('c2',pt(zEnd(-0.0475),-0.04625),pt(2.6,-0.04625),AXd,pp,an+' '+MD+' raking header '+r[0]+' '+MD+' stud',true);
+    E.trk('dark',pt(zEnd(-0.095),-0.04875),pt(2.6,-0.04875),AXd,np,an+' '+MD+' raking track '+r[0],0.150);
+  });
+  [0.6,1.2,1.8,2.4,3.0,3.6,4.2,4.8].forEach(function(z,k){
+    stud('c1',an+' '+MD+' stud '+(k+1),z,top+t,yR(z)+0.0137);
+  });
+  var yra=top+0.92, yba=yra+0.0225;
+  strapRow(an+' '+MD+' bridging strap outside',1,[[1.316,3.884]],yra);
+  strapRow(an+' '+MD+' bridging strap inside',-1,[[1.316,3.884]],yra);
+  E.cst('blk',P(XG,yba,1.342),P(XG,yba,1.8-0.0238),AXd,MYd,an+' '+MD+' block rear end',true);
+  E.cst('blk',P(XG,yba,3.6+0.0275),P(XG,yba,3.858),AXd,MYd,an+' '+MD+' block front end',true);
+}
+var GCFG5={XG:12.5,so:1,pn:'Gable 5 wall panel',an:'Gable 5 apex panel',wp:'Window',win:{z0:3.0,z1:4.5,ys:FL+0.4,yb:FL+1.9},
+  xs:[0.6,1.2,1.8,2.4,4.8],cr:[3.6,4.2],rows:[[[0.075,2.9525],[4.5475,5.125]],[[0.075,2.9525],[4.5475,5.125]]],xstrapSide:'A',xz:2.955};
+var GCFG1={XG:0,so:-1,pn:'Gable 1 wall panel',an:'Gable 1 apex panel',wp:'Gable 1 window',win:{z0:1.5,z1:2.5,ys:FL+1.15,yb:FL+2.15},
+  xs:[0.6,1.2,3.0,3.6,4.2,4.8],cr:[1.8,2.4],rows:[[[0.075,5.125]],[[0.075,1.4525],[2.5475,5.125]]],xstrapSide:'C',xz:2.545};
+var GHOUSE_E={
+  P:V, D:V,
+  trk:function(role,a0,a1,w,f,label,D){uTrack(a0,a1,w,f,{group:G.walls,mat:MAT.walls,label:label},D); COUNT.walls++},
+  cst:function(role,a0,a1,w,f,label,mid){LBL(label,function(){CM(role==='blk'?'wbb':'walls',a0,a1,w,f,role==='blk'?{mid:true,D:0.150}:(mid?{mid:true}:undefined))})},
+  strap:function(p1,p2){M('wbb',p1,p2,0.04,0.003,{ref:V(1,0,0)})},
+  xstrap:function(p1,p2){M('straps',p1,p2,0.10,0.003,{ref:V(1,0,0)})},
+  hd:function(p,sx,sy,sz){B('straps',p.x,p.y,p.z,sx,sy,sz,{nocount:true})},
+  glass:function(pts){QUAD('glass',pts)}
+};
+gablePanels(GHOUSE_E,GCFG5);
+gablePanels(GHOUSE_E,GCFG1);
+
+/* ---- loft floor + grid-2 header + kitchen partition (HOUSE coordinates; emitter E draws them in the house and in the detail scene) ----
+   E.P(x,y,z) maps a house point, E.trk(role,a0,a1,webDir,flangeDir,label,D), E.cst(role,a0,a1,webDir,flangeDir,label,opts{D,mid}),
+   E.strap(p1,p2,flat) (40 x 1.5), roles: c1 joists/studs, c2 blocks/header C, dark tracks, mid cap tracks */
+function loftFloor(E){
+  var t=CT, MD='·', P=E.P, XA=V(1,0,0), YA=V(0,1,0), ZA=V(0,0,1), nX=V(-1,0,0), nY=V(0,-1,0), nZ=V(0,0,-1);
+  var yc=(LF-0.075), xr0=0.075, xr1=3.325, xj0=xr0+t, xj1=xr1-t, DN=0.147;
+  var zi=[]; for(var i=0;i<14;i++) zi.push(0.0975+i*0.385);
+  /* web mid-plane of a C whose 45 footprint is centred on z (open +z: sg=1, open -z: sg=-1); footprint outer face on z-sg*0.0225 */
+  function zw(z,sg){return z-sg*(0.0225-t/2)}
+  function joist(label,i,x0,x1,sg,role){
+    E.cst(role||'c1',P(x0,yc,zw(zi[i],sg)),P(x1,yc,zw(zi[i],sg)),YA,sg>0?ZA:nZ,label,{D:DN});
+  }
+  /* ---- ladder opening geometry ---- */
+  var zwA=zw(zi[9],1), zwB=zw(zi[12],1);              /* trimmer joists, both open +z */
+  var zA2=zwA-t, zB2=zwB-t;                           /* second C, web to web, open -z */
+  var zAcap=zwA+0.045+t/2, zBcap=zB2-0.045-t/2;       /* cap track web mid-planes (web facing the opening) */
+  var zOA=zAcap+t/2, zOB=zBcap-t/2;                   /* flat opening faces */
+  var xh=2.125, xhT=xh-t/2, xhC=xh-t-t/2, xtail=xhC-0.045;
+  /* footprint [lo,hi] of each joist position in z (for the blocks) */
+  var ext=[]; for(i=0;i<14;i++) ext.push(i<13?[zw(zi[i],1)-t/2,zw(zi[i],1)+0.045]:[zw(zi[i],-1)-0.045,zw(zi[i],-1)+t/2]);
+  ext[9]=[zA2-0.045,zOA]; ext[12]=[zOB,ext[12][1]];
+  /* ---- rim tracks ---- */
+  E.trk('dark',P(xr0+t/2,yc,0.075),P(xr0+t/2,yc,5.125),YA,XA,'Loft floor '+MD+' gable-1 rim track',0.150);
+  E.trk('dark',P(xr1-t/2,yc,0.28),P(xr1-t/2,yc,zOA),YA,nX,'Loft floor '+MD+' grid-2 rim track, bay A',0.150);
+  E.trk('dark',P(xr1-t/2,yc,zOB),P(xr1-t/2,yc,4.92),YA,nX,'Loft floor '+MD+' grid-2 rim track, bay B',0.150);
+  /* ---- joists ---- */
+  for(i=0;i<14;i++){
+    var sg=i===13?-1:1, k=i+1, xe=(i===0||i===13)?3.172:xj1;
+    if(i===10||i===11){joist('Loft floor '+MD+' tail joist '+k,i,xj0,xtail,1);continue}
+    if(i===9||i===12){
+      var nm='Loft floor '+MD+' trimmer '+(i===9?'A':'B');
+      joist(nm+' joist '+k,i,xj0,xj1,1);
+      var z2=i===9?zA2:zB2, zc=i===9?zAcap:zBcap;
+      E.cst('c1',P(xj0,yc,z2),P(xj1,yc,z2),YA,nZ,nm+' second C (joist '+k+' back to back)',{D:DN});
+      E.trk('mid',P(xj0,yc,zc),P(xj1,yc,zc),YA,i===9?nZ:ZA,nm+' cap track',DN);
+      continue;
+    }
+    joist('Loft floor '+MD+' joist '+k,i,xj0,xe,sg);
+  }
+  /* ---- opening header joist: cap track (web on the opening face, open -x) + C nested, toes -x ---- */
+  E.trk('mid',P(xhT,yc,zOA),P(xhT,yc,zOB),YA,nX,'Loft floor '+MD+' opening header cap track',DN);
+  E.cst('c1',P(xhC,yc,zOA),P(xhC,yc,zOB),YA,nX,'Loft floor '+MD+' opening header C',{D:DN});
+  /* ---- solid blocking + bridging, 2 rows ---- */
+  [[1,1.10,14],[2,2.125,0]].forEach(function(R){
+    var r=R[0], xrw=R[1], n=0, pairs=[], j;
+    pairs=r===1?[0,12]:[0,8,12]; /* solid blocking only at the ends of each strap run (owner) */
+    pairs.forEach(function(j){
+      n++;
+      E.cst('blk',P(xrw+0.0225,yc,ext[j][1]+0.001),P(xrw+0.0225,yc,ext[j+1][0]-0.001),YA,nX,'Loft floor '+MD+' block row '+r+' space '+n,{D:0.150,mid:true});
+    });
+    var segs=r===1?[[0.075,5.125]]:[[0.075,zOA],[zOB,5.125]];
+    [['top',LF+0.00075],['bottom',LF-0.15075]].forEach(function(f){
+      LBL('Loft floor '+MD+' bridging strap row '+r+' '+f[0],function(){segs.forEach(function(s){E.strap(P(xrw,f[1],s[0]),P(xrw,f[1],s[1]),true)})});
+    });
+  });
+  /* ---- grid-2 header: top U open down, two standing C toes facing, bottom U open up (frame plane x 3.175..3.325) ---- */
+  var xg=3.25, zh0=0.28, zh1=4.92, yh=LF-0.225, GH='Grid-2 header '+MD+' ';
+  E.trk('dark',P(xg,LF-0.15-t/2,zh0),P(xg,LF-0.15-t/2,zh1),XA,nY,GH+'top track',0.150);
+  E.cst('c2',P(xg-0.07125,yh,zh0),P(xg-0.07125,yh,zh1),YA,XA,GH+'C face x 3.175',{mid:true});
+  E.cst('c2',P(xg+0.07125,yh,zh0),P(xg+0.07125,yh,zh1),YA,nX,GH+'C face x 3.325',{mid:true});
+  E.trk('dark',P(xg,LF-0.30+t/2,zh0),P(xg,LF-0.30+t/2,zh1),XA,YA,GH+'bottom track',0.150);
+  /* ---- grid-2 kitchen partition (non-load-bearing except the posts), z 0.28 .. 3.90 ---- */
+  var PN='Grid-2 partition '+MD+' ', yb0=FL+t, yb1=LF-0.30-t, zE=3.90, ya=LF-0.30;
+  var zsw=0.28+t/2;                                        /* start stud web */
+  var zA=1.95-t/2, zB=1.95+t/2;                           /* inner post: A toes -z, B toes +z */
+  var zEA=zE-t-0.045, zEB=zEA-t; /* end post: stud A (toes +z, capped), B back to back (toes -z) */
+  E.trk('dark',P(xg,FL+t/2,0.28),P(xg,FL+t/2,zE),XA,YA,PN+'bottom track',0.150);
+  var tt=[[0.28,zA-0.045],[zB+0.045,zEB-0.045]];
+  tt.forEach(function(s,k){E.trk('dark',P(xg,LF-0.30-t/2,s[0]),P(xg,LF-0.30-t/2,s[1]),XA,nY,PN+'top track piece '+(k+1),0.150)});
+  E.cst('c1',P(xg,yb0,zsw),P(xg,yb1,zsw),XA,ZA,PN+'start stud at the frame column',{D:DN});
+  var ext2=[[zsw-t/2,zsw+0.045]], n=0;
+  function between(c0,c1){var m=Math.ceil((c1-c0)/0.6-1e-9), k; for(k=1;k<m;k++){var c=c0+(c1-c0)*k/m, z=c-0.0225+t/2; n++; E.cst('c1',P(xg,yb0,z),P(xg,yb1,z),XA,ZA,PN+'stud '+n,{D:DN}); ext2.push([z-t/2,z+0.045])}}
+  between(0.28+0.0225,1.95);
+  ext2.push([zA-0.045,zB+0.045]);
+  E.cst('c1',P(xg,yb0,zA),P(xg,ya,zA),XA,nZ,PN+'post 1 stud A',{D:DN});
+  E.cst('c1',P(xg,yb0,zB),P(xg,ya,zB),XA,ZA,PN+'post 1 stud B',{D:DN});
+  between(1.95,(zEA+zEB)/2);
+  ext2.push([zEB-0.045,zE]);
+  E.trk('mid',P(xg,yb0,zE-t/2),P(xg,ya,zE-t/2),XA,nZ,PN+'end post cap track',0.150);
+  E.cst('c1',P(xg,yb0,zEA),P(xg,ya,zEA),XA,ZA,PN+'end post stud A (capped)',{D:DN});
+  E.cst('c1',P(xg,yb0,zEB),P(xg,ya,zEB),XA,nZ,PN+'end post stud B',{D:DN});
+  /* bridging row at FL+1.2: C150 blocks between studs, 40 mm straps on both faces */
+  var yrr=FL+1.2;
+  for(var q=0;q<ext2.length-1;q++){
+    var za=ext2[q][1]+0.001, zb=ext2[q+1][0]-0.001;
+    E.cst('blk',P(xg,yrr+0.0225,za),P(xg,yrr+0.0225,zb),XA,nY,PN+'block '+(q+1),{D:0.150,mid:true});
+  }
+  [['face x 3.175',3.175-0.00075],['face x 3.325',3.325+0.00075]].forEach(function(f){
+    LBL(PN+'bridging strap '+f[0],function(){E.strap(P(f[1],yrr,0.28),P(f[1],yrr,zE),false)});
+  });
+}
+var LOFT_HOUSE_E={
+  P:V,
+  trk:function(role,a0,a1,w,f,label,D){var ly=/^Grid-2 partition/.test(label)?'parts':'loft'; uTrack(a0,a1,w,f,{group:G[ly],mat:MAT[ly],label:label},D); COUNT[ly]++},
+  cst:function(role,a0,a1,w,f,label,o){var ly=/^Grid-2 partition/.test(label)?'parts':'loft'; cSection(a0,a1,w,f,{D:o&&o.D,group:G[ly],mat:MAT[ly],slots:/^Loft floor/.test(label)?false:(o&&o.mid)?'mid':true,label:label}); COUNT[ly]++},
+  strap:function(p1,p2,flat){var ly=ctx.label&&/^Grid-2 partition/.test(ctx.label)?'parts':'loft'; M(ly,p1,p2,0.04,0.0015,{ref:flat?undefined:V(1,0,0)})}
+};
+loftFloor(LOFT_HOUSE_E);
+
+/* ---- wall panel scene ---- */
+var WP_NB=null;
+function wallPanelScene(){
+  var g=new THREE.Group(), t=CT, top=2.7577, y0=0.0025, y1=top-0.0025, xa=-1.497, xb=1.497, MD='·', pn='Wall A panel bay 2-3';
+  dprefix=T.details.wpanel;
+  uTrack(V(xa,t/2,0),V(xb,t/2,0),AZ,AY,{group:g,mat:DM.dark,label:pn+' '+MD+' bottom track'},0.150);
+  uTrack(V(xa,top-t/2,0),V(xb,top-t/2,0),AZ,neg(AY),{group:g,mat:DM.dark,label:pn+' '+MD+' top track'},0.150);
+  cSection(V(xa+t/2,y0,0),V(xa+t/2,y1,0),AZ,AX,{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' end stud at grid 2'});
+  cSection(V(xb-t/2,y0,0),V(xb-t/2,y1,0),AZ,neg(AX),{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' end stud at grid 3'});
+  var nbG=new THREE.Group(); g.add(nbG); WP_NB=nbG;
+  cSection(V(xa-0.006-t/2,y0,0),V(xa-0.006-t/2,y1,0),AZ,neg(AX),{group:nbG,mat:DM.ghost,slots:true,label:'Neighbouring panel bay 1-2 '+MD+' end stud at grid 2'});
+  cSection(V(xb+0.006+t/2,y0,0),V(xb+0.006+t/2,y1,0),AZ,AX,{group:nbG,mat:DM.ghost,slots:true,label:'Neighbouring panel bay 3-4 '+MD+' end stud at grid 3'});
+  var xs=[], i;
+  for(i=1;xa+0.6*i<=xb-0.145;i++) xs.push(xa+0.6*i);
+  xs.forEach(function(x,k){cSection(V(x-0.0225,y0,0),V(x-0.0225,y1,0),AZ,AX,{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' stud '+(k+1)})});
+  [1,2].forEach(function(r){
+    var yr=0.92*r, yb=yr+0.0225;
+    [['outside',-1],['inside',1]].forEach(function(f){
+      LBL(pn+' '+MD+' bridging strap row '+r+' '+f[0],function(){obox(g,DM.rod,V(0,yr,f[1]*0.0765),AX,AY,xb-xa,0.04,0.003)});
+    });
+    cSection(V(xa+0.0475,yb,0),V(xs[0]-0.0238,yb,0),AZ,neg(AY),{group:g,mat:DM.c2,slots:'mid',label:pn+' '+MD+' block row '+r+' first space'});
+    cSection(V(xs[xs.length-1]+0.0275,yb,0),V(xb-0.0475,yb,0),AZ,neg(AY),{group:g,mat:DM.c2,slots:'mid',label:pn+' '+MD+' block row '+r+' last space'});
+  });
+  addDetail('wpanel',g);
+}
+wallPanelScene();
+
+/* ---- door header scene ---- */
+function doorHeaderScene(){
+  var g=new THREE.Group(), t=CT, top=2.7577, y0=0.0025, y1=top-0.0025, MD='·', yb=2.1, ys=yb+t+0.0725, yt=yb+t+0.145;
+  dprefix=T.details.dheader;
+  uTrack(V(-0.7,top-t/2,0),V(0.7,top-t/2,0),AZ,neg(AY),{group:g,mat:DM.dark,label:'Wall top track'},0.150);
+  uTrack(V(-0.7,t/2,0),V(0.7,t/2,0),AZ,AY,{group:g,mat:DM.dark,label:'Wall A panel bay 1-2 '+'·'+' bottom track (cut out at the door after erection)'},0.150);
+  [[-0.45,-1,'grid-1'],[0.45,1,'grid-2']].forEach(function(j){
+    var xw=j[0]+j[1]*0.00125, tip=xw+j[1]*0.045, xc=tip+j[1]*0.00125;
+    cSection(V(xw,y0,0),V(xw,y1,0),AZ,j[1]>0?AX:neg(AX),{group:g,mat:DM.c1,slots:true,label:'Door jamb '+j[2]+' side '+MD+' stud'});
+    uTrack(V(xc,y0+0.05,0),V(xc,y1-0.05,0),AZ,j[1]>0?neg(AX):AX,{group:g,mat:DM.mid,label:'Door jamb '+j[2]+' side '+MD+' cap track'},0.158);
+  });
+  uTrack(V(-0.45,yb+t/2,0),V(0.45,yb+t/2,0),AZ,AY,{group:g,mat:DM.dark,label:'Door header '+MD+' bottom track'},0.150);
+  cSection(V(-0.449,ys,-0.07125),V(0.449,ys,-0.07125),AY,AZ,{group:g,mat:DM.c2,slots:'mid',label:'Door header '+MD+' stud outside'});
+  cSection(V(-0.449,ys,0.07125),V(0.449,ys,0.07125),AY,neg(AZ),{group:g,mat:DM.c2,slots:'mid',label:'Door header '+MD+' stud inside'});
+  uTrack(V(-0.45,yt+t/2,0),V(0.45,yt+t/2,0),AZ,AY,{group:g,mat:DM.dark,label:'Door header '+MD+' top track'},0.150);
+  cSection(V(-0.0225,yt+t,0),V(-0.0225,y1,0),AZ,AX,{group:g,mat:DM.c1,slots:true,label:'Wall A panel bay 1-2 '+MD+' cripple above door'});
+  clip(g,V(-0.45,2.18,0.0725),AX,neg(AZ),0.03);
+  clip(g,V(0.45,2.18,0.0725),neg(AX),neg(AZ),0.03);
+  addDetail('dheader',g);
+}
+doorHeaderScene();
+
+/* ---- gable 5 panels scene (local frame: x = 2.6 - house z, y = house y - FL, z = house x - 12.5; proper rotation, outside faces the camera) ---- */
+function gableScene(key,PF,DF,C){
+  var g=new THREE.Group();
+  dprefix=T.details[key];
+  gablePanels({
+    P:PF,
+    D:DF,
+    trk:function(role,a0,a1,w,f,label,D){uTrack(a0,a1,w,f,{group:g,mat:DM[role],label:label},D)},
+    cst:function(role,a0,a1,w,f,label,mid){cSection(a0,a1,w,f,{D:role==='blk'?0.150:undefined,group:g,mat:role==='blk'?DM.c2:DM[role],slots:mid?'mid':true,label:label})},
+    strap:function(p1,p2){var d=p2.clone().sub(p1), len=d.length(); obox(g,DM.rod,p1.clone().add(p2).multiplyScalar(.5),d.normalize(),AY,len,0.04,0.003)},
+    xstrap:function(p1,p2){var d=p2.clone().sub(p1), len=d.length(); d.normalize(); obox(g,DM.rod,p1.clone().add(p2).multiplyScalar(.5),d,new THREE.Vector3(0,0,1).cross(d),len,0.10,0.003)},
+    hd:function(p,sx,sy,sz){obox(g,DM.rod,p,V(1,0,0),V(0,1,0),sx,sy,sz)}
+  },C);
+  addDetail(key,g);
+}
+gableScene('gable5',function(x,y,z){return V(2.6-z,y-FL,x-12.5)},function(dx,dy,dz){return V(-dz,dy,dx)},GCFG5);
+/* gable 1 scene: local frame x = house z - 2.6, y = house y - FL, z = -house x (outside faces the camera) */
+gableScene('gable1',function(x,y,z){return V(z-2.6,y-FL,-x)},function(dx,dy,dz){return V(dz,dy,-dx)},GCFG1);
+
+/* ---- corner A/5 scene (local frame: x = house x - 12, y = house y - FL, z = house z) ---- */
+function cornerA5Scene(){
+  var g=new THREE.Group(), t=CT, top=2.7577, y0=0.0025, y1=top-0.0025, MD='\u00b7', pn='Wall A panel bay 4-5', XEl=XE-12, ZM=0.9;
+  dprefix=T.details.cornerA5;
+  uTrack(V(-0.4,t/2,0),V(XEl,t/2,0),AZ,AY,{group:g,mat:DM.dark,label:pn+' '+MD+' bottom track'},0.150);
+  uTrack(V(-0.4,top-t/2,0),V(XEl,top-t/2,0),AZ,neg(AY),{group:g,mat:DM.dark,label:pn+' '+MD+' top track'},0.150);
+  [4,5].forEach(function(k){ var x=9.253+0.6*k-12;
+    cSection(V(x-0.0225,y0,0),V(x-0.0225,y1,0),AZ,AX,{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' stud '+k});
+  });
+  cSection(V(XEl-t/2,y0,0),V(XEl-t/2,y1,0),AZ,neg(AX),{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' end stud at grid 5'});
+  cSection(V(0.425+t/2,y0,0),V(0.425+t/2,y1,0),AZ,AX,{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' wind post '+MD+' outer stud'});
+  cSection(V(0.425-t/2,y0,0),V(0.425-t/2,y1,0),AZ,neg(AX),{group:g,mat:DM.c1,slots:true,label:pn+' '+MD+' wind post '+MD+' inner stud'});
+  [1,2].forEach(function(r){
+    var yr=0.92*r, yb=yr+0.0225;
+    [['outside',-1],['inside',1]].forEach(function(f){
+      LBL(pn+' '+MD+' bridging strap row '+r+' '+f[0],function(){obox(g,DM.rod,V((-0.4+XEl)/2,yr,f[1]*0.0765),AX,AY,XEl+0.4,0.04,0.003)});
+    });
+    cSection(V(12.253-12+0.0275,yb,0),V(0.375,yb,0),AZ,neg(AY),{group:g,mat:DM.c2,slots:'mid',D:0.150,label:pn+' '+MD+' block row '+r+' last space'});
+  });
+  /* wall A X-strap, last 1.0 m ending at x 12.425 */
+  var dx=12.425-9.25, dyy=top, ln=Math.sqrt(dx*dx+dyy*dyy);
+  [['1',dyy,top],['2',-dyy,0]].forEach(function(s){
+    var d=V(dx,s[1],0).divideScalar(ln), p2=V(0.425,s[2],-OFS), p1=p2.clone().addScaledVector(d,-1.0);
+    LBL('Wall A X-strap '+s[0],function(){obox(g,DM.rod,p1.clone().add(p2).multiplyScalar(.5),d,V(0,0,1).cross(d),1.0,0.10,0.003)});
+  });
+  LBL('Wall A hold-down',function(){obox(g,DM.rod,V(0.4025,t+0.125,0),AX,AY,0.035,0.25,0.12)});
+  /* gable 5 lower panel, z 0.075 .. 0.9: same builder as the house, filtered to this range */
+  function inG(L){ return L.indexOf('Gable 5 wall panel')===0 && (!/ \u00b7 top track$/.test(L) || /girt/.test(L)); }
+  function clipZ(a0,a1){ var b=a1.clone(); if(b.z>ZM) b.z=ZM; return b }
+  gablePanels({
+    P:function(x,y,z){return V(x-12,y-FL,z)},
+    D:function(dx,dy,dz){return V(dx,dy,dz)},
+    trk:function(role,a0,a1,w,f,label,D){ if(!inG(label)||Math.min(a0.z,a1.z)>ZM) return; uTrack(a0,clipZ(a0,a1),w,f,{group:g,mat:DM[role],label:label},D) },
+    cst:function(role,a0,a1,w,f,label,mid){ if(!inG(label)||Math.min(a0.z,a1.z)>ZM) return; cSection(a0,clipZ(a0,a1),w,f,{D:role==='blk'?0.150:undefined,group:g,mat:role==='blk'?DM.c2:DM[role],slots:mid?'mid':true,label:label}) },
+    strap:function(p1,p2){ if(Math.min(p1.z,p2.z)>ZM) return; p2=clipZ(p1,p2); obox(g,DM.rod,p1.clone().add(p2).multiplyScalar(.5),p2.clone().sub(p1).normalize(),AY,p2.distanceTo(p1),0.04,0.003) },
+    xstrap:function(p1,p2){ var d=p2.clone().sub(p1).normalize(), q=p1.clone().addScaledVector(d,1.0); obox(g,DM.rod,p1.clone().add(q).multiplyScalar(.5),d,V(0,0,1).cross(d),1.0,0.10,0.003) },
+    hd:function(p,sx,sy,sz){ if(p.z>ZM) return; obox(g,DM.rod,p,V(1,0,0),V(0,1,0),sz,sy,sx) }
+  },GCFG5);
+  addDetail('cornerA5',g);
+}
+cornerA5Scene();
+
+/* ---- loft floor scene (local frame: house point - (1.66, LF-0.2, 2.6); same builder as the house) ---- */
+function loftScene(){
+  var g=new THREE.Group();
+  dprefix=T.details.loft;
+  loftFloor({
+    P:function(x,y,z){return V(x-1.66,y-(LF-0.2),z-2.6)},
+    trk:function(role,a0,a1,w,f,label,D){uTrack(a0,a1,w,f,{group:g,mat:DM[role],label:label},D)},
+    cst:function(role,a0,a1,w,f,label,o){cSection(a0,a1,w,f,{D:o&&o.D,group:g,mat:role==='blk'?DM.c2:DM[role],slots:/^Loft floor/.test(label)?false:(o&&o.mid)?'mid':true,label:label})},
+    strap:function(p1,p2,flat){var d=p2.clone().sub(p1), len=d.length(); obox(g,DM.rod,p1.clone().add(p2).multiplyScalar(.5),d.normalize(),flat?AX:AY,len,0.04,0.0015)}
+  });
+  addDetail('loft',g);
+}
+loftScene();
+
+/* ---- ground floor scene: bearers + floor panels around grid 2 (local frame: house point - (3.25, 0.35, 2.6); same builder as the house, filtered to x 2.1..4.4, z 1.6..5.4, plus a stub of the grid-2 C-side frame column) ---- */
+function floorScene(){
+  var g=new THREE.Group(), X0=2.1, X1=4.4, Z0=1.6, Z1=5.4, O=V(3.25,0.35,2.6), ex1=V(1,0,0), ey1=V(0,1,0);
+  var MT={c1:DM.c1,c2:DM.c2,j:DM.c1,blk:DM.c2,dark:DM.dark,pl:DM.dark,bolt:DM.bolt,rod:DM.rod,scr:DM.mid};
+  dprefix=T.details.floor;
+  function Pf(v){return v.clone().sub(O)}
+  function cl(a0,a1){
+    var A=[a0.x,a0.y,a0.z], B2=[a1.x,a1.y,a1.z], lo=[X0,-9,Z0], hi=[X1,9,Z1], i, l, h;
+    for(i=0;i<3;i++){
+      if(A[i]===B2[i]){ if(A[i]<lo[i]||A[i]>hi[i]) return null; continue }
+      l=Math.min(A[i],B2[i]); h=Math.max(A[i],B2[i]);
+      if(h<lo[i]||l>hi[i]) return null;
+      A[i]=Math.min(hi[i],Math.max(lo[i],A[i])); B2[i]=Math.min(hi[i],Math.max(lo[i],B2[i]));
+    }
+    return [V(A[0],A[1],A[2]),V(B2[0],B2[1],B2[2])];
+  }
+  GX.forEach(function(x){ [2.6,W-0.1775].forEach(function(z){
+    if(x<X0||x>X1||z<Z0||z>Z1) return;
+    LBL('Soil screw 2/'+(z<3?'B':'C'),function(){
+      cyl(g,MT.scr,Pf(V(x,-0.6,z)),Pf(V(x,0.24,z)),0.09);
+      obox(g,MT.scr,Pf(V(x,0.235,z)),ex1,ey1,0.2,0.01,0.2);
+    });
+  });});
+  groundFloor({
+    c:function(role,a0,a1,wd,fd,label,o){var s=cl(a0,a1); if(!s) return; cSection(Pf(s[0]),Pf(s[1]),wd,fd,{D:o.D,F:o.F,LP:o.LP,group:g,mat:MT[role],slots:false,label:label})},
+    trk:function(role,a0,a1,wd,fd,label,D){var s=cl(a0,a1); if(!s) return; uTrack(Pf(s[0]),Pf(s[1]),wd,fd,{group:g,mat:MT[role],label:label},D)},
+    box:function(role,x,y,z,sx,sy,sz){ if(x<X0||x>X1||z<Z0||z>Z1) return; obox(g,MT[role],Pf(V(x,y,z)),ex1,ey1,sx,sy,sz) },
+    cylx:function(role,p1,p2,d){ var m=p1.clone().add(p2).multiplyScalar(.5); if(m.x<X0||m.x>X1||m.z<Z0||m.z>Z1) return; cyl(g,MT[role],Pf(p1),Pf(p2),d,16) },
+    strap:function(p1,p2){ var s=cl(p1,p2); if(!s) return; var d=s[1].clone().sub(s[0]), len=d.length(); obox(g,DM.rod,Pf(s[0].clone().add(s[1]).multiplyScalar(.5)),d.normalize(),ex1,len,0.04,0.0015) }
+  });
+  /* stub of the grid-2 frame column on the C side (z 4.92 .. 5.125), standing on the bearer top, cut through the end tracks */
+  var cs=fcolumn(FL+0.005), MDf='\u00b7'; cs.s1=FL+0.40;
+  FDZ=2.6;
+  fmember(g,{c:DM.c1,t:DM.mid},0,-0.35,true,cs,{c1:'Frame column stub '+MDf+' C stud 1',c2:'Frame column stub '+MDf+' C stud 2',tp:'Frame column stub '+MDf+' inner track',tm:'Frame column stub '+MDf+' outer track'});
+  FDZ=0;
+  addDetail('floor',g);
+}
+floorScene();
+
+/* ---------- lights, renderer, camera ---------- */
+scene.add(new THREE.HemisphereLight(0xffffff,0x7d8896,0.85));
+var sun=new THREE.DirectionalLight(0xffffff,0.75); sun.position.set(8,14,12); scene.add(sun);
+var renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+stage.insertBefore(renderer.domElement,stage.firstChild);
+var camera=new THREE.PerspectiveCamera(40,1,0.02,200);
+var controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true; controls.dampingFactor=0.08;
+controls.minDistance=0.3; controls.maxDistance=60; controls.maxPolarAngle=Math.PI*0.52;
+var TARGET=V(6.25,2.3,2.6);
+
+function fitDist(halfW,halfH){
+  var t=Math.tan(camera.fov*Math.PI/360);
+  return 1.15*Math.max(halfW/(t*camera.aspect),halfH/t)+3;
+}
+var mode='house', bounds={};
+function setView(name,cdir){
+  var d,dir;
+  if(mode!=='house'){
+    var rdg=(mode==='ridgebox'||mode==='eave'), dx=false, bkey=mode;
+    if(!bounds[bkey]) bounds[bkey]=mode==='eave'?(dx?new THREE.Box3(V(-0.6,-0.8,-0.85),V(0.6,1.2,0.95)):new THREE.Box3(V(-0.6,-0.8,-0.55),V(0.6,0.85,0.9))):rdg?(dx?new THREE.Box3(V(-0.4,-0.45,-0.95),V(1.6,1.1,0.95)):new THREE.Box3(V(-0.4,-0.4,-0.6),V(1.6,0.35,0.6))):new THREE.Box3().setFromObject(DG[mode]);
+    var bb=bounds[bkey], ctr=bb.getCenter(new THREE.Vector3());
+    var slope=(mode==='block'||mode==='skyp'), pan=(mode==='panel');
+    dir=cdir?cdir.clone():({front:V(0,0.12,1),rear:V(0,0.12,-1),top:V(0,1,0.001)})[name]||((mode==='gable5'||mode==='gable1')?V(0.4,0.3,1):mode==='cornerA5'?V(0.9,0.35,-1):mode==='loft'?V(-0.8,0.9,-1):mode==='floor'?V(0.9,0.8,1.1):(mode==='wpanel'||mode==='dheader')?V(0.6,0.45,-1):rdg?V(1,0.06,0.02):pan?V(0.25,-0.45,-0.93):slope?V(0.55,0.54,-0.91):V(1,0.25,0.35));
+    dir.normalize();
+    camera.position.copy(ctr).add(dir); camera.lookAt(ctr); camera.updateMatrixWorld();
+    var rt=V(1,0,0).applyQuaternion(camera.quaternion), upv=V(0,1,0).applyQuaternion(camera.quaternion);
+    var tv=Math.tan(camera.fov*Math.PI/360), th=tv*camera.aspect, dh=0, dv=0;
+    for(var ci=0;ci<8;ci++){
+      var cp=V(ci&1?bb.max.x:bb.min.x,ci&2?bb.max.y:bb.min.y,ci&4?bb.max.z:bb.min.z).sub(ctr);
+      dh=Math.max(dh,cp.dot(dir)+Math.abs(cp.dot(rt))/th); dv=Math.max(dv,cp.dot(dir)+Math.abs(cp.dot(upv))/tv);
+    }
+    d=(rdg||mode==='wpanel'||mode==='dheader'||mode==='gable5'||mode==='gable1'||mode==='cornerA5'||mode==='loft'||mode==='floor')?Math.max(dh,dv)*1.05:pan?Math.max(dh*1.08,dv*0.8):slope?Math.max(dh,dv)*1.08:Math.max(dh*1.08,dv*1.2);
+    controls.target.copy(ctr);
+    camera.position.copy(ctr).addScaledVector(dir,d);
+    camera.lookAt(ctr); controls.update();
+    return;
+  }
+  if(name==='front'){dir=V(0,0.12,1);d=fitDist(7.4,3.6)}
+  else if(name==='rear'){dir=V(0,0.12,-1);d=fitDist(7.4,3.6)}
+  else if(name==='top'){dir=V(0,1,0.001);d=fitDist(7.4,3.9)}
+  else {dir=V(0.5,0.42,1);d=fitDist(9.6,5.2)}
+  controls.target.copy(TARGET);
+  camera.position.copy(TARGET).add(dir.normalize().multiplyScalar(d));
+  camera.lookAt(TARGET); controls.update();
+}
+function resize(){
+  var w=stage.clientWidth, h=stage.clientHeight;
+  if(!w||!h) return;
+  renderer.setSize(w,h,false);
+  camera.aspect=w/h; camera.updateProjectionMatrix();
+}
+var firstFit=true;
+new ResizeObserver(function(){
+  resize();
+  if(firstFit){firstFit=false;setView('reset')}
+}).observe(stage);
+resize(); setView('reset'); firstFit=false;
+
+/* ---------- theme ---------- */
+function applyTheme(){
+  var cs=getComputedStyle(root);
+  function c(n){return cs.getPropertyValue(n).trim()}
+  scene.background.set(c('--scene'));
+  LAYERS.forEach(function(l){MAT[l.id].color.set(c(l.tok))});
+  DM.c1.color.set(c('--d-c1')); DM.c2.color.set(c('--d-c2')); DM.dark.color.set(c('--d-dark')); DM.rod.color.set(c('--accent')); DM.bolt.color.set(c('--d-bolt')); DM.track.color.set(c('--c-track')); DM.trim.color.set(c('--c-trim')); DM.mid.color.set(c('--d-mid')); DM.ghost.color.set(c('--d-ghost')); MAT.rptrack.color.set(c('--c-track')); MAT.rptrim.color.set(c('--c-trim')); repaintSel();
+  edgeMat.color.set(c('--edge'));
+  gridMat.color.set(c('--grid'));
+  glMat.color.set(c('--c-gridline')); paintLabels(c('--text'));
+}
+applyTheme();
+if(window.matchMedia){
+  var mq=window.matchMedia('(prefers-color-scheme: dark)');
+  if(mq.addEventListener) mq.addEventListener('change',applyTheme); else if(mq.addListener) mq.addListener(applyTheme);
+}
+new MutationObserver(applyTheme).observe(root,{attributes:true,attributeFilter:['data-theme']});
+
+/* ---------- UI ---------- */
+var layersEl=document.getElementById('layers'), cbs={};
+LAYERS.forEach(function(l){
+  var lab=document.createElement('label'); lab.className='chip';
+  var cb=document.createElement('input'); cb.type='checkbox'; cb.checked=true; cb.id='layer-'+l.id; cbs[l.id]=cb;
+  cb.addEventListener('change',function(){l.group.visible=cb.checked});
+  var sw=document.createElement('span'); sw.className='sw'; sw.style.background='var('+l.tok+')';
+  var nm=document.createElement('span'); nm.textContent=l.name;
+  var n=document.createElement('span'); n.className='n'; n.textContent=COUNT[l.id];
+  lab.appendChild(cb); lab.appendChild(sw); lab.appendChild(nm); lab.appendChild(n);
+  layersEl.appendChild(lab);
+});
+['front','rear','top'].forEach(function(n){document.getElementById('v-'+n).addEventListener('click',function(){setView(n)})});
+document.getElementById('v-reset').addEventListener('click',function(){setView('reset')});
+$('nbcheck').addEventListener('change',function(){if(WP_NB)WP_NB.visible=$('nbcheck').checked});
+$('hidecap').addEventListener('change',function(){if(RIDGE_CAP)RIDGE_CAP.visible=!$('hidecap').checked});
+var roofParts=[G.rp,G.rb,G.rx,G.rbox,roofGlass,capGrp,ecapA,ecapC,iangA,iangC];
+
+/* ---------- explode slider ---------- */
+var exSlider=$('explode'), exVal=$('explodeVal');
+function setSlider(s){exSlider.value=Math.round(s*100);exVal.textContent=Math.round(s*100)+'%'}
+exSlider.addEventListener('input',function(){var s=exSlider.value/100;exVal.textContent=exSlider.value+'%';applyExplode(s)});
+/* house: panels move as rigid units; per-mesh offset hx (at s=1) from the original position hp0 */
+(function(){
+  scene.updateMatrixWorld(true);
+  var HX=[], unclassified=[];
+  var roofSet=roofParts;
+  function inRoof(o){var ex=null;for(var p=o.parent;p;p=p.parent){if(roofSet.indexOf(p)>=0){if(ex===null)ex=p.userData.extra||0;}}return ex}
+  function sideZ(o,lab){
+    if(lab&&/rear/.test(lab)) return -1; if(lab&&/front/.test(lab)) return 1;
+    if(lab&&/wall A/.test(lab)) return -1; if(lab&&/wall C/.test(lab)) return 1;
+    var c=new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3()).z;
+    return c<2.55?-1:c>2.65?1:0;
+  }
+  function classify(o,layer){
+    var mem=o.userData.member, lab=mem?mem.label:'', bb=new THREE.Box3().setFromObject(o), c=bb.getCenter(new THREE.Vector3()), m;
+    var rx=inRoof(o);
+    if(rx!==null){
+      var sz=(lab&&/Ridge cap|Ridge blocking/.test(lab))?0:sideZ(o,lab);
+      /* eave caps / inner angles are per wall: wall A = rear, wall C = front */
+      if(/Eave (cap|inner angle) wall A/.test(lab)) sz=-1; else if(/Eave (cap|inner angle) wall C/.test(lab)) sz=1;
+      return V(0,1.5+rx,0.3*sz);
+    }
+    if(layer==='loft') return /^Loft floor/.test(lab)?V(0,0.8,0):null;
+    if(layer!=='walls'&&layer!=='wbb'&&layer!=='straps'&&layer!=='glass') return null;
+    var g=0, apex=false;
+    if((m=/^Gable (\d)/.exec(lab))) g=+m[1]; else if(/^Window/.test(lab)) g=5;
+    else if(!lab){ if(c.x>12.2) g=5; else if(c.x<0.3) g=1; }
+    if(g){
+      apex=/apex panel/.test(lab)||(!lab&&c.y>3.25);
+      var dx=g===5?1:-1;
+      return V(dx,apex?0.5:0,0);
+    }
+    var wz=lab?(/Wall A|Door|Hold-down|Wall brace/.test(lab)?-1:/Wall C/.test(lab)?1:0):(c.z<0.5?-1:c.z>4.7?1:0);
+    if(wz===0&&lab) wz=c.z<2.6?-1:1;
+    if(wz) return V(0,0,wz);
+    return null;
+  }
+  var STATIC={screws:1,floor:1,frames:1,rods:1,parts:1};
+  LAYERS.forEach(function(l){
+    if(l.id==='grid') return;
+    l.group.traverse(function(o){
+      if(!o.isMesh) return;
+      var hx=classify(o,l.id);
+      if(hx){o.userData.hp0=o.position.clone();o.userData.hx=hx;HX.push(o)}
+      else if(!STATIC[l.id]&&!(l.id==='loft')) unclassified.push(l.id+': '+(o.userData.member?o.userData.member.label:'(no member)'));
+    });
+  });
+  if(unclassified.length) console.warn('explode: unclassified house meshes (static):',unclassified);
+  window.__houseExplode=function(s){
+    for(var i=0;i<HX.length;i++){var o=HX[i];o.position.copy(o.userData.hp0).addScaledVector(o.userData.hx,s)}
+  };
+})();
+
+/* ---------- details selector ---------- */
+var detailsEl=$('details'), dBtns={}, notesEl=$('notes');
+detailsEl.setAttribute('aria-label',T.detailsLabel);
+function renderNotes(k){
+  var n=T.notes[k], L=T.notesLabels;
+  notesEl.textContent='';
+  if(!n){notesEl.hidden=true;return}
+  function el(tag,txt){var e=document.createElement(tag);if(txt)e.textContent=txt;notesEl.appendChild(e);return e}
+  el('h3',n.title); el('h4',L.parts);
+  var ul=el('ul'); n.parts.forEach(function(t){var li=document.createElement('li');li.textContent=t;ul.appendChild(li)});
+  var p=el('p'), b=document.createElement('strong'); b.textContent=L.governs+': '; p.appendChild(b); p.appendChild(document.createTextNode(n.governs));
+  el('span',L.tag).className='badge';
+  notesEl.hidden=false;
+}
+function showMode(k){
+  clearSel(); showAll();
+  applyExplode(0); setSlider(0);
+  mode=k;
+  camera.fov=(k==='ridgebox'||k==='eave'||k==='wpanel'||k==='dheader'||k==='gable5'||k==='gable1'||k==='cornerA5'||k==='loft'||k==='floor')?12:40; camera.updateProjectionMatrix();
+  $('nbcheck').checked=true; if(WP_NB) WP_NB.visible=true; $('nbChip').hidden=(k!=='wpanel');
+  $('hidecap').checked=false; if(RIDGE_CAP) RIDGE_CAP.visible=true; $('capChip').hidden=(k!=='ridgebox'); var house=k==='house';
+  LAYERS.forEach(function(l){l.group.visible=house&&cbs[l.id].checked});
+  gridLines.visible=house; labels.forEach(function(l){l.sp.visible=house});
+  layersEl.style.display=house?'':'none';
+  Object.keys(DG).forEach(function(d){DG[d].visible=(d===k)});
+  Object.keys(dBtns).forEach(function(d){dBtns[d].setAttribute('aria-pressed',d===k?'true':'false')});
+  controls.minDistance=house?0.3:0.2; controls.maxPolarAngle=house?Math.PI*0.52:Math.PI;
+  renderNotes(k); setView('reset');
+}
+window.__view=function(x,y,z){setView('custom',V(x,y,z))};
+window.__cam=function(a,b,c,d,e,f){camera.position.set(a,b,c);controls.target.set(d,e,f);controls.update()};
+window.__members=MEMBERS;
+['house','knee','apex','panel','block','skyp','ridgebox','eave','wpanel','dheader','gable5','gable1','cornerA5','loft','floor'].forEach(function(k){
+  var b=document.createElement('button'); b.type='button'; b.id='d-'+k; b.textContent=T.details[k];
+  b.setAttribute('aria-pressed',k==='house'?'true':'false');
+  b.addEventListener('click',function(){showMode(k)});
+  detailsEl.appendChild(b); dBtns[k]=b;
+});
+
+/* ---------- picking, selection, visibility ---------- */
+var ghostOn=false;
+function hlCol(){var v=getComputedStyle(root).getPropertyValue('--hl').trim();return v||'#d6009b'}
+function ensureState(m,want){
+  var st=m.userData.state||'base';
+  if(st===want) return;
+  if(!m.userData.base) m.userData.base=m.material;
+  if(st!=='base') m.material.dispose();
+  m.material=(want==='base')?m.userData.base:m.userData.base.clone();
+  m.userData.state=want;
+}
+function paintMat(m){
+  var st=m.userData.state||'base', base=m.userData.base, i, c;
+  if(st==='hl'){var col=new THREE.Color(hlCol());m.material.color.copy(col);m.material.emissive.copy(col).multiplyScalar(0.5)}
+  else if(st==='ghost'){m.material.color.copy(base.color);m.material.transparent=true;m.material.opacity=0.12;m.material.depthWrite=false}
+  for(i=0;i<m.children.length;i++){c=m.children[i];if(c.isLineSegments)c.visible=(st!=='ghost')}
+}
+function applyMat(m){var mem=m.userData.member;if(!mem)return;ensureState(m,mem.sel?'hl':((ghostOn&&SEL.length)?'ghost':'base'));paintMat(m)}
+function refreshMats(){for(var i=0;i<MEMBERS.length;i++){var ms=MEMBERS[i].meshes;for(var j=0;j<ms.length;j++)applyMat(ms[j])}}
+function repaintSel(){refreshMats()}
+function refreshVis(){
+  var dx=explodeS>0, i, j, ms;
+  for(i=0;i<MEMBERS.length;i++){ms=MEMBERS[i].meshes;for(j=0;j<ms.length;j++)ms[j].visible=!MEMBERS[i].hidden&&!(ms[j].userData.fast&&dx)}
+}
+function layerOf(mem){
+  if(mem.layer!==undefined) return mem.layer;
+  var o=mem.meshes[0], id=null;
+  while(o){if(o.name&&cbs[o.name]){id=o.name;break}o=o.parent}
+  mem.layer=id; return id;
+}
+function labelKind(l){return l.replace(/\d+(\/\w+|-\d+)?/g,'').replace(/\b(rear|front|left|right|x\+|x-|top|bottom|lower|upper|mid|at|bay|row|grid)\b/gi,'').replace(/·/g,' ').replace(/\s+/g,' ').trim()}
+function inScene(mem){return (mem.scene||'house')===mode}
+function layerOn(mem){var id=layerOf(mem);return !id||cbs[id].checked}
+function kindOf(mem){return layerOf(mem)||labelKind(mem.label)}
+function sceneMembers(){return MEMBERS.filter(inScene)}
+function hiddenCount(){var n=0;for(var i=0;i<MEMBERS.length;i++)if(MEMBERS[i].hidden&&inScene(MEMBERS[i]))n++;return n}
+var selCnt=$('t-sel'), selChips=$('sel-chips'), selHint=$('sel-hint'), selMsg=$('sel-msg'), tipEl=$('pick-tip'), tipTimer=0, msgTimer=0, hidEl=$('t-hid'), showAllBtn=$('sel-showall');
+$('sel-clear').textContent=T.sel.clear; $('sel-copy').textContent=T.sel.copy; selHint.textContent=T.sel.hint; showAllBtn.textContent=T.sel.showAll; $('sel-help').textContent=T.sel.help;
+function updateSel(){
+  selCnt.textContent=T.sel.selected+': '+SEL.length;
+  var hc=hiddenCount(); hidEl.textContent=T.sel.hidden+': '+hc; hidEl.hidden=hc===0; showAllBtn.hidden=hc===0;
+  selChips.textContent='';
+  SEL.forEach(function(mem){
+    var c=document.createElement('button'); c.type='button'; c.className='chip2'; c.textContent=mem.label;
+    c.addEventListener('click',function(){toggleMember(mem)});
+    selChips.appendChild(c);
+  });
+  selHint.hidden=SEL.length>0;
+  window.__selected=SEL.map(function(m){return m.label}); window.__hiddenN=hc; window.__ghost=ghostOn;
+}
+function afterSel(){if(!SEL.length)ghostOn=false;refreshMats();updateSel()}
+function setSel(list){SEL.forEach(function(m){m.sel=false});SEL.length=0;list.forEach(function(m){m.sel=true;SEL.push(m)});afterSel()}
+function toggleMember(mem){
+  if(mem.hidden) return;
+  var i=SEL.indexOf(mem);
+  if(i>=0){SEL.splice(i,1);mem.sel=false} else {SEL.push(mem);mem.sel=true}
+  afterSel();
+}
+function clearSel(){SEL.forEach(function(m){m.sel=false});SEL.length=0;ghostOn=false;refreshMats();updateSel()}
+function hideSel(){if(!SEL.length)return;SEL.forEach(function(m){m.hidden=true;m.sel=false});SEL.length=0;ghostOn=false;refreshVis();refreshMats();updateSel()}
+function isolateSel(){if(!SEL.length)return;sceneMembers().forEach(function(m){m.hidden=!m.sel});refreshVis();updateSel()}
+function toggleGhost(){if(!SEL.length)return;ghostOn=!ghostOn;refreshMats();updateSel()}
+function showAll(){MEMBERS.forEach(function(m){m.hidden=false});ghostOn=false;refreshVis();refreshMats();updateSel()}
+function sameKind(){
+  if(!SEL.length) return;
+  var kinds={}; SEL.forEach(function(m){kinds[kindOf(m)]=1});
+  setSel(sceneMembers().filter(function(m){return !m.hidden&&layerOn(m)&&kinds[kindOf(m)]}));
+}
+function invertSel(){setSel(sceneMembers().filter(function(m){return !m.hidden&&layerOn(m)&&!m.sel}))}
+function invertVis(){
+  sceneMembers().forEach(function(m){
+    if(!layerOn(m)) return;
+    m.hidden=!m.hidden;
+    if(m.hidden&&m.sel){m.sel=false;SEL.splice(SEL.indexOf(m),1)}
+  });
+  refreshVis(); afterSel();
+}
+function zoomSel(){
+  if(!SEL.length) return;
+  scene.updateMatrixWorld(true);
+  var bb=new THREE.Box3(), tb=new THREE.Box3();
+  SEL.forEach(function(m){m.meshes.forEach(function(x){tb.setFromObject(x);bb.union(tb)})});
+  if(bb.isEmpty()) return;
+  var ctr=bb.getCenter(new THREE.Vector3()), dir=camera.position.clone().sub(controls.target).normalize();
+  camera.position.copy(ctr).add(dir); camera.lookAt(ctr); camera.updateMatrixWorld();
+  var rt=V(1,0,0).applyQuaternion(camera.quaternion), upv=V(0,1,0).applyQuaternion(camera.quaternion);
+  var tv=Math.tan(camera.fov*Math.PI/360), th=tv*camera.aspect, d=0.25, ci, cp;
+  for(ci=0;ci<8;ci++){
+    cp=V(ci&1?bb.max.x:bb.min.x,ci&2?bb.max.y:bb.min.y,ci&4?bb.max.z:bb.min.z).sub(ctr);
+    d=Math.max(d,cp.dot(dir)+Math.abs(cp.dot(rt))/th,cp.dot(dir)+Math.abs(cp.dot(upv))/tv);
+  }
+  controls.target.copy(ctr); camera.position.copy(ctr).addScaledVector(dir,d*1.2); camera.lookAt(ctr); controls.update();
+}
+$('sel-clear').addEventListener('click',clearSel);
+showAllBtn.addEventListener('click',showAll);
+function say(t){selMsg.textContent=t;clearTimeout(msgTimer);msgTimer=setTimeout(function(){selMsg.textContent=''},2500)}
+$('sel-copy').addEventListener('click',function(){
+  var txt=SEL.map(function(m){return m.label}).join('\n');
+  function manual(){
+    try{var r=document.createRange();r.selectNodeContents(selChips);var sl=window.getSelection();sl.removeAllRanges();sl.addRange(r);document.execCommand('copy')}catch(e){}
+    say(T.sel.manual);
+  }
+  try{
+    navigator.clipboard.writeText(txt).then(function(){say(T.sel.copied)},manual);
+  }catch(e){manual()}
+});
+function collect(o,out){
+  if(!o.visible) return;
+  if(o.isMesh){if(o.userData.member&&!o.userData.nopick)out.push(o);return}
+  o.children.forEach(function(c){collect(c,out)});
+}
+var rc=new THREE.Raycaster(), downInfo=null, lpTimer=0, cv=renderer.domElement, overCv=false;
+cv.tabIndex=0;
+function hitAt(cx,cy){
+  var r=cv.getBoundingClientRect();
+  rc.setFromCamera(new THREE.Vector2((cx-r.left)/r.width*2-1,-((cy-r.top)/r.height*2-1)),camera);
+  var list=[];
+  if(mode==='house') LAYERS.forEach(function(l){collect(l.group,list)}); else collect(DG[mode],list);
+  scene.updateMatrixWorld(true);
+  var hit=rc.intersectObjects(list,false)[0];
+  return hit?hit.object.userData.member:null;
+}
+/* zoom toward / away from the point under the cursor (wheel); OrbitControls' own zoom is off */
+controls.enableZoom=false;
+cv.addEventListener('wheel',function(e){
+  e.preventDefault();
+  if(!e.deltaY) return;
+  var r=cv.getBoundingClientRect();
+  rc.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height*2-1)),camera);
+  var list=[];
+  if(mode==='house') LAYERS.forEach(function(l){collect(l.group,list)}); else if(DG[mode]) collect(DG[mode],list);
+  scene.updateMatrixWorld(true);
+  var hit=rc.intersectObjects(list,false)[0], P;
+  if(hit) P=hit.point.clone();
+  else {
+    var n=new THREE.Vector3(); camera.getWorldDirection(n);
+    P=new THREE.Vector3(); if(!rc.ray.intersectPlane(new THREE.Plane().setFromNormalAndCoplanarPoint(n,controls.target),P)) return;
+  }
+  var s=Math.pow(1.0015,Math.max(-200,Math.min(200,e.deltaY)));
+  var d=camera.position.distanceTo(controls.target)*s;
+  if(d<controls.minDistance||d>controls.maxDistance) return;
+  camera.position.sub(P).multiplyScalar(s).add(P);
+  controls.target.sub(P).multiplyScalar(s).add(P);
+  controls.update();
+},{passive:false});
+function showTip(mem){tipEl.textContent=mem.label;tipEl.hidden=false;clearTimeout(tipTimer);tipTimer=setTimeout(function(){tipEl.hidden=true},2000)}
+/* context menu */
+var menuEl=document.createElement('div'); menuEl.className='ctxmenu'; menuEl.setAttribute('role','menu'); menuEl.hidden=true; stage.appendChild(menuEl);
+var MENU=[
+  ['hide',hideSel,function(){return SEL.length>0}],
+  ['isolate',isolateSel,function(){return SEL.length>0}],
+  ['ghost',toggleGhost,function(){return SEL.length>0}],
+  ['zoom',zoomSel,function(){return SEL.length>0}],
+  ['same',sameKind,function(){return SEL.length>0}],
+  ['invsel',invertSel,function(){return true}],
+  ['invvis',invertVis,function(){return true}],
+  ['showall',showAll,function(){return hiddenCount()>0||ghostOn}],
+  ['clear',clearSel,function(){return SEL.length>0}]
+];
+function closeMenu(){if(!menuEl.hidden){menuEl.hidden=true;try{cv.focus({preventScroll:true})}catch(e){}}}
+function openMenu(cx,cy){
+  menuEl.textContent='';
+  MENU.forEach(function(it){
+    var b=document.createElement('button'), a=document.createElement('span'), k=document.createElement('span');
+    b.type='button'; b.setAttribute('role','menuitem');
+    a.textContent=T.menu[it[0]][0]; k.className='k'; k.textContent=T.menu[it[0]][1];
+    b.appendChild(a); b.appendChild(k); b.disabled=!it[2]();
+    b.addEventListener('click',function(){closeMenu();it[1]()});
+    menuEl.appendChild(b);
+  });
+  menuEl.hidden=false;
+  var r=stage.getBoundingClientRect(), w=menuEl.offsetWidth, h=menuEl.offsetHeight;
+  menuEl.style.left=Math.max(4,Math.min(cx-r.left,r.width-w-4))+'px';
+  menuEl.style.top=Math.max(4,Math.min(cy-r.top,r.height-h-4))+'px';
+  var f=menuEl.querySelector('button:not(:disabled)'); if(f) f.focus();
+}
+function contextAt(cx,cy){
+  var mem=hitAt(cx,cy);
+  if(mem&&!mem.sel&&SEL.length===0){toggleMember(mem);showTip(mem)}
+  openMenu(cx,cy);
+}
+cv.addEventListener('pointerdown',function(e){
+  clearTimeout(lpTimer);
+  if(!e.isPrimary){downInfo=null;return}
+  var d0={x:e.clientX,y:e.clientY,t:performance.now(),b:e.button,moved:false,lp:false};
+  downInfo=d0;
+  try{cv.focus({preventScroll:true})}catch(err){}
+  if(e.pointerType==='touch') lpTimer=setTimeout(function(){if(downInfo===d0&&!d0.moved){d0.lp=true;contextAt(d0.x,d0.y)}},600);
+});
+cv.addEventListener('pointermove',function(e){
+  var d=downInfo;
+  if(d&&!d.moved&&Math.hypot(e.clientX-d.x,e.clientY-d.y)>=5){d.moved=true;clearTimeout(lpTimer)}
+});
+cv.addEventListener('pointerup',function(e){
+  clearTimeout(lpTimer);
+  var d=downInfo; downInfo=null;
+  if(!d||d.lp||Math.hypot(e.clientX-d.x,e.clientY-d.y)>=5) return;
+  if(d.b===2){contextAt(e.clientX,e.clientY);return}
+  if(d.b===0&&performance.now()-d.t<400){var mem=hitAt(e.clientX,e.clientY);if(mem){toggleMember(mem);showTip(mem)}}
+});
+cv.addEventListener('dblclick',function(e){if(!hitAt(e.clientX,e.clientY))setView('reset')});
+cv.addEventListener('contextmenu',function(e){e.preventDefault()});
+cv.addEventListener('pointerenter',function(){overCv=true});
+cv.addEventListener('pointerleave',function(){overCv=false});
+cv.addEventListener('wheel',closeMenu,{passive:true});
+window.addEventListener('scroll',closeMenu,true);
+document.addEventListener('pointerdown',function(e){if(!menuEl.hidden&&!menuEl.contains(e.target))closeMenu()},true);
+document.addEventListener('keydown',function(e){
+  var tg=e.target, tn=tg&&tg.tagName;
+  if(tn==='INPUT'||tn==='TEXTAREA'||tn==='SELECT'||(tg&&tg.isContentEditable)) return;
+  if(e.ctrlKey||e.metaKey||e.altKey) return;
+  var menuOpen=!menuEl.hidden;
+  if(e.key==='Escape'){closeMenu();clearSel();e.preventDefault();return}
+  if(!(overCv||document.activeElement===cv||menuOpen)) return;
+  if(menuOpen&&(e.key==='ArrowDown'||e.key==='ArrowUp')){
+    var items=Array.prototype.slice.call(menuEl.querySelectorAll('button:not(:disabled)')), i=items.indexOf(document.activeElement);
+    if(items.length){i=e.key==='ArrowDown'?(i+1)%items.length:(i<=0?items.length-1:i-1);items[i].focus()}
+    e.preventDefault(); return;
+  }
+  var k=e.key.toLowerCase(), done=true;
+  if(k==='h')hideSel(); else if(k==='i'){if(e.shiftKey)invertSel();else isolateSel()}
+  else if(k==='g')toggleGhost(); else if(k==='f')zoomSel(); else if(k==='s')sameKind();
+  else if(k==='v')invertVis(); else if(k==='a')showAll(); else done=false;
+  if(done){e.preventDefault();closeMenu()}
+});
+updateSel();
+
+/* ---------- loop ---------- */
+(function loop(){
+  requestAnimationFrame(loop);
+  controls.update();
+  renderer.render(scene,camera);
+})();
+window.__counts=COUNT;
+window.__dbg={camera:camera,controls:controls,showMode:showMode,applyExplode:applyExplode,setExplode:function(v){v=Math.max(0,Math.min(1,+v||0));setSlider(v);applyExplode(v)}};
+})();
+</script>
