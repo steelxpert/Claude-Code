@@ -38,7 +38,7 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 |---|---|---|
 | D-001 | Home layout: repo = truth (code, note sources, harness), Drive 2026.032a = issued deliverables only, Claude Project = read-only copies for chats, Drive ledger = session rows | FLIN-002 |
 | D-002 | Thin harness: project-specific state only; every generic CCX/PPM, GMNIA, Eurocode, DOCX or HU-glossary finding is harvested into the owning skill (README skill map), nothing generic duplicated here | FLIN-002 |
-| D-003 | The code stays in steelxpert/Claude-Code for now; no repo split or rename before the roles with Máté are set (O-002, O-003) | FLIN-002 |
+| D-003 | The code stays in steelxpert/Claude-Code for now; no repo split or rename before the roles with Máté are set (O-002, O-003). SUPERSEDED by D-036 | FLIN-002 |
 | D-004 | Harness text lives in `harness/` at the repo root; the ledger folder `flins/` on Drive holds only INFO.md and KICKOFF_NEXT_FLIN.txt | FLIN-002 |
 | D-005 | Skill map includes ec3-1-8-connection-workbook, hu-technical-doc-workflow, flins-sdr, engineering-docx-house-rules, engineering-docx-build besides the CCX/PPM and GMNIA skills | FLIN-002 |
 | D-006 | The AI stays outside the structural load path (FLINS-CFS-003): drawing interpretation, proposal text, help; never a resistance | FLIN-001 |
@@ -70,6 +70,7 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 | D-033 | Offer to FLINS (owner, FLIN-008): fixed price 2 445 000 Ft + ÁFA = 163 h (WORK_BREAKDOWN rev 0, D-032) x 15 000 Ft/h; deadline 4 weeks from the order; offer valid 30 days [owner to confirm]; the pilot job itself is done the conventional way (AxisVM actions + global model, member checks in the owner's licensed software) - the scripted route of the FLIN-008 assessment is a programme beside the job, not its engine | FLIN-008 |
 | D-034 | Assessment "AI-run EN 1993-1-3 member checks" (`docs/pilot_house/assessment_member_checks/`): feasible for single C and U members, QA'd prototype (sectionproperties, CUFSM, DSM cross-checks; three defects found and fixed by the QA), not alone for built-up / boxed / perforated members, never as signatory; D-006 unchanged. Owner's reading: promising, as expected; no engineering work on it now | FLIN-008 |
 | D-035 | Programme vision (owner, FLIN-008 replies): (a) envelope-load method per member, later CFD pressure mapping; (b) rule-based skeleton + load take-down (support graph, equilibrium closure as QA); (c) automated member checks; (d) optimisation; (e) 3D model with STEP AP242 export from an open kernel (no native Inventor / SolidWorks writing); (f) GA drawings + BOM, shop drawings separate. Reading list `READING_LIST_and_programme_notes.md`; owner fetches the papers, next session reads and plans | FLIN-008 |
+| D-036 | Repo: rename `steelxpert/Claude-Code` -> `steelxpert/cfs-house` (owner action in GitHub settings; the old URL redirects); `main` fast-forwarded to the FLIN-008 branch (cbf764f) and is the truth from now on; each session branches from `main`, merges back (fast-forward) at wrap-up and deletes its branch; the old session branches go. Supersedes D-003 and closes O-003. Later a separate `cfs-check` repo only when the member-check module has tests and a second user | FLIN-008 |
 | D-010 | Tuesday 2026-11-11 kick-off: live at FLINS, Dunaújváros; decisions first (the six items of deck slide 17), then workstreams; no new client material is prepared for it; the agenda is the owner's internal chair notes (`harness/meetings/2026-11-11_kickoff_Dunaujvaros.md`) | FLIN-002 |
 
 ## 4. Open owner items (O-nnn)
@@ -78,7 +79,7 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 |---|---|---|
 | O-001 | Rename Drive folder `2026.032a` → `2026.032` once the job is won; update the project number in `docs/*.py` (`--projno`) and the deck footers in the same session | waits for the award |
 | O-002 | Roles with Máté: owner writes a rough plan of how the app should look, behave and work, then holds his own kick-off with Máté; all structural concept stays with the owner; who starts coding is decided there | open |
-| O-003 | Repo split (`steelxpert/floorframe`) or rename — only after O-002 | open |
+| O-003 | Repo split or rename | closed by D-036 (rename to cfs-house, main = truth); owner performs the GitHub rename and re-attaches the repo to the cloud environment |
 | O-004 | Create the Claude Project "FlexInSheet" with read-only copies of `docs/` and this STATE | open, low effort |
 | O-005 | The six client decisions of deck slide 17 (profile set Q5, geotechnical partner and pile catalogue, feedback on CFS-001…006, target market, hosting, AI assistance) | not decided item by item at the kick-off [owner to confirm]; parked by D-012. Profile set, target market and superstructure type come back through the pilot house (O-010) |
 | O-006 | Test laboratory partner for T0–T6 and the certification body for T6 | parked (D-012) |
@@ -127,7 +128,7 @@ and `docs/*_hu.py`; the rough app is `floorframe/` (12 tests).
 
 ## 7. Queue
 
-1. **FLIN-009** - (i) owner's check of the offer package (letter, e-mail, HU viewer); issue to FLINS only on his say-so (copy to Drive 2026.032a); (ii) papers: inventory what the owner fetched (reading list priority 1), verify each against its title page, then the methodology + automation plan for (b) and (c) of D-035; (iii) harvest: gotchas 29-32 into the owning skills. Kickoff: `harness/kickoffs/KICKOFF_FLIN-009.txt`.
+1. **FLIN-009** - (0) after the owner's GitHub rename to `cfs-house`: re-attach the repo, confirm `main` is the base, delete the stale session branches (D-036); (i) owner's check of the offer package (letter, e-mail, HU viewer); issue to FLINS only on his say-so (copy to Drive 2026.032a); (ii) papers: inventory what the owner fetched (reading list priority 1), verify each against its title page, then the methodology + automation plan for (b) and (c) of D-035; (iii) harvest: gotchas 29-32 into the owning skills. Kickoff: `harness/kickoffs/KICKOFF_FLIN-009.txt`.
 2. Parked by D-012, resume only on a FLINS decision on superstructure + market: catalogue
    freeze v0, GMNIA campaign case matrix, test programme, app (`KICKOFF_FLIN-003.txt` keeps
    that scope text).
