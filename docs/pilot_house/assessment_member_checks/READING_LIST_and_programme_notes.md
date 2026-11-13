@@ -184,7 +184,11 @@ background. "Use" says what is to be extracted.
 - Recommendation: STEP AP242 with one body per member, named by mark, plus a CSV BOM keyed to
   the same marks. No native export.
 
-## 4  Still wanted / blocked from the cloud
+## 4  Addendum
+
+The research continuation of 2026-11-13 (EN 1993-1-3:2024 change leads, Access Steel SX022a/SX023a target numbers from the SCIA benchmark pages, vendor verification examples, stud-to-track and bridging papers, open-source tools) is in `READING_LIST_addendum_research_2026-11-13.md`. Two leads that change the plan: the 2024 edition renumbers the clauses the prototype cites (materials 5, members 8; inferred, verify) and contains no DSM equations (prA1:2026 adds only a reference); SX022a has unequal flanges, so the prototype needs the b1 != b2 extension before that benchmark runs.
+
+## 5  Still wanted / blocked from the cloud
 
 - JRC 2025 workshop PDF (item 18): host eurocodes.jrc.ec.europa.eu is outside the cloud network policy; owner fetches locally (the ResearchGate entry lists the same proceedings).
 - Access Steel SX022a / SX023a (item 21): hosts blocked from the cloud; owner fetches locally.
