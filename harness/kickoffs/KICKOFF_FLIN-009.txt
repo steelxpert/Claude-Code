@@ -1,0 +1,22 @@
+SESSION: FLIN-009 | Offer check, papers, method plan | Opus 5.5
+
+STEP 0: Claude Code CLOUD. Attach steelxpert/Claude-Code WITH WRITE ACCESS first (add_repo, access push). Ledger through the Google Drive connector (G:\Saját meghajtó\ledger): the connector can create and trash files but cannot edit an existing file's content; never open SESSIONS.csv in Excel. Load the SKILLS: flins-sdr, structural-proposal-letter, correspondence-drafting, hu-technical-doc-workflow, steelxpert-hu-report, docx, 3w-cp. Then:
+
+TIER RULE (owner, D-019): Opus 5.5 for planning, judgement and Hungarian text; Sonnet 5.5 sub-agents only for mechanical edits. Fable only when the owner explicitly asks.
+
+FLIN-009 (project flins, FlexInSheet 2026.032a): continuation of FLIN-008. One item at a time with the owner (D-016):
+1. Offer package check (owner): `docs/pilot_house/offer/2026.032a_FLINS_mintahaz_ajanlat_rev0.docx`, `offer/DRAFT/2026.032a_email_draft_rev0.docx`, `offer/FLINS_mintahaz_3D_vazmodell.html` (self-contained Hungarian viewer). Owner fills the letterhead placeholder (address / phone), confirms the 30-day validity and the attachment name; corrections go into `offer/build_offer.js` (rebuild, never edit the .docx), revision rev1 in a new file, log in `Revision-history-2026.032a_ajanlat.txt`. Issue to FLINS only on the owner's say-so: PDF export + copy to Drive 2026.032a. The sending is the owner's action.
+2. Papers (D-035, reading list `docs/pilot_house/assessment_member_checks/READING_LIST_and_programme_notes.md`): inventory what the owner fetched (priority 1 items first; Access Steel SX022a/SX023a, JRC 2025 workshop, Roy/Lim 2019, Ting 2018, Moen/Schafer 2009/2011, Fox/Schuster, Green/Sputo, EN 1993-1-3:2024), verify each PDF against its own title page before trusting it, update the list (landed / still wanted / rejected) with provenance, commit. Then read and propose the methodology + automation plan for (b) load take-down and (c) member checks: assumptions for built-up / boxed / perforated members, benchmark set, module work plan. Run the SX023a benchmark through `ec3_1_3_proto.py` when the sheet is in hand (expected Aeff = 436.8 mm2, chi_d = 0.744 per the SCIA page).
+3. Harvest gotchas 29-33 into the owning skills (cloud network / CDN -> 3w-cp or harness README; pycufsm numpy-2 shim and Annex C shear-centre lesson -> cfs-gmnia-virtual-testing or a new cfs-member-check skill; docx-js hu-HU -> engineering-docx-build).
+
+Verify context first:
+- Repo steelxpert/Claude-Code, branch claude/admiring-ride-ttsc3s at the FLIN-008 wrap-up commit or later (harness/kickoffs/KICKOFF_FLIN-009.txt exists; STATE has D-033..D-035; `docs/pilot_house/offer/` and `docs/pilot_house/assessment_member_checks/` exist). `pip install -e ".[dev]"` then `python -m pytest` = 12 passed. If the harness gives a new session branch, base it on this one: `git fetch origin claude/admiring-ride-ttsc3s && git checkout -B <new branch> origin/claude/admiring-ride-ttsc3s`.
+- Ledger: if any PENDING_ROW_FLIN-*.txt (003_final, 004, 005, 006, 007, 008) is still in the ledger root, say so (rows not merged) and carry on.
+- The QA prototype needs `pip install scipy pycufsm sectionproperties` (not in the package extras); `qa_run.py` takes about 10 minutes.
+
+Read first: harness/STATE_FLINS.md (section 3 D-032..D-035, section 4 O-010, section 7), docs/pilot_house/assessment_member_checks/ASSESSMENT_member_checks_by_AI.md, READING_LIST_and_programme_notes.md, harness/gotchas.md newest section.
+
+OWNER'S WORKING RULES (non-negotiable, D-016): one item at a time (instruct -> comment -> approve -> implement -> check); "wait" = stop the sub-agent and restore the file; few words, judge by pictures; FLINS delivers the bare steel skeleton; every figure PRELIMINARY (D-007); working language English, end products Hungarian (glossary, D-008); the AI stays outside the structural load path (D-006); price and dates are the owner's.
+
+Exit gates: STATE sections 3/4/6/7 updated; pytest green; committed and pushed; 3w+cp with the ledger row (PENDING_ROW file when cloud-only) and KICKOFF_NEXT_FLIN.txt replaced on Drive (create + trash).
+Machine: cloud. Where: Claude Code cloud on cloud. Which: Opus 5.5, medium effort; Sonnet 5.5 sub-agents for mechanical edits.

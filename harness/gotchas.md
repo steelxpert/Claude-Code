@@ -117,3 +117,25 @@ Tags: [MEASURED] seen and reproduced in the session · [DOC] from documentation 
    each owner-approved change; cmp.js compares label+box multisets, so SEQ renumbering after a
    removal shows up as paired remove/add lines with identical boxes - read them as renames.
 
+
+## — 2026-11-13 (FLIN-008)
+
+29. [MEASURED, FLIN-008] Cloud network policy: cdnjs, jsdelivr, unpkg, scribd, pdfcoffee, help.scia.net,
+   eurocodes.jrc.ec.europa.eu all refused (403 / ENOTFOUND); registry.npmjs.org and PyPI work. For a
+   self-contained viewer take the libraries from `npm pack three@0.128.0` (`docs/pilot_house/make_standalone.py`).
+   External worked examples (Access Steel SX022a/SX023a) must be fetched by the owner locally.
+30. [MEASURED, FLIN-008] pycufsm 0.1.x compiled solver breaks under numpy 2 (`int()` of a 1-element array);
+   `assessment_member_checks/_cufsm_shim.py` loads the pure-Python solver with the one-line patch. `prop2_new`
+   (CUTWP) has the same bug; section properties come from the prototype's Annex C routine instead.
+31. [MEASURED, FLIN-008] EN 1993-1-3 Annex C sectorial formulas with the pole at the origin give the shear centre
+   relative to the POLE, not to the gravity centre; and notional widths bp measured to the corner midpoints
+   (Fig. 5.1) require the corner arcs to be added back into Aeff / Ieff (7.7 % of Aeff on a C150x1.5). Both
+   were caught only by the independent FE section model (sectionproperties) in the QA loop.
+32. [PROCESS, FLIN-008] Narrow-flange short-lip C sections (C150x45x10, C200x60x15) show NO distinct distortional
+   minimum in the CUFSM signature curve in compression; 5.5.3.2 still gives chi_d = 0.60-0.75. Using 5.5.3.1(8)
+   numerical sigma_cr,s needs cFSM modal decomposition. The FLINS lip is at c/b = 0.22 against the 0.2 limit of
+   5.2(2) - confirm the real lip length.
+33. [PROCESS, FLIN-008] docx-js: `language: {value:'hu-HU', eastAsia:'hu-HU', bidirectional:'hu-HU'}` on the
+   default run and on every TextRun gives clean hu-HU tags; `creator` / `lastModifiedBy` set core.xml. Casual
+   one-page offer letter = structural-proposal-letter template with price/deadline sections in place of the
+   data checklist (owner override of the no-price default).

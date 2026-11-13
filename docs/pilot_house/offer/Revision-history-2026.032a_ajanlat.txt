@@ -1,0 +1,7 @@
+2026-11-13  rev0  Ajánlatlevél (2026.032a_FLINS_mintahaz_ajanlat_rev0.docx) és kísérő e-mail
+                  (DRAFT/2026.032a_email_draft_rev0.docx) első kiadás, FLIN-008. Ár 163 h x 15 000 Ft =
+                  2 445 000 Ft + ÁFA (D-033), határidő megrendeléstől 4 hét, érvényesség 30 nap (tulajdonos
+                  megerősítése szükséges). Melléklet: FLINS_mintahaz_3D_vazmodell.html (önálló, offline
+                  magyar nézegető, viewer v33 tartalom). Fejléc cím / telefon helyőrző kitöltendő.
+                  Csak LibreOffice-renderben ellenőrizve; Wordben megnyitás előtt a tulajdonos ellenőrzi.
+                  NEM ELKÜLDÖTT: a küldés a tulajdonos döntése.
