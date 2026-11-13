@@ -514,6 +514,7 @@ def effective_bending_y(sec: Channel, n_iter: int = 4) -> EffBend:
     web = [(Lw, t)]                                           # gross web for the first psi
     zc = psi = rho_w = float("nan")
     nodes = []
+    hist = []
     for it in range(1, n_iter + 1):
         nodes = effective_polyline(sec, web, fl_top, fl_bot, lip_top, lip_bot, tcl, t)
         pe = line_props(nodes)
@@ -529,13 +530,14 @@ def effective_bending_y(sec: Channel, n_iter: int = 4) -> EffBend:
         bot_c = min(be2, zc_flat - top)
         hole = max(zc_flat - top - bot_c, 0.0)
         web = [(top, t), (hole, 0.0), (bot_c, t), (Lw - zc_flat, t)]
+        hist.append(dict(it=it, zc=zc, psi=psi, ksig=ks, lam_w=lam_w, rho_w=rho_w, beff=beff, be1=be1, be2=be2))
     nodes = effective_polyline(sec, web, fl_top, fl_bot, lip_top, lip_bot, tcl, t)
     pe = line_props(nodes)
     zc = hw / 2 - pe.zc
     Ieff = pe.Iy
     Weff_com = Ieff / (zc + t / 2)
     Weff_ten = Ieff / (hw - zc + t / 2)
-    return EffBend(Ieff, zc, Weff_com, Weff_ten, psi, rho_w, st, n_iter, dict(A_eff_bend=pe.A), nodes)
+    return EffBend(Ieff, zc, Weff_com, Weff_ten, psi, rho_w, st, n_iter, dict(A_eff_bend=pe.A, hist=hist), nodes)
 
 
 # ------------------------------------------------------------------------- resistances
